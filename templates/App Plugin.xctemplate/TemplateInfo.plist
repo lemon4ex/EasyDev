@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Kind</key>
+	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
+	<key>Identifier</key>
+	<string>net.ymlab.easyDev.pluginFramework</string>
+	<key>Concrete</key>
+	<true/>
+	<key>Description</key>
+	<string>This template builds a plugin framework that links against the Foundation and UIKit frameworks.</string>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>Ancestors</key>
+	<array>
+		<string>com.apple.dt.unit.cocoaTouchFramework</string>
+	</array>
+	<key>Project</key>
+	<dict>
+		<key>SharedSettings</key>
+		<dict>
+			<key>TARGETED_DEVICE_FAMILY</key>
+			<string>1,2</string>
+			<key>GCC_WARN_ABOUT_MISSING_PROTOTYPES</key>
+			<string>YES</string>
+			<key>GCC_WARN_UNUSED_VARIABLE</key>
+			<string>YES</string>
+			<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+			<string>YES</string>
+			<key>GCC_C_LANGUAGE_STANDARD</key>
+			<string>gnu99</string>
+			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
+			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
+			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+			<string>latest_iphoneos</string>
+		</dict>
+		<key>SDK</key>
+		<string>iphoneos</string>
+		<key>Configurations</key>
+		<dict>
+			<key>Debug</key>
+			<dict>
+				<key>VALIDATE_PRODUCT</key>
+				<string>NO</string>
+				<key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>0</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<string>DEBUG=1 $(inherited)</string>
+				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
+				<string>NO</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>GCC_DYNAMIC_NO_PIC</key>
+				<string>NO</string>
+			</dict>
+			<key>Release</key>
+			<dict>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+		</dict>
+	</dict>
+	<key>Targets</key>
+	<array>
+		<dict>
+			<key>ProductType</key>
+			<string>com.apple.product-type.framework</string>
+			<key>TargetIdentifier</key>
+			<string>plugin</string>
+			<key>SharedSettings</key>
+			<dict>
+				<key>INSTALL_PATH</key>
+				<string>$(LOCAL_LIBRARY_DIR)/Frameworks</string>
+				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>DYLIB_COMPATIBILITY_VERSION</key>
+				<string>1</string>
+				<key>DYLIB_CURRENT_VERSION</key>
+				<string>1</string>
+				<key>DYLIB_INSTALL_NAME_BASE</key>
+				<string>@rpath</string>
+				<key>DEFINES_MODULE</key>
+				<string>YES</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>___PACKAGENAME___/PrefixHeader.pch</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>iPhone Developer</string>
+			</dict>
+			<key>BuildPhases</key>
+			<array/>
+		</dict>
+		<dict>
+			<key>Name</key>
+			<string>___VARIABLE_TargetAppName___</string>
+			<key>ProductType</key>
+			<string>com.apple.product-type.application</string>
+			<key>SharedSettings</key>
+			<dict>
+				<key>INFOPLIST_FILE</key>
+				<string>___PACKAGENAME___/Info.plist</string>
+				<key>PRODUCT_NAME</key>
+				<string>___VARIABLE_TargetAppName___</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>___VARIABLE_TargetAppBundleId___</string>
+				<key>DEFINES_MODULE</key>
+				<string>YES</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>iPhone Developer</string>
+			</dict>
+			<key>BuildPhases</key>
+			<array>
+				<dict>
+					<key>Class</key>
+					<string>ShellScript</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>ShowEnvVarsInLog</key>
+					<string>true</string>
+					<key>ShellScript</key>
+					<string>#!/bin/sh
+
+if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
+target_exe_name=&quot;WeChat_armv7&quot;
+elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_64&quot; ];then
+target_exe_name=&quot;WeChat_arm64&quot;
+else
+echo &quot;错误的配置&quot;
+exit;
+fi
+
+resource_path=&quot;${SRCROOT}/Resource&quot;
+target_app_name=&quot;${TARGET_NAME}.app&quot;
+sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
+framewrok_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+
+rm -rf &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+cp -rf &quot;${resource_path}/${target_app_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+cp -rf &quot;${resource_path}/${target_exe_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
+if [[ ! -d &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot; ]]; then
+    mkdir &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
+fi
+cp -rf &quot;${framewrok_path}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
+
+/opt/EasyDev/bin/optool install -p &quot;@rpath/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
+
+chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #注意，这一步必须
+</string>
+				</dict>
+			</array>
+			<key>Dependencies</key>
+			<array>
+				<string>plugin</string>
+			</array>
+		</dict>
+	</array>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>TargetAppName</string>
+			<key>Required</key>
+			<true/>
+			<key>Name</key>
+			<string>Target App Name:</string>
+			<key>Description</key>
+			<string>Target App Name.</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>Placeholder</key>
+			<string>AppStore</string>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>TargetAppBundleId</string>
+			<key>Required</key>
+			<true/>
+			<key>Name</key>
+			<string>Target App Bundle Id:</string>
+			<key>Description</key>
+			<string>Target App Bundle Id.</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>Placeholder</key>
+			<string>com.apple.appStore</string>
+		</dict>
+	</array>
+	<key>Nodes</key>
+	<array>
+		<string>___PACKAGENAME___.m</string>
+		<string>PrefixHeader.pch</string>
+		<string>Info.plist</string>
+		<string>../Resource/___VARIABLE_TargetAppName____armv7</string>
+		<string>../Resource/___VARIABLE_TargetAppName____arm64</string>
+		<string>../Resource/___VARIABLE_TargetAppName___.app</string>
+	</array>
+	<key>Definitions</key>
+	<dict>
+		<key>___PACKAGENAME___.m</key>
+		<dict>
+			<key>Path</key>
+			<string>___PACKAGENAME___.m</string>
+		</dict>
+		<key>PrefixHeader.pch</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Supporting Files</string>
+			</array>
+			<key>Path</key>
+			<string>PrefixHeader.pch</string>
+		</dict>
+		<key>Info.plist</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Supporting Files</string>
+			</array>
+			<key>Path</key>
+			<string>Info.plist</string>
+		</dict>
+		<key>../Resource/___VARIABLE_TargetAppName____armv7</key>
+		<dict>
+			<key>Beginning</key>
+			<string>This is a armv7 bin file</string>
+			<key>Group</key>
+			<array>
+				<string>Resource</string>
+			</array>
+		</dict>
+		<key>../Resource/___VARIABLE_TargetAppName____arm64</key>
+		<dict>
+			<key>Beginning</key>
+			<string>This is a arm64 bin file</string>
+			<key>Group</key>
+			<array>
+				<string>Resource</string>
+			</array>
+		</dict>
+		<key>../Resource/___VARIABLE_TargetAppName___.app</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Resource</string>
+			</array>
+		</dict>
+	</dict>
+</dict>
+</plist>
