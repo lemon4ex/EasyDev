@@ -22,6 +22,8 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>ENABLE_BITCODE</key>
+			<string>NO</string>
 			<key>TARGETED_DEVICE_FAMILY</key>
 			<string>1,2</string>
 			<key>GCC_WARN_ABOUT_MISSING_PROTOTYPES</key>
@@ -35,7 +37,7 @@
 			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
 			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
 			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-			<string>latest_iphoneos</string>
+			<string>8.0</string>
 		</dict>
 		<key>SDK</key>
 		<string>iphoneos</string>
@@ -137,7 +139,7 @@ echo &quot;错误的配置&quot;
 exit;
 fi
 
-resource_path=&quot;${SRCROOT}/Resource&quot;
+resource_path=&quot;${SRCROOT}/Resources&quot;
 target_app_name=&quot;${TARGET_NAME}.app&quot;
 sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
 framewrok_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
@@ -198,9 +200,9 @@ chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #�
 		<string>___PACKAGENAME___.m</string>
 		<string>PrefixHeader.pch</string>
 		<string>Info.plist</string>
-		<string>../Resource/___VARIABLE_TargetAppName____armv7</string>
-		<string>../Resource/___VARIABLE_TargetAppName____arm64</string>
-		<string>../Resource/___VARIABLE_TargetAppName___.app</string>
+		<string>../Resources/___VARIABLE_TargetAppName____armv7</string>
+		<string>../Resources/___VARIABLE_TargetAppName____arm64</string>
+		<string>../Resources/___VARIABLE_TargetAppName___.app</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -227,29 +229,29 @@ chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #�
 			<key>Path</key>
 			<string>Info.plist</string>
 		</dict>
-		<key>../Resource/___VARIABLE_TargetAppName____armv7</key>
+		<key>../Resources/___VARIABLE_TargetAppName____armv7</key>
 		<dict>
 			<key>Beginning</key>
 			<string>This is a armv7 bin file</string>
 			<key>Group</key>
 			<array>
-				<string>Resource</string>
+				<string>Resources</string>
 			</array>
 		</dict>
-		<key>../Resource/___VARIABLE_TargetAppName____arm64</key>
+		<key>../Resources/___VARIABLE_TargetAppName____arm64</key>
 		<dict>
 			<key>Beginning</key>
 			<string>This is a arm64 bin file</string>
 			<key>Group</key>
 			<array>
-				<string>Resource</string>
+				<string>Resources</string>
 			</array>
 		</dict>
-		<key>../Resource/___VARIABLE_TargetAppName___.app</key>
+		<key>../Resources/___VARIABLE_TargetAppName___.app</key>
 		<dict>
 			<key>Group</key>
 			<array>
-				<string>Resource</string>
+				<string>Resources</string>
 			</array>
 		</dict>
 	</dict>

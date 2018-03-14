@@ -18,6 +18,8 @@
 			<string>___PACKAGENAME___</string>
 			<key>SharedSettings</key>
 			<dict>
+				<key>ENABLE_BITCODE</key>
+				<string>NO</string>
 				<key>EasyDevClearUiCacheOnInstall</key>
 				<string>NO</string>
 				<key>EasyDevkillProcessOnInstall</key>
@@ -47,6 +49,8 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>ENABLE_BITCODE</key>
+			<string>NO</string>
 			<key>EasyDevTheosPath</key>
 			<string>/opt/theos</string>
 			<key>TARGETED_DEVICE_FAMILY</key>
