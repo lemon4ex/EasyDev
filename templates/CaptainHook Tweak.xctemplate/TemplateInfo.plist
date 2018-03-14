@@ -92,6 +92,10 @@ fi</string>
 	<key>Nodes</key>
 	<array>
 		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>Package/DEBIAN/preinst</string>
+		<string>Package/DEBIAN/postinst</string>
+		<string>Package/DEBIAN/postrm</string>
+		<string>Package/DEBIAN/prerm</string>
 		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
 		<string>Package/DEBIAN/control:debianControl:section</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
