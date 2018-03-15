@@ -27,24 +27,12 @@
 			<string>plugin</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>INSTALL_PATH</key>
-				<string>$(LOCAL_LIBRARY_DIR)/Frameworks</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-				<key>DYLIB_COMPATIBILITY_VERSION</key>
-				<string>1</string>
-				<key>DYLIB_CURRENT_VERSION</key>
-				<string>1</string>
-				<key>DYLIB_INSTALL_NAME_BASE</key>
-				<string>@rpath</string>
-				<key>DEFINES_MODULE</key>
-				<string>YES</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/PrefixHeader.pch</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
+				<string>Mac Developer</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array/>
@@ -67,7 +55,7 @@
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
+				<string>Mac Developer</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
@@ -86,18 +74,25 @@ resource_path=&quot;${SRCROOT}/Resources&quot;
 target_app_name=&quot;${TARGET_NAME}.app&quot;
 sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
 framework_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
+product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/${TARGET_NAME}&quot;
+product_frameworks_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/Frameworks&quot;
+pruduct_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
-rm -rf &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-cp -rf &quot;${resource_path}/${target_app_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-cp -rf &quot;${resource_path}/${target_exe_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/${TARGET_NAME}&quot;
-if [[ ! -d &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/Frameworks&quot; ]]; then
-    mkdir &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/Frameworks&quot;
+rm -rf &quot;${pruduct_app_path}&quot;
+cp -rf &quot;${resource_app_path}&quot; &quot;${pruduct_app_path}&quot;
+cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
+
+if [[ ! -d &quot;${product_frameworks_path}&quot; ]]; then
+    mkdir &quot;${product_frameworks_path}&quot;
 fi
-cp -rf &quot;${framework_path}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/Frameworks&quot;
 
-/opt/EasyDev/bin/optool install -p &quot;@loader_path/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/${TARGET_NAME}&quot;
+cp -rf &quot;${framework_path}&quot; &quot;${product_frameworks_path}&quot;
 
-chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #注意，这一步必须
+/opt/EasyDev/bin/optool install -p &quot;@loader_path/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${product_exe_path}&quot;
+
+chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
 </string>
 				</dict>
 			</array>
@@ -142,12 +137,22 @@ chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #�
 	<array>
 		<string>___PACKAGENAME___.m</string>
 		<string>PrefixHeader.pch</string>
-		<string>Info.plist</string>
 		<string>../Resources/___VARIABLE_TargetAppName____x86_64</string>
 		<string>../Resources/___VARIABLE_TargetAppName___.app</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
+		<key>___TARGETNAME:c99ExtIdentifier___.h</key>
+		<dict>
+			<key>TargetIdentifiers</key>
+			<array>
+				<string>plugin</string>
+			</array>
+			<key>BuildAttributes</key>
+			<array>
+				<string>Public</string>
+			</array>
+		</dict>
 		<key>___PACKAGENAME___.m</key>
 		<dict>
 			<key>Path</key>
@@ -161,15 +166,6 @@ chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #�
 			</array>
 			<key>Path</key>
 			<string>PrefixHeader.pch</string>
-		</dict>
-		<key>Info.plist</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
-			<key>Path</key>
-			<string>Info.plist</string>
 		</dict>
 		<key>../Resources/___VARIABLE_TargetAppName____x86_64</key>
 		<dict>
