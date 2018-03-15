@@ -6,8 +6,4 @@
 //  Copyright (c) ___YEAR___ ___ORGANIZATIONNAME___. All rights reserved.
 //
 
-#import "___FILEBASENAME___.h"
-
-static void __attribute__((constructor)) initialize(void) {
-    NSLog(@"++++++++ ___FILEBASENAME___ loaded ++++++++");
-}
+#import <Foundation/Foundation.h>

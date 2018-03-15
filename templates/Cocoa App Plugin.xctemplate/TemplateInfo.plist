@@ -16,13 +16,14 @@
 	</array>
 	<key>Ancestors</key>
 	<array>
-		<string>com.apple.dt.unit.cocoaFramework</string>
+		<string>com.apple.dt.unit.base</string>
+		<string>com.apple.dt.unit.osxBase</string>
 	</array>
 	<key>Targets</key>
 	<array>
 		<dict>
 			<key>ProductType</key>
-			<string>com.apple.product-type.framework</string>
+			<string>com.apple.product-type.library.dynamic</string>
 			<key>TargetIdentifier</key>
 			<string>plugin</string>
 			<key>SharedSettings</key>
@@ -30,7 +31,7 @@
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
-				<string>___PACKAGENAME___/PrefixHeader.pch</string>
+				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>Mac Developer</string>
 			</dict>
@@ -73,27 +74,20 @@ target_exe_name=&quot;${TARGET_NAME}_x86_64&quot;
 resource_path=&quot;${SRCROOT}/Resources&quot;
 target_app_name=&quot;${TARGET_NAME}.app&quot;
 sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
-framework_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+dylib_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.dylib&quot;
 resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
 product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/${TARGET_NAME}&quot;
-product_frameworks_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/Frameworks&quot;
-pruduct_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
 rm -rf &quot;${pruduct_app_path}&quot;
-cp -rf &quot;${resource_app_path}&quot; &quot;${pruduct_app_path}&quot;
+cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
+cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}/Contents/MacOS&quot;
 
-if [[ ! -d &quot;${product_frameworks_path}&quot; ]]; then
-    mkdir &quot;${product_frameworks_path}&quot;
-fi
+/opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
-cp -rf &quot;${framework_path}&quot; &quot;${product_frameworks_path}&quot;
-
-/opt/EasyDev/bin/optool install -p &quot;@loader_path/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${product_exe_path}&quot;
-
-chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
-</string>
+chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须</string>
 				</dict>
 			</array>
 			<key>Dependencies</key>
@@ -135,49 +129,66 @@ chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
 	</array>
 	<key>Nodes</key>
 	<array>
-		<string>___PACKAGENAME___.m</string>
-		<string>PrefixHeader.pch</string>
-		<string>../Resources/___VARIABLE_TargetAppName____x86_64</string>
-		<string>../Resources/___VARIABLE_TargetAppName___.app</string>
+		<string>Info.plist</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>../Resources/readme.txt</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
-		<key>___TARGETNAME:c99ExtIdentifier___.h</key>
-		<dict>
-			<key>TargetIdentifiers</key>
-			<array>
-				<string>plugin</string>
-			</array>
-			<key>BuildAttributes</key>
-			<array>
-				<string>Public</string>
-			</array>
-		</dict>
-		<key>___PACKAGENAME___.m</key>
+		<key>Info.plist</key>
 		<dict>
 			<key>Path</key>
-			<string>___PACKAGENAME___.m</string>
-		</dict>
-		<key>PrefixHeader.pch</key>
-		<dict>
+			<string>Info.plist</string>
 			<key>Group</key>
 			<array>
 				<string>Supporting Files</string>
 			</array>
-			<key>Path</key>
-			<string>PrefixHeader.pch</string>
 		</dict>
-		<key>../Resources/___VARIABLE_TargetAppName____x86_64</key>
+		<key>*:*:importFoundation</key>
+		<string>#import &lt;Foundation/Foundation.h&gt;
+</string>
+		<key>___PACKAGENAME___-Prefix.pch:objC</key>
 		<dict>
 			<key>Beginning</key>
-			<string>This is a x86 64 bin file</string>
-			<key>Group</key>
-			<array>
-				<string>Resources</string>
-			</array>
+			<string>#ifdef __OBJC__</string>
+			<key>End</key>
+			<string>#endif</string>
+			<key>Indent</key>
+			<integer>1</integer>
 		</dict>
-		<key>../Resources/___VARIABLE_TargetAppName___.app</key>
+		<key>___PACKAGENAME___-Prefix.pch</key>
 		<dict>
+			<key>Beginning</key>
+			<string>//
+// Prefix header for all source files of the &apos;___PACKAGENAME___&apos; target in the &apos;___PACKAGENAME___&apos; project
+//
+</string>
+			<key>Group</key>
+			<string>Supporting Files</string>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
+		<key>___PACKAGENAMEASIDENTIFIER___.h</key>
+		<dict>
+			<key>Path</key>
+			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+		</dict>
+		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
+		<dict>
+			<key>Path</key>
+			<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+		</dict>
+		<key>../Resources/readme.txt</key>
+		<dict>
+			<key>Beginning</key>
+			<string>此文件夹内存放需要使用的资源文件，请按照以下结构存放，如有资源名字调整，请到编译脚本里修改相关脚本代码。
+
+├── ___VARIABLE_TargetAppName___.app 	被调试的目标app
+├── ___VARIABLE_TargetAppName____x86_64	目标64位二进制，强烈建议恢复符号
+└── 其他文件
+└── ......</string>
 			<key>Group</key>
 			<array>
 				<string>Resources</string>
