@@ -76,8 +76,16 @@
 			<string>plugin</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>INSTALL_PATH</key>
-				<string>$(LOCAL_LIBRARY_DIR)/Frameworks</string>
+				<key>EasyDevPath</key>
+				<string>/opt/EasyDev</string>
+				<key>EasyDevTheosPath</key>
+				<string>/opt/theos</string>
+				<key>LIBRARY_SEARCH_PATHS</key>
+				<string>$(inherited) $(EasyDevPath)/Frameworks $(EasyDevTheosPath)/vendor/lib/**</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<string>$(inherited) $(EasyDevPath)/Frameworks/** $(EasyDevPath)/Librarys/** $(EasyDevTheosPath)/vendor/lib</string>
+				<key>HEADER_SEARCH_PATHS</key>
+				<string>$(inherited) $(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
 				<key>DYLIB_COMPATIBILITY_VERSION</key>
@@ -97,6 +105,11 @@
 			</dict>
 			<key>BuildPhases</key>
 			<array/>
+			<key>Frameworks</key>
+			<array>
+				<string>Foundation</string>
+				<string>UIKit</string>
+			</array>
 		</dict>
 		<dict>
 			<key>Name</key>
@@ -131,9 +144,9 @@
 					<string>#!/bin/sh
 
 if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
-target_exe_name=&quot;WeChat_armv7&quot;
+target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
 elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_64&quot; ];then
-target_exe_name=&quot;WeChat_arm64&quot;
+target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
 else
 echo &quot;错误的配置&quot;
 exit;
@@ -142,19 +155,26 @@ fi
 resource_path=&quot;${SRCROOT}/Resources&quot;
 target_app_name=&quot;${TARGET_NAME}.app&quot;
 sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
-framewrok_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+framework_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
+product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
+product_frameworks_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
+pruduct_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
-rm -rf &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-cp -rf &quot;${resource_path}/${target_app_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-cp -rf &quot;${resource_path}/${target_exe_name}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
-if [[ ! -d &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot; ]]; then
-    mkdir &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
+rm -rf &quot;${pruduct_app_path}&quot;
+cp -rf &quot;${resource_app_path}&quot; &quot;${pruduct_app_path}&quot;
+cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
+
+if [[ ! -d &quot;${product_frameworks_path}&quot; ]]; then
+    mkdir &quot;${product_frameworks_path}&quot;
 fi
-cp -rf &quot;${framewrok_path}&quot; &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
 
-/opt/EasyDev/bin/optool install -p &quot;@rpath/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
+cp -rf &quot;${framework_path}&quot; &quot;${product_frameworks_path}&quot;
 
-chmod 777 &quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot; #注意，这一步必须
+/opt/EasyDev/bin/optool install -p &quot;@rpath/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${product_exe_path}&quot;
+
+chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
 </string>
 				</dict>
 			</array>
