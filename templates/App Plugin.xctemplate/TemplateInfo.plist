@@ -16,12 +16,14 @@
 	</array>
 	<key>Ancestors</key>
 	<array>
-		<string>com.apple.dt.unit.cocoaTouchFramework</string>
+		<string>net.ymlab.easyDev.base</string>
 	</array>
 	<key>Project</key>
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>CODE_SIGN_IDENTITY</key>
+			<string>iPhone Developer</string>
 			<key>ENABLE_BITCODE</key>
 			<string>NO</string>
 			<key>TARGETED_DEVICE_FAMILY</key>
@@ -70,45 +72,79 @@
 	<key>Targets</key>
 	<array>
 		<dict>
-			<key>ProductType</key>
-			<string>com.apple.product-type.framework</string>
 			<key>TargetIdentifier</key>
 			<string>plugin</string>
+			<key>ProductType</key>
+			<string>com.apple.product-type.library.dynamic</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>EasyDevPath</key>
-				<string>/opt/EasyDev</string>
-				<key>EasyDevTheosPath</key>
-				<string>/opt/theos</string>
-				<key>LIBRARY_SEARCH_PATHS</key>
-				<string>$(inherited) $(EasyDevPath)/Frameworks $(EasyDevTheosPath)/vendor/lib/**</string>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<string>$(inherited) $(EasyDevPath)/Frameworks/** $(EasyDevPath)/Librarys/** $(EasyDevTheosPath)/vendor/lib</string>
 				<key>HEADER_SEARCH_PATHS</key>
-				<string>$(inherited) $(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-				<key>DYLIB_COMPATIBILITY_VERSION</key>
-				<string>1</string>
-				<key>DYLIB_CURRENT_VERSION</key>
-				<string>1</string>
-				<key>DYLIB_INSTALL_NAME_BASE</key>
-				<string>@rpath</string>
-				<key>DEFINES_MODULE</key>
-				<string>YES</string>
+				<string>$(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
-				<string>___PACKAGENAME___/PrefixHeader.pch</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
+				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
+				<key>INSTALL_PATH</key>
+				<string>/Library/MobileSubstrate/DynamicLibraries</string>
+				<key>DYLIB_CURRENT_VERSION</key>
+				<string>1</string>
+				<key>DYLIB_COMPATIBILITY_VERSION</key>
+				<string>1</string>
+				<key>EasyDevInstallOnAnyBuild</key>
+				<string>0</string>
 			</dict>
 			<key>BuildPhases</key>
-			<array/>
+			<array>
+				<dict>
+					<key>Class</key>
+					<string>Sources</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Frameworks</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Headers</string>
+				</dict>
+				<dict>
+					<key>ShellScript</key>
+					<string>#!/bin/sh
+
+# rm -rf &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/*&quot;
+# cp -rf &quot;${BUILD_DIR}/${CONFIGURATION}-iphoneos/PalmRiskSvr&quot; &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/&quot;
+
+# 自动更新deb包版本号
+echo $CONFIGURATION
+if [ &quot;Release&quot; == &quot;${CONFIGURATION}&quot; ]
+then
+packInfoPlist=&quot;${PROJECT_DIR}/${TARGET_NAME}/PackageVersion.plist&quot;
+buildNumber=$(/usr/libexec/PlistBuddy -c &quot;Print PackageRevision&quot; &quot;${packInfoPlist}&quot;)
+buildNumber=$(($buildNumber + 1))
+/usr/libexec/PlistBuddy -c &quot;Set :PackageRevision $buildNumber&quot; &quot;${packInfoPlist}&quot;
+echo &quot;build number increase&quot;
+fi</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+				</dict>
+				<dict>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/bin/md --xcbp</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+				</dict>
+			</array>
 			<key>Frameworks</key>
 			<array>
 				<string>Foundation</string>
-				<string>UIKit</string>
 			</array>
 		</dict>
 		<dict>
@@ -143,6 +179,32 @@
 					<key>ShellScript</key>
 					<string>#!/bin/sh
 
+function doCodeSign() {
+    cslist=$(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;)
+    SAVEIFS=&quot;$IFS&quot;
+    IFS=$&apos;\n&apos;
+    for cs in $cslist; do
+    rm -rf &quot;${cs}&quot;
+    done
+    
+    # resign dylib
+    IFS=&quot;$SAVEIFS&quot;
+    dylibs=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;)
+    # 解决路径粘连的问题
+    IFS=$&apos;\n&apos;
+    for dylib in $dylibs; do
+    /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
+    done
+    
+    # resign frameworks
+    IFS=&quot;$SAVEIFS&quot;
+    frameworks=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;)
+    IFS=$&apos;\n&apos;
+    for framework in $frameworks; do
+    /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
+    done
+}
+
 if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
 target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
 elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_64&quot; ];then
@@ -155,27 +217,23 @@ fi
 resource_path=&quot;${SRCROOT}/Resources&quot;
 target_app_name=&quot;${TARGET_NAME}.app&quot;
 sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
-framework_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.framework&quot;
+dylib_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.dylib&quot;
 resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
 product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
-product_frameworks_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
-pruduct_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
+product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
-rm -rf &quot;${pruduct_app_path}&quot;
-cp -rf &quot;${resource_app_path}&quot; &quot;${pruduct_app_path}&quot;
+rm -rf &quot;${product_app_path}&quot;
+cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
+cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
 
-if [[ ! -d &quot;${product_frameworks_path}&quot; ]]; then
-    mkdir &quot;${product_frameworks_path}&quot;
-fi
-
-cp -rf &quot;${framework_path}&quot; &quot;${product_frameworks_path}&quot;
-
-/opt/EasyDev/bin/optool install -p &quot;@rpath/${PROJECT_NAME}.framework/${PROJECT_NAME}&quot; -t &quot;${product_exe_path}&quot;
+/opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
 chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
-</string>
+
+# 只需要签名动态库就行，app签名xcode会自己处理
+doCodeSign &quot;${product_app_path}&quot; &quot;${cert_name}&quot;</string>
 				</dict>
 			</array>
 			<key>Dependencies</key>
@@ -217,61 +275,69 @@ chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
 	</array>
 	<key>Nodes</key>
 	<array>
-		<string>___PACKAGENAME___.m</string>
-		<string>PrefixHeader.pch</string>
 		<string>Info.plist</string>
-		<string>../Resources/___VARIABLE_TargetAppName____armv7</string>
-		<string>../Resources/___VARIABLE_TargetAppName____arm64</string>
-		<string>../Resources/___VARIABLE_TargetAppName___.app</string>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>Package/DEBIAN/preinst</string>
+		<string>Package/DEBIAN/postinst</string>
+		<string>Package/DEBIAN/postrm</string>
+		<string>Package/DEBIAN/prerm</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+		<string>Package/DEBIAN/control:debianControl:section</string>
+		<string>Package/DEBIAN/control:debianControl:depends</string>
+		<string>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</string>
+		<string>../Resources/readme.txt</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
-		<key>___PACKAGENAME___.m</key>
+		<key>___PACKAGENAMEASIDENTIFIER___.h</key>
 		<dict>
 			<key>Path</key>
-			<string>___PACKAGENAME___.m</string>
+			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
 		</dict>
-		<key>PrefixHeader.pch</key>
+		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
+		<dict>
+			<key>Path</key>
+			<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+		</dict>
+		<key>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</key>
 		<dict>
 			<key>Group</key>
 			<array>
-				<string>Supporting Files</string>
+				<string>Package</string>
+				<string>Library</string>
+				<string>MobileSubstrate</string>
+				<string>DynamicLibraries</string>
 			</array>
 			<key>Path</key>
-			<string>PrefixHeader.pch</string>
+			<string>___PACKAGENAMEASIDENTIFIER___.plist</string>
+		</dict>
+		<key>*:debianControl:section</key>
+		<string>Section: Tweaks</string>
+		<key>*:debianControl:depends</key>
+		<string>Depends: firmware (&gt;= 7.0), mobilesubstrate</string>
+		<key>../Resources/readme.txt</key>
+		<dict>
+			<key>Beginning</key>
+			<string>此文件夹内存放需要使用的资源文件，请按照以下结构存放，如有资源名字调整，请到编译脚本里修改相关脚本代码。
+
+├── ___VARIABLE_TargetAppName___.app 	被调试的目标app
+├── ___VARIABLE_TargetAppName____arm64	目标64位二进制，强烈建议恢复符号
+└── ___VARIABLE_TargetAppName____armv7	目标32位二进制，强烈建议恢复符号
+└── 其他文件
+└── ......</string>
+			<key>Group</key>
+			<array>
+				<string>Resources</string>
+			</array>
 		</dict>
 		<key>Info.plist</key>
 		<dict>
+			<key>Path</key>
+			<string>Info.plist</string>
 			<key>Group</key>
 			<array>
 				<string>Supporting Files</string>
-			</array>
-			<key>Path</key>
-			<string>Info.plist</string>
-		</dict>
-		<key>../Resources/___VARIABLE_TargetAppName____armv7</key>
-		<dict>
-			<key>Beginning</key>
-			<string>This is a armv7 bin file</string>
-			<key>Group</key>
-			<array>
-				<string>Resources</string>
-			</array>
-		</dict>
-		<key>../Resources/___VARIABLE_TargetAppName____arm64</key>
-		<dict>
-			<key>Beginning</key>
-			<string>This is a arm64 bin file</string>
-			<key>Group</key>
-			<array>
-				<string>Resources</string>
-			</array>
-		</dict>
-		<key>../Resources/___VARIABLE_TargetAppName___.app</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>Resources</string>
 			</array>
 		</dict>
 	</dict>

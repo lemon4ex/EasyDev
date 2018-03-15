@@ -21,6 +21,8 @@
 			<string>com.apple.product-type.library.dynamic</string>
 			<key>SharedSettings</key>
 			<dict>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>iPhone Developer</string>
 				<key>HEADER_SEARCH_PATHS</key>
 				<string>$(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
