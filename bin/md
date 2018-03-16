@@ -415,7 +415,6 @@ function setControlFileVersionFieldUsingVersionPList() # args: controlFile, plis
 	
 	# read plist to get version #
 	
-	echo ------------------------++++++++++++++++++-----------------------
 	versionReadFromPList=`getVersionFromVersionPList "$plistPath"`
 	
 	[[ $versionReadFromPList != "" ]] || \
@@ -476,8 +475,6 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 	changeMode 0755 "$packageDir/DEBIAN/postrm"
 	
 	# set control file version field #
-	
-	echo ------------------------"$versionPList"++++++++++++++++++-----------------------
 
 	[[ "$versionPList" == "" ]] || \
 		setControlFileVersionFieldUsingVersionPList "$packageDir/DEBIAN/control" "$versionPList"
@@ -954,10 +951,6 @@ function xcodeBuildPhase() # no args
 
 		[[ "$EasyDevUsePackageVersionPList" != "YES" ]] || \
 			versionPListPath="$packageVersionPListPath"	
-
-		echo ++++++++++++++++++$EasyDevUsePackageVersionPList-----------++++++++++++++++++-----------------------
-
-
 
 		buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
 		
