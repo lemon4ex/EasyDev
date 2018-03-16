@@ -233,7 +233,7 @@ cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
 chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
 
 # 只需要签名动态库就行，app签名xcode会自己处理
-doCodeSign &quot;${product_app_path}&quot; &quot;${cert_name}&quot;</string>
+doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;</string>
 				</dict>
 			</array>
 			<key>Dependencies</key>
