@@ -19,7 +19,9 @@
 	<key>Nodes</key>
 	<array>
 		<string>Package/DEBIAN/control</string>
+		<string>Package/DEBIAN/control.txt</string>
 		<string>Package/DEBIAN/control:debianControl</string>
+		<string>PackageVersion.plist</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -106,6 +108,30 @@ Icon:
 # This script is executed AFTER the Debian package is REMOVED
 # For information about this file, see http://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html#s-maintscripts.
 </string>
+		</dict>
+		<key>PackageVersion.plist</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Supporting Files</string>
+			</array>
+			<key>Beginning</key>
+			<string>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+	&lt;key&gt;Major&lt;/key&gt;
+	&lt;string&gt;1&lt;/string&gt;
+	&lt;key&gt;Minor&lt;/key&gt;
+	&lt;string&gt;0&lt;/string&gt;
+	&lt;key&gt;BugFix&lt;/key&gt;
+	&lt;string&gt;&lt;/string&gt;
+	&lt;key&gt;Stage&lt;/key&gt;
+	&lt;string&gt;&lt;/string&gt;
+	&lt;key&gt;PackageRevision&lt;/key&gt;
+	&lt;string&gt;1&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</string>
 		</dict>
 	</dict>
 </dict>

@@ -38,6 +38,8 @@
 				<string>NO</string>
 				<key>EasyDevInstallOnAnyBuild</key>
 				<string>YES</string>
+				<key>EasyDevUsePackageVersionPList</key>
+				<string>YES</string>
 			</dict>
 		</dict>
 	</array>

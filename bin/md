@@ -375,12 +375,71 @@ function getPackageFileNameUsingControlFile() # args: controlFile
 	echo "${pkgId}_${pkgVer}_${pkgArch}"
 }
 
+
+function getVersionFromVersionPList() # args: plistPath
+{
+	$setCmd
+	
+	local plistPath="$1"
+	local version
+	local major
+	local minor
+	local bugFix
+	local stage
+	local pkgRev
+	
+	major=`readDefaultsValue "$plistPath" "Major"`
+	minor=`readDefaultsValue "$plistPath" "Minor"`
+	bugFix=`readDefaultsValue "$plistPath" "BugFix"`
+	stage=`readDefaultsValue "$plistPath" "Stage"`
+	pkgRev=`readDefaultsValue "$plistPath" "PackageRevision"`
+
+	version="$major.$minor"
+		
+	[[ "$bugFix" == "" ]] || version+=".$bugFix"
+	[[ "$stage" == "" ]] || version+="$stage"
+	[[ "$pkgRev" == "" ]] || version+="-$pkgRev"
+		
+	# return #
+	echo "$version"
+}
+
+function setControlFileVersionFieldUsingVersionPList() # args: controlFile, plistPath
+{
+	local controlFile="$1"
+	local plistPath="$2"
+	local versionReadFromPList
+	
+	requireFile "$controlFile" false
+	requireFile "$plistPath" false
+	
+	# read plist to get version #
+	
+	echo ------------------------++++++++++++++++++-----------------------
+	versionReadFromPList=`getVersionFromVersionPList "$plistPath"`
+	
+	[[ $versionReadFromPList != "" ]] || \
+		panic 1 "Failed to read version from $plistPath"
+
+	# write version to control file	#
+
+	echo -n "Setting control file $controlFile Version field to $versionReadFromPList using $plistPath... "
+
+	sed -i "" "s/Version:.*/Version: $versionReadFromPList/g" "$controlFile" || \
+		panic $? "Failed."
+
+	# success #
+	echo "Done."
+}
+
 #打包
-function buildPackage() # args: packageDir, outputDir [, useZOption]
+function buildPackage() # args: packageDir, outputDir, versionPList [, useZOption]
 {
 	local packageDir="$1"
 	local outputDir="$2"
-	local useZOption="$3"
+	local versionPList="$3"
+	local useZOption="$4"
+	local subFileControlTxtToRemove="$packageDir/DEBIAN/control.txt"
 	local subFilesToRemove=(".DS_Store" "0xdeadfa11")
 	local packageFileName
 	local packageName
@@ -389,16 +448,25 @@ function buildPackage() # args: packageDir, outputDir [, useZOption]
 	echo "Preparing to build package..."
 	
 	# verify arguments #
+	
 	requireDir "$packageDir"
 
 	requireDir "$outputDir" true
 
+	[[ "$versionPList" == "" ]] || \
+		requireFile "$versionPList" false
+
+	# cleanup #
+
+	[[ ! -f "$subFileControlTxtToRemove" ]] || \
+		rm -f "$subFileControlTxtToRemove" || \
+			panic $? "Failed to remove file $subFileControlTxtToRemove"
+	
 	for f in "${subFilesToRemove[@]}"; do
 		find "$packageDir" -type f -name "$f" -exec rm -f '{}' \; || \
 			panic $? "Failed to remove file $f"
 	done
 
-	#循环去除掉文件的@属性
 	xattr -crs "$packageDir" || true # forget abou' it (does not work on 10.6)
 
 	changeMode 0644 "$packageDir/DEBIAN/control"
@@ -407,13 +475,23 @@ function buildPackage() # args: packageDir, outputDir [, useZOption]
 	changeMode 0755 "$packageDir/DEBIAN/prerm"
 	changeMode 0755 "$packageDir/DEBIAN/postrm"
 	
+	# set control file version field #
+	
+	echo ------------------------"$versionPList"++++++++++++++++++-----------------------
+
+	[[ "$versionPList" == "" ]] || \
+		setControlFileVersionFieldUsingVersionPList "$packageDir/DEBIAN/control" "$versionPList"
+
 	# determine package name #
+
 	packageName=`getPackageFileNameUsingControlFile "$packageDir/DEBIAN/control"`
 		
 	# create package #
+
 	createDebianPackage "$packageDir" "$packageName" "$outputDir"
 	
 	# create zip #
+	
 	if [[ $useZOption == "true" ]]; then
 
 		zipFileName="$outputDir/${packageName}.zip"
@@ -781,6 +859,8 @@ function xcodeBuildPhase() # no args
 	local packageDirectory="$PROJECT_DIR/$TARGET_NAME/Package"
 	#安装的目录
 	local packageInstallPath="$packageDirectory$INSTALL_PATH"
+	#打包版本文件
+	local packageVersionPListPath="$PROJECT_DIR/$TARGET_NAME/PackageVersion.plist"
 	#存放所有deb目录
 	local allPackagesDir="$PROJECT_DIR/Packages"
 	#编译产品输出目录
@@ -789,6 +869,7 @@ function xcodeBuildPhase() # no args
 	local latestBuildSymlink="$PROJECT_DIR/LatestBuild"
 	local stripBin
 	local stripOption
+	local versionPListPath
 	local packageFileName
 	
 	#目标文件路径
@@ -871,7 +952,14 @@ function xcodeBuildPhase() # no args
 		#拷贝目标文件到/Package/Library/MobileSubstrate/DynamicLibraries
 		copyFile "$packageInstallSource" "$packageInstallPath"
 
-		buildPackage "$packageDirectory" "$allPackagesDir" true
+		[[ "$EasyDevUsePackageVersionPList" != "YES" ]] || \
+			versionPListPath="$packageVersionPListPath"	
+
+		echo ++++++++++++++++++$EasyDevUsePackageVersionPList-----------++++++++++++++++++-----------------------
+
+
+
+		buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
 		
 		#profile或者用户设置了build安装
 		if [[ "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
