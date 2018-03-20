@@ -94,6 +94,7 @@ fi</string>
 	<key>Nodes</key>
 	<array>
 		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>Package/DEBIAN/control.txt</string>
 		<string>Package/DEBIAN/preinst</string>
 		<string>Package/DEBIAN/postinst</string>
 		<string>Package/DEBIAN/postrm</string>
@@ -105,6 +106,25 @@ fi</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
+		<key>Package/DEBIAN/control.txt</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Package</string>
+				<string>DEBIAN</string>
+			</array>
+			<key>Beginning</key>
+			<string>
+The control file in the same directory as this file is the Debian control file that is needed
+to build the project&apos;s Debian package that&apos;s used by APT repositories like Cydia.
+
+For more on...
+	Debian packages, see http://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html.
+	Debian control files, see http://www.debian.org/doc/debian-policy/ch-controlfields.html.
+	Cydia packages, see http://www.saurik.com/id/7.
+
+Note: This file (control.txt) was created only to provide an explaination about the Debian control file. This file can now be deleted.</string>
+		</dict>
 		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
 		<dict>
 			<key>Path</key>
