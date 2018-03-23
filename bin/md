@@ -905,7 +905,7 @@ function xcodeBuildPhase() # no args
 
 			echo "$stripBin"
 
-			[[ "$STRIP_STYLE" != "debugging" ]] || stripOption="-S"
+			[[ "$STRIP_STYLE" != "debugging" ]] || stripOption="-r -u"
 
 			echo "Stripping $builtExecutable..."
 

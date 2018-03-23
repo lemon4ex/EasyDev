@@ -67,8 +67,6 @@
 			<string>gnu99</string>
 			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
 			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
-			<key>OTHER_CFLAGS</key>
-			<string>-DTHEOS_INSTANCE_NAME=&quot;\&quot;___PACKAGENAME___\&quot;&quot;</string>
 			<key>HEADER_SEARCH_PATHS</key>
 			<string>$(EasyDevTheosPath)/vendor/include/**</string>
 			<key>LIBRARY_SEARCH_PATHS</key>

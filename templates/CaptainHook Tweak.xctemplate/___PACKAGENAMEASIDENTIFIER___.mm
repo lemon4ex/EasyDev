@@ -6,10 +6,10 @@
 //  Copyright (c) ___YEAR___ ___ORGANIZATIONNAME___. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "___FILEBASENAMEASIDENTIFIER___.h"
 #import "CaptainHook/CaptainHook.h"
 
 CHConstructor // code block that runs immediately upon load
 {
-    
+    NSLog(@"++++++++ ___FILEBASENAMEASIDENTIFIER___ loaded ++++++++");
 }
