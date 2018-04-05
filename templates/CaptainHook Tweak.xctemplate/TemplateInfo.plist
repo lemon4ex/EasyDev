@@ -103,6 +103,7 @@ fi</string>
 		<string>Package/DEBIAN/postinst</string>
 		<string>Package/DEBIAN/postrm</string>
 		<string>Package/DEBIAN/prerm</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
 		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
 		<string>Package/DEBIAN/control:debianControl:section</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
@@ -128,6 +129,11 @@ For more on...
 	Cydia packages, see http://www.saurik.com/id/7.
 
 Note: This file (control.txt) was created only to provide an explaination about the Debian control file. This file can now be deleted.</string>
+		</dict>
+		<key>___PACKAGENAMEASIDENTIFIER___.h</key>
+		<dict>
+			<key>Path</key>
+			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
 		</dict>
 		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
 		<dict>

@@ -101,6 +101,10 @@
 			</dict>
 			<key>Release</key>
 			<dict>
+				<key>DEPLOYMENT_POSTPROCESSING</key>
+				<string>YES</string>
+				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
+				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
