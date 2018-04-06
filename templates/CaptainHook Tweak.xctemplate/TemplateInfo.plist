@@ -104,7 +104,7 @@ fi</string>
 		<string>Package/DEBIAN/postrm</string>
 		<string>Package/DEBIAN/prerm</string>
 		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.m</string>
 		<string>Package/DEBIAN/control:debianControl:section</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
 		<string>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</string>
@@ -135,10 +135,10 @@ Note: This file (control.txt) was created only to provide an explaination about 
 			<key>Path</key>
 			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
 		</dict>
-		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
+		<key>___PACKAGENAMEASIDENTIFIER___.m</key>
 		<dict>
 			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
+			<string>___PACKAGENAMEASIDENTIFIER___.m</string>
 		</dict>
 		<key>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</key>
 		<dict>
