@@ -24,7 +24,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 				<key>HEADER_SEARCH_PATHS</key>
-				<string>$(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
+				<string>$(inherited) $(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>

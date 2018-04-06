@@ -98,9 +98,13 @@
 				<string>NO</string>
 				<key>GCC_DYNAMIC_NO_PIC</key>
 				<string>NO</string>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>YES</string>
 			</dict>
 			<key>Release</key>
 			<dict>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>NO</string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
 				<string>YES</string>
 				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
