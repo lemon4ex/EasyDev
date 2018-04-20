@@ -7,7 +7,7 @@
 //
 
 #import "___FILEBASENAMEASIDENTIFIER___.h"
-#import "CaptainHook/CaptainHook.h"
+#import <CaptainHook/CaptainHook.h>
 
 CHConstructor // code block that runs immediately upon load
 {
