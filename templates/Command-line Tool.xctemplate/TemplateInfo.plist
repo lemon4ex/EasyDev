@@ -19,7 +19,7 @@
 		<dict>
 			<key>SharedSettings</key>
 			<dict>
-				<key>MonkeyDevkillProcessOnInstall</key>
+				<key>EasyDevkillProcessOnInstall</key>
 				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
