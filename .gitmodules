@@ -1,0 +1,3 @@
+[submodule "tools/frida-ios-dump"]
+	path = tools/frida-ios-dump
+	url = https://github.com/lemon4ex/frida-ios-dump.git
