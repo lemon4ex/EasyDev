@@ -292,8 +292,8 @@ doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
 		<string>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</string>
 		<string>../Resources/README.txt</string>
-		<string>.gitignore</string>
-		<string>README.md</string>
+		<string>../.gitignore</string>
+		<string>../README.md</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -398,7 +398,7 @@ Note: This file (control.txt) was created only to provide an explaination about 
 &lt;/dict&gt;
 &lt;/plist&gt;</string>
 		</dict>
-		<key>.gitignore</key>
+		<key>../.gitignore</key>
 		<dict>
 			<key>Group</key>
 			<array>
@@ -407,7 +407,7 @@ Note: This file (control.txt) was created only to provide an explaination about 
 			<key>Path</key>
 			<string>.gitignore</string>
 		</dict>
-		<key>README.md</key>
+		<key>../README.md</key>
 		<dict>
 			<key>Path</key>
 			<string>README.md</string>
