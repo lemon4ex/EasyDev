@@ -208,9 +208,9 @@ function doCodeSign() {
 }
 
 if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
-target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
-elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_64&quot; ];then
 target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
+elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ];then
+target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
 else
 echo &quot;错误的配置&quot;
 exit;
