@@ -1,3 +1,6 @@
 [submodule "tools/frida-ios-dump"]
 	path = tools/frida-ios-dump
 	url = https://github.com/lemon4ex/frida-ios-dump.git
+[submodule "tools/ios-cmake"]
+	path = tools/ios-cmake
+	url = https://github.com/leetal/ios-cmake.git

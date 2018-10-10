@@ -33,7 +33,7 @@ for filename in $1/*.h; do
   # replace "CDUnknownBlockType" with "id"
   # fix missing NSObject.h
 
-  $sed -i -e '/- (void).cxx_destruct;/d' -e "s/\bCDUnknownBlockType\b/id/g" \
+  $sed -i -e '/- (void).cxx_destruct;/d' -e "s/\bCDUnknownBlockType\b/id\/\*CDUnknownBlockType\*\//g" \
     -e "s/#import \"NSObject.h\"/#import <Foundation\/NSObject.h>/" $flag $filename
 
   # remove -Protocol suffix
