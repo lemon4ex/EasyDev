@@ -230,6 +230,9 @@ rm -rf &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
 cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
+# remove Plugin an Watch
+rm -rf &quot;$product_app_path/PlugIns&quot;
+rm -rf &quot;$product_app_path/Watch&quot;
 
 /opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
