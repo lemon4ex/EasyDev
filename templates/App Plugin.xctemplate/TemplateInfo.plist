@@ -234,6 +234,8 @@ cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
 rm -rf &quot;$product_app_path/PlugIns&quot;
 rm -rf &quot;$product_app_path/Watch&quot;
 
+/usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier ${PRODUCT_BUNDLE_IDENTIFIER}&quot; &quot;${product_app_path}/Info.plist&quot;
+
 /opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
 chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
