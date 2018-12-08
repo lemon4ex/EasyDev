@@ -13,6 +13,7 @@
 	<key>Ancestors</key>
 	<array>
 		<string>net.ymlab.easyDev.base</string>
+		<string>net.ymlab.easyDev.unitTests</string>
 	</array>
 	<key>Targets</key>
 	<array>
