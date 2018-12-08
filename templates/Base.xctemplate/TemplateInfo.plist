@@ -10,6 +10,7 @@
 	<array>
 		<string>com.apple.dt.unit.iosBase</string>
 		<string>net.ymlab.easyDev.debianPackage</string>
+		<string>net.ymlab.easyDev.preferenceLoader</string>
 	</array>
 	<key>Targets</key>
 	<array>

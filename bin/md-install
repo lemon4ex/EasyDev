@@ -297,8 +297,8 @@ function writeDictToSpecification(){ #args: filePath, content
 
 # start it
 # 创建/opt/EasyDev
-# mkdir -p "$EasyDevPath" || \
-	# panic $? "Failed to make directory: $EasyDevPath"
+mkdir -p "$EasyDevPath" || \
+	panic $? "Failed to make directory: $EasyDevPath"
 
 #下载一些基础文件和模板文件
 # downloadGithubTarball "https://codeload.github.com/AloneMonkey/EasyDev/tar.gz/master" "$EasyDevPath" "EasyDev base"
