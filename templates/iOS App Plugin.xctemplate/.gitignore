@@ -23,5 +23,6 @@ Build/
 build/
 Packages/
 Resources/
+!README.txt
 LatestBuild/
 Pods/
