@@ -22,7 +22,7 @@ product/
 Build/
 build/
 Packages/
-Resources/
-!README.txt
+Resources/*
+!Resources/README.txt
 LatestBuild/
 Pods/
