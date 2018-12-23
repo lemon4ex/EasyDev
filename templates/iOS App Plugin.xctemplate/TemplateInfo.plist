@@ -212,7 +212,7 @@ target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
 elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ];then
 target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
 else
-echo &quot;错误的配置&quot;
+echo &quot;错误的工程配置&quot;
 exit;
 fi
 
@@ -225,11 +225,11 @@ product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&q
 product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
-#cp -rf &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${resource_app_path}/embedded.mobileprovision&quot;
 rm -rf &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
 cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
+
 # remove Plugin an Watch
 rm -rf &quot;$product_app_path/PlugIns&quot;
 rm -rf &quot;$product_app_path/Watch&quot;
@@ -238,7 +238,8 @@ rm -rf &quot;$product_app_path/Watch&quot;
 
 /opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
-chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须
+# 注意，这一步必须
+chmod 777 &quot;${product_exe_path}&quot;
 
 # 只需要签名动态库就行，app签名xcode会自己处理
 doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;</string>
