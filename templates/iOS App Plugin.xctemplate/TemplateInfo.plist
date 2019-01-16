@@ -182,29 +182,29 @@ fi</string>
 					<string>#!/bin/sh
 
 function doCodeSign() {
-    cslist=$(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;)
-    SAVEIFS=&quot;$IFS&quot;
-    IFS=$&apos;\n&apos;
-    for cs in $cslist; do
-    rm -rf &quot;${cs}&quot;
-    done
-    
-    # resign dylib
-    IFS=&quot;$SAVEIFS&quot;
-    dylibs=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;)
-    # 解决路径粘连的问题
-    IFS=$&apos;\n&apos;
-    for dylib in $dylibs; do
-    /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
-    done
-    
-    # resign frameworks
-    IFS=&quot;$SAVEIFS&quot;
-    frameworks=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;)
-    IFS=$&apos;\n&apos;
-    for framework in $frameworks; do
-    /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
-    done
+cslist=$(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;)
+SAVEIFS=&quot;$IFS&quot;
+IFS=$&apos;\n&apos;
+for cs in $cslist; do
+rm -rf &quot;${cs}&quot;
+done
+
+# resign dylib
+IFS=&quot;$SAVEIFS&quot;
+dylibs=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;)
+# 解决路径粘连的问题
+IFS=$&apos;\n&apos;
+for dylib in $dylibs; do
+/usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
+done
+
+# resign frameworks
+IFS=&quot;$SAVEIFS&quot;
+frameworks=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;)
+IFS=$&apos;\n&apos;
+for framework in $frameworks; do
+/usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
+done
 }
 
 if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
@@ -225,17 +225,29 @@ product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&q
 product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
-# fix on xcode10, the embedded.mobileprovision missing problem
+# 修复xcode10下embedded.mobileprovision文件生成后又被删除的问题
 mv -f &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot;
-rm -rf &quot;${product_app_path}/*&quot;
-cp -rf &quot;${resource_app_path}/*&quot; &quot;${product_app_path}&quot;
+rm -rf &quot;${product_app_path}&quot;
+cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
 cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
 mv -f &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot; &quot;${product_app_path}/embedded.mobileprovision&quot;
 
-# remove Plugin an Watch
+# 删除 Plugin 和 Watch 文件夹，提高安装拷贝速度
 rm -rf &quot;$product_app_path/PlugIns&quot;
 rm -rf &quot;$product_app_path/Watch&quot;
+
+# 修复xcode10自动生成info.plist导致覆盖原应用info.plist文件的问题
+project_info_path=&quot;${SRCROOT}/${PROJECT_NAME}/Info.plist&quot;
+resource_info_path=&quot;${resource_app_path}/Info.plist&quot;
+if [ -f &quot;${project_info_path}&quot; ] &amp;&amp; [ -f &quot;${resource_info_path}&quot; ];then
+diff &quot;${project_info_path}&quot; &quot;${resource_info_path}&quot; &gt; /dev/null
+if [ $? != 0 ];then
+cp -rf &quot;${resource_info_path}&quot; &quot;${project_info_path}&quot;
+fi
+else
+echo &quot;${project_info_path} or ${resource_info_path} does not exist, please check filename.&quot;
+fi
 
 /usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier ${PRODUCT_BUNDLE_IDENTIFIER}&quot; &quot;${product_app_path}/Info.plist&quot;
 
@@ -245,7 +257,8 @@ rm -rf &quot;$product_app_path/Watch&quot;
 chmod 777 &quot;${product_exe_path}&quot;
 
 # 只需要签名动态库就行，app签名xcode会自己处理
-doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;</string>
+doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;
+</string>
 				</dict>
 			</array>
 			<key>Dependencies</key>
