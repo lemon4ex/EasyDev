@@ -225,10 +225,13 @@ product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&q
 product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
 
+# fix on xcode10, the embedded.mobileprovision missing problem
+mv -f &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot;
 rm -rf &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
 cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
+mv -f &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot; &quot;${product_app_path}/embedded.mobileprovision&quot;
 
 # remove Plugin an Watch
 rm -rf &quot;$product_app_path/PlugIns&quot;
