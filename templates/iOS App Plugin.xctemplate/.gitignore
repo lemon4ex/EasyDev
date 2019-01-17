@@ -25,4 +25,5 @@ Packages/
 Resources/*
 !Resources/README.txt
 LatestBuild/
+*/DynamicLibraries/*.dylib
 Pods/
