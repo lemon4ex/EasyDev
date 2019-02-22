@@ -41,7 +41,31 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/MonkeyDev/bin/md --xcbp</string>
+					<string>#!/bin/sh
+
+# rm -rf &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/*&quot;
+# cp -rf &quot;${BUILD_DIR}/${CONFIGURATION}-iphoneos/PalmRiskSvr&quot; &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/&quot;
+
+# 自动更新deb包版本号
+echo $CONFIGURATION
+if [ &quot;Release&quot; == &quot;${CONFIGURATION}&quot; ]
+then
+packInfoPlist=&quot;${PROJECT_DIR}/${TARGET_NAME}/PackageVersion.plist&quot;
+buildNumber=$(/usr/libexec/PlistBuddy -c &quot;Print PackageRevision&quot; &quot;${packInfoPlist}&quot;)
+buildNumber=$(($buildNumber + 1))
+/usr/libexec/PlistBuddy -c &quot;Set :PackageRevision $buildNumber&quot; &quot;${packInfoPlist}&quot;
+echo &quot;build number increase&quot;
+fi</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+				</dict>
+				<dict>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/bin/md --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
