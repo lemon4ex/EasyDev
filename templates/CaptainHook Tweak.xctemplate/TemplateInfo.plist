@@ -37,9 +37,9 @@
 				<key>DYLIB_COMPATIBILITY_VERSION</key>
 				<string>1</string>
 				<key>EasyDevInstallOnProfiling</key>
-				<string>0</string>
+				<string>NO</string>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<string>0</string>
+				<string>NO</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
