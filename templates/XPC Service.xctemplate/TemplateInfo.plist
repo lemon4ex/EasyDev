@@ -22,6 +22,12 @@
 			<string>com.apple.product-type.tool</string>
 			<key>SharedSettings</key>
 			<dict>
+				<key>EasyDevInstallOnAnyBuild</key>
+				<string>NO</string>
+				<key>EasyDevInstallOnProfiling</key>
+				<string>NO</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>iPhone Developer</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -68,8 +74,6 @@
 		<string>Package/DEBIAN/control:debianControl:depends</string>
 		<string>Package/Library/LaunchDaemons/___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___VARIABLE_productName:RFC1034Identifier___.plist</string>
 		<string>Package/Library/LaunchDaemons/___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___VARIABLE_productName:RFC1034Identifier___.plist:XPC</string>
-		<string>Package/DEBIAN/postinst</string>
-		<string>Package/DEBIAN/prerm</string>
 	</array>
 	<key>Definitions</key>
 	<dict>

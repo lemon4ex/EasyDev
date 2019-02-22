@@ -9,6 +9,33 @@
 	<key>Targets</key>
 	<array>
 		<dict>
+			<key>BuildPhases</key>
+			<array>
+				<dict>
+					<key>ShellScript</key>
+					<string>#!/bin/sh
+
+# rm -rf &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/*&quot;
+# cp -rf &quot;${BUILD_DIR}/${CONFIGURATION}-iphoneos/PalmRiskSvr&quot; &quot;${PROJECT_DIR}/${TARGET_NAME}/Package/usr/bin/&quot;
+
+# 自动更新deb包版本号
+echo $CONFIGURATION
+if [ &quot;Release&quot; == &quot;${CONFIGURATION}&quot; ]
+then
+packInfoPlist=&quot;${PROJECT_DIR}/${TARGET_NAME}/PackageVersion.plist&quot;
+buildNumber=$(/usr/libexec/PlistBuddy -c &quot;Print PackageRevision&quot; &quot;${packInfoPlist}&quot;)
+buildNumber=$(($buildNumber + 1))
+/usr/libexec/PlistBuddy -c &quot;Set :PackageRevision $buildNumber&quot; &quot;${packInfoPlist}&quot;
+echo &quot;build number increase&quot;
+fi</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+				</dict>
+			</array>
 			<key>SharedSettings</key>
 			<dict>
 				<key>EasyDevBuildPackageOnAnyBuild</key>
@@ -18,6 +45,10 @@
 	</array>
 	<key>Nodes</key>
 	<array>
+		<string>Package/DEBIAN/preinst</string>
+		<string>Package/DEBIAN/postinst</string>
+		<string>Package/DEBIAN/postrm</string>
+		<string>Package/DEBIAN/prerm</string>
 		<string>Package/DEBIAN/control</string>
 		<string>Package/DEBIAN/control.txt</string>
 		<string>Package/DEBIAN/control:debianControl</string>
@@ -25,6 +56,25 @@
 	</array>
 	<key>Definitions</key>
 	<dict>
+		<key>Package/DEBIAN/control.txt</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Package</string>
+				<string>DEBIAN</string>
+			</array>
+			<key>Beginning</key>
+			<string>
+The control file in the same directory as this file is the Debian control file that is needed
+to build the project&apos;s Debian package that&apos;s used by APT repositories like Cydia.
+
+For more on...
+	Debian packages, see http://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html.
+	Debian control files, see http://www.debian.org/doc/debian-policy/ch-controlfields.html.
+	Cydia packages, see http://www.saurik.com/id/7.
+
+Note: This file (control.txt) was created only to provide an explaination about the Debian control file. This file can now be deleted.</string>
+		</dict>
 		<key>Package/DEBIAN/control</key>
 		<dict>
 			<key>Group</key>
