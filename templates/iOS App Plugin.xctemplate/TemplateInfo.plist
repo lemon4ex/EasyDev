@@ -182,38 +182,38 @@ fi</string>
 					<string>#!/bin/sh
 
 function doCodeSign() {
-cslist=$(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;)
-SAVEIFS=&quot;$IFS&quot;
-IFS=$&apos;\n&apos;
-for cs in $cslist; do
-rm -rf &quot;${cs}&quot;
-done
+    cslist=$(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;)
+    SAVEIFS=&quot;$IFS&quot;
+    IFS=$&apos;\n&apos;
+    for cs in $cslist; do
+        rm -rf &quot;${cs}&quot;
+    done
 
-# resign dylib
-IFS=&quot;$SAVEIFS&quot;
-dylibs=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;)
-# 解决路径粘连的问题
-IFS=$&apos;\n&apos;
-for dylib in $dylibs; do
-/usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
-done
+    # resign dylib
+    IFS=&quot;$SAVEIFS&quot;
+    dylibs=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;)
+    # 解决路径粘连的问题
+    IFS=$&apos;\n&apos;
+    for dylib in $dylibs; do
+        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
+    done
 
-# resign frameworks
-IFS=&quot;$SAVEIFS&quot;
-frameworks=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;)
-IFS=$&apos;\n&apos;
-for framework in $frameworks; do
-/usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
-done
+    # resign frameworks
+    IFS=&quot;$SAVEIFS&quot;
+    frameworks=$(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;)
+    IFS=$&apos;\n&apos;
+    for framework in $frameworks; do
+        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
+    done
 }
 
-if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ];then
-target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
-elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ];then
-target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
+if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ]; then
+    target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
+elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ]; then
+    target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
 else
-echo &quot;错误的工程配置&quot;
-exit;
+    echo &quot;错误的工程配置&quot;
+    exit
 fi
 
 resource_path=&quot;${SRCROOT}/Resources&quot;
@@ -224,32 +224,50 @@ resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
 product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
 product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
 resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
+product_framework_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
+
+# xcode版本号导出变量，如下是xcode9.4.1
+# export XCODE_VERSION_ACTUAL=0941
+# export XCODE_VERSION_MAJOR=0900
+# export XCODE_VERSION_MINOR=0940
 
 # 修复xcode10下embedded.mobileprovision文件生成后又被删除的问题
-mv -f &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot;
+if [[ ${XCODE_VERSION_MAJOR} -gt 0900 ]]; then
+    mv -f &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot;
+fi
+
 rm -rf &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
 cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
 cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
-mv -f &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot; &quot;${product_app_path}/embedded.mobileprovision&quot;
+
+if [[ ${XCODE_VERSION_MAJOR} -gt 0900 ]]; then
+    mv -f &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot; &quot;${product_app_path}/embedded.mobileprovision&quot;
+fi
 
 # 删除 Plugin 和 Watch 文件夹，提高安装拷贝速度
 rm -rf &quot;$product_app_path/PlugIns&quot;
 rm -rf &quot;$product_app_path/Watch&quot;
 
 # 修复xcode10自动生成info.plist导致覆盖原应用info.plist文件的问题
-project_info_path=&quot;${SRCROOT}/${PROJECT_NAME}/Info.plist&quot;
-resource_info_path=&quot;${resource_app_path}/Info.plist&quot;
-if [ -f &quot;${project_info_path}&quot; ] &amp;&amp; [ -f &quot;${resource_info_path}&quot; ];then
-diff &quot;${project_info_path}&quot; &quot;${resource_info_path}&quot; &gt; /dev/null
-if [ $? != 0 ];then
-cp -rf &quot;${resource_info_path}&quot; &quot;${project_info_path}&quot;
-fi
-else
-echo &quot;${project_info_path} or ${resource_info_path} does not exist, please check filename.&quot;
+if [[ ${XCODE_VERSION_MAJOR} -gt 0900 ]]; then
+    project_info_path=&quot;${SRCROOT}/${PROJECT_NAME}/Info.plist&quot;
+    resource_info_path=&quot;${resource_app_path}/Info.plist&quot;
+    if [ -f &quot;${project_info_path}&quot; ] &amp;&amp; [ -f &quot;${resource_info_path}&quot; ]; then
+        diff &quot;${project_info_path}&quot; &quot;${resource_info_path}&quot; &gt;/dev/null
+        if [ $? != 0 ]; then
+            cp -rf &quot;${resource_info_path}&quot; &quot;${project_info_path}&quot;
+        fi
+    else
+        echo &quot;${project_info_path} or ${resource_info_path} does not exist, please check filename.&quot;
+    fi
 fi
 
 /usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier ${PRODUCT_BUNDLE_IDENTIFIER}&quot; &quot;${product_app_path}/Info.plist&quot;
+
+# 加入Reveal库
+# cp -rf &quot;${EasyDevPath}/frameworks/RevealServer.framework&quot; &quot;${product_framework_path}/RevealServer.framework&quot;
+# /opt/EasyDev/bin/optool install -p &quot;@rpath/RevealServer.framework/RevealServer&quot; -t &quot;${product_exe_path}&quot;
 
 /opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
 
