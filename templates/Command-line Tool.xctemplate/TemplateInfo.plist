@@ -20,6 +20,14 @@
 		<dict>
 			<key>SharedSettings</key>
 			<dict>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>EasyDevInstallOnAnyBuild</key>
+				<string>NO</string>
+				<key>EasyDevInstallOnProfiling</key>
+				<string>NO</string>
 				<key>EasyDevkillProcessOnInstall</key>
 				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
@@ -41,7 +49,7 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/MonkeyDev/bin/md --xcbp</string>
+					<string>/opt/EasyDev/bin/md --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
@@ -323,12 +331,23 @@ printf(&quot;Hello, World!\n&quot;);
 	</array>
 	<key>Nodes</key>
 	<array>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
 		<string>Package/DEBIAN/control:debianControl:section</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
 		<string>Package/usr/bin/0xdeadfa11</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
+		<key>Package/DEBIAN/postinst</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>Package</string>
+				<string>DEBIAN</string>
+			</array>
+			<key>Path</key>
+			<string>postinst</string>
+		</dict>
 		<key>Package/usr/bin/0xdeadfa11</key>
 		<dict>
 			<key>Group</key>
@@ -360,9 +379,6 @@ Why 0xdeadfa11? See http://developer.apple.com/library/ios/#technotes/tn2151/_in
 			<key>Indent</key>
 			<integer>1</integer>
 		</dict>
-		<key>*:*:importFoundation</key>
-		<string>#import &lt;Foundation/Foundation.h&gt;
-</string>
 	</dict>
 </dict>
 </plist>
