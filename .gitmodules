@@ -4,3 +4,9 @@
 [submodule "tools/ios-cmake"]
 	path = tools/ios-cmake
 	url = https://github.com/leetal/ios-cmake.git
+[submodule "tools/restore-symbol"]
+	path = tools/restore-symbol
+	url = https://github.com/tobefuturer/restore-symbol.git
+[submodule "tools/PPiOS-Rename"]
+	path = tools/PPiOS-Rename
+	url = https://github.com/preemptive/PPiOS-Rename.git
