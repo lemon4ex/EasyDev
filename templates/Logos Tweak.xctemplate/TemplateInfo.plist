@@ -29,7 +29,7 @@
 				<key>HEADER_SEARCH_PATHS</key>
 				<string>$(inherited) $(EasyDevTheosPath)/vendor/include</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>INSTALL_PATH</key>
@@ -39,15 +39,15 @@
 				<key>DYLIB_COMPATIBILITY_VERSION</key>
 				<string>1</string>
 				<key>EasyDevInstallOnProfiling</key>
-				<string>NO</string>
+				<false/>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<string>NO</string>
+				<false/>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/md --xcbp-logos</string>
+					<string>/opt/EasyDev/bin/ed --xcbp-logos</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>

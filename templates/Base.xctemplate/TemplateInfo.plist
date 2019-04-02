@@ -20,11 +20,11 @@
 			<key>SharedSettings</key>
 			<dict>
 				<key>ENABLE_BITCODE</key>
-				<string>NO</string>
+				<false/>
 				<key>EasyDevClearUiCacheOnInstall</key>
-				<string>NO</string>
-				<key>EasyDevkillProcessOnInstall</key>
-				<string>SpringBoard</string>
+				<false/>
+				<key>EasyDevKillProcessOnInstall</key>
+				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 				<key>PRODUCT_NAME</key>
@@ -34,13 +34,11 @@
 				<key>EasyDevDevicePort</key>
 				<string></string>
 				<key>EasyDevInstallOnProfiling</key>
-				<string>YES</string>
-				<key>EasyDevCopyOnBuild</key>
-				<string>NO</string>
+				<false/>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<string>YES</string>
-				<key>EasyDevUsePackageVersionPList</key>
-				<string>YES</string>
+				<false/>
+				<key>EasyDevCopyExecutableOnAnyBuild</key>
+				<false/>
 			</dict>
 		</dict>
 	</array>

@@ -81,7 +81,7 @@
 				<key>HEADER_SEARCH_PATHS</key>
 				<string>$(inherited) $(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>INSTALL_PATH</key>
@@ -91,9 +91,9 @@
 				<key>DYLIB_COMPATIBILITY_VERSION</key>
 				<string>1</string>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<string>0</string>
+				<false/>
 				<key>EasyDevInstallOnProfiling</key>
-				<string>0</string>
+				<false/>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
@@ -111,7 +111,7 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/md --xcbp</string>
+					<string>/opt/EasyDev/bin/ed --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
@@ -139,9 +139,9 @@
 				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
 				<string>___VARIABLE_TargetAppBundleId___</string>
 				<key>DEFINES_MODULE</key>
-				<string>YES</string>
+				<true/>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 			</dict>

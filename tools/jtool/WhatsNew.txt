@@ -1,0 +1,676 @@
+If you're reading this, you might be interested in trying out the following new features. Comments are welcome (J@newosxbook.com), as are feature requests
+
+
+06/25/13:
+---------
+ --sig 
+ --ent
+
+06/29/13:
+---------
+ -S -v  - shows not only nm(1) style symbols, but the libraries they are taken from
+ dyldinfo's -opcodes is supported
+ Jtool now handles fat binaries on Linux just fine.
+
+07/05/13:
+---------
+
+ Jtool now supports dyld shared caches (try running against  /var/db/dyld/dyld_shared_cache_x86_64)
+ (Extraction still not there yet)
+
+07/09/13:
+---------
+
+  New option: --pages - to do as pagestuff(1) does (only better)
+
+07/12/13:
+---------
+	
+  Minor bugfixes (for 32-bit Intel), updated Linux (ELF) Binary
+ 
+
+07/18/13:
+---------
+
+IMPORTANT changes in JTool's disassembler:
+
+  1) JTool now dumps CFStrings! If you -d an address in _cfstring section, or disassemble, and a register is detected to point to a CFString, it will be resolved to its CFString value. REALLY useful for reverse engineering.
+
+  2) LC_FUNCTION_STARTS now processed during disassembly, so as to print function starting points. If the function addresses do not have a symbol associated with them (as, alas, is the case with most iOS binaries), jtool generates a func_xxxx name (similar to IDA). A future version will auto-symbolicate in a .dSYM file (once I figure out what the #$%#$% Mach-O Dwarf format is)
+
+  3) Last, but by far NOT least: JTool now correctly resolves stubs in disassembly! This will show external (dylib) function calls. This puts JTool on par with otool (grrrr) and IDA. In fact, seeing as JTool resolves PC relative and neither of the other two do, it might just come a bit ahead.
+
+07/19/13:
+---------
+
+Color was always the default, but because disassembly output is volumous, it was disabled when piping. Now, thanks to "less -R", you can also specify JCOLOR=1, to bring back color if whatever you pipe to can handle the escape sequences. You should still use less(1) rather than more(1), because it enables paging up. Less really is more :-)
+
+08/07/13: 
+---------
+
+Minor bug fixes. Improved ARM Assembly (still need STMFD/IA..)
+
+
+08/09/13:
+---------
+
+dyldinfo assimilation is one step closer: Jtool now supports -data_in_code - and also takes the DiC areas into account when disassembling (i.e. when using -d, you will automatically see DCD ..... ; DATA_IN_CODE for these areas). This also makes it rather useful when -d is piped to "grep DATA_IN_CODE".
+
+08/16/13:
+---------
+
+- The more esoteric LCs of UPWARD_DYLIB and SUB_FRAMEWORK/CLIENT/LIBRARY are now supported. This is useful for /usr/lib/system/*.dylib.
+- Fixed bug which prevented parsing of LINKEDIT in fat binaries. Now -v -S works everywhere
+- LINKEDIT exports now handled partially. More will come once I grapple with this terrible trie notation
+
+08/18/13:
+---------
+
+- x86_64 disassemble still not supported, but other dumping features (cstrings, cfstrings, etc) are. Also dump of strings now escapes \r \n, etc.
+ 
+- jtool -S output is now virtually identical to that of nm -p (using symbol table ordering). -v offers more options nm doesn't, such as seeing symbol offset and which library it is linked to. Using -S with -v also breaks compatibility with nm, as it now shows "R/r" on read only symbols, same as ELF's nm.
+
+- Hack for objc_msgsend to show arguments in disassembly. Useful for debugging objc binaries (such as iOS Apps). Still not where I want it to be, but constantly improving.
+
+12/26/13: (Wow, it's been a while..)
+---------
+
+  - More ARMv7 commands supported. Working on ARMv8 now
+  - CFStrings now printed
+  - Fixed LC_REEXPORT_DYLIB bug messing up jtool -S -v (finding which libraries export symbols)
+  - Added Indirect (re-exported), in honor of evasi0n7's brilliant exploit (Guys - you rock)
+
+01/19/13:
+---------
+
+  - Fixed LC_ROUTINES_64 bug
+  - (slightly) better ARM disassembly. Still working on ARM64
+
+01/22/13:
+---------
+
+  - Fixed nasty bug with wrong sym/section for FAT file. Thanks to unnamed developer from promising security company.
+  - jtool -v -l now prints permissions correctly
+  - jtool -d auto-dumps CStrings (and CFStrings) if the section they are in is marked as such
+
+02/07/13: v0.5
+---------
+
+  - Minor refactoring, only 13 warnings on compilation
+  - Search (-F, -Fs) now works well with FAT files as well
+  - Peek (-p) at address works better (also -p -v)
+  - LOAD_UPWARD_DYLIB now correctly handled for jtool -S -v (i.e. symbols are found in upward dylibs, too)
+  - Fixed both peek and dump so as to refuse PAGEZERO (rather than crash! :)
+
+02/25/13: v0.5.1
+---------
+
+   - Finally showing EncrYPtion info :)
+   - Fixed printing of CFStrings
+   - Fixed section names of 16 characters (used to overflow and print segment name - but no more)
+   - Fixed shared cache handling, for ARM binary
+
+03/15/13: v0.5.2
+---------
+
+   - The -rC (remove load command #) option now enables you to remove load commands. This is useful for stripping
+      code signatures, for example, or just plain malforming Mach-O Binaries.
+   - jtool -h -v now actually prints the Mach-O header flags!
+   - export JCOLOR=0 will disable color output, always (though IMHO colors are great, for disassembly)
+   - Man page updated (do you people read this stuff?)
+  
+03/22:13: v0.6
+---------
+
+   - Massive restructuring of disassembly engine, refactoring, working on ARMv8 (64)
+   - 64 bit dumping fixed (>= vs. > bug. (*sigh*) )
+   - Core file support (at least, x86_64 - ARM coming soon)
+
+
+09/07/14: v0.7:
+---------
+  
+    - Back in business. Segment extraction bug fixed
+    - Compiles with only 12 warnings..
+    - Code signing refactored and greatly extended:
+       - Fixed crash getting entitlement when no LC_CODE_SIGNATURE present
+       - Code Signatures now displayed (-sig) *and* verified (-sig -v)
+    
+
+09/21/14: v0.75:
+---------
+
+    - -extract can now extract a file from a shared cache, like KennyTM's decache (but with support for more load commands) AND 64-bit caches!
+
+	to use: ./jtool -extract IOSurface /Volumes/Okemo12A365.N94OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_armv7
+		(or whereever your dyld cache is).
+
+10/01/14: v 0.75.1 
+--------- 
+         minor fix to display page slots for code signing (thanks, duhanebel!)
+
+10/04/14: v 0.76:
+---------
+
+    - Can now validate bound info plists (as __TEXT.__info_plist) and CodeResources. If you specify a file pathname which 
+      contains Contents/MacOS, these will be found automatically. Else - you might need to specify --appdir xxxx
+      to point to the Contents/ of the app (.. notation is fine).
+
+10/12/14: v0.77:
+---------
+
+     - More ARM Thumb codes finally handled
+     - puts, printf (kind of) decompiled
+     - shared cache extraction fixed
+     - Disassembling a symbol will automatically disassemble until next symbol
+     - Memory reqs for disassembly brought down to O(1) instead of O(n) (no disassembly history)
+     - LC_UNIXTHREAD now handles ARM64 (only useful for the A7+ kernels, since apps use LC_MAIN, but useful)
+
+10/21/14: v0.78:
+---------
+     - Added -opcodes with semantics for disassembly (that is, dump opcodes, like otool's -j)
+     - Fixed bug resolving 64 bit symbols (would fail if STAB symbols were set, like in AMFI.kext...)
+     - ARM64 branches handled
+     - Objective-C enhancements - can print category, protocol list and more (try -d __DATA.__objc_...)
+     - Can now work directly on shared library cache - use path_to_cache:fileInCache to specify
+	- will work with -l, not with -d or -S  yet
+	
+
+11/25/14: v0.8
+---------
+     - Massive fixes in dyldinfo like functionality, for 64-bit
+     - Can specify "all" for extract (i.e. jtool -extract all _path_to_dyld)
+     - ARM64 binaries now disassembled with call stubs (still working on disassembly though)
+     - CFString dumping fixed for 64-bit binaries
+     - DYLD Bindings now correctly figured out including TIMES_ULEB (bleh!) and SET_ADDEND_SLEB
+     - Fixed bug in FUNCTION_STARTS - now points to start of text, so -d can figure out functions by start
+     - jtool -S should now be entirely indistinguishable (not just virtually identical to) from nm
+     - Fix for cases where segment or section mapping is past file offset
+     - Corrected '-d -...' usage bug
+
+01/30/15: v0.85
+
+     - CBNZ, CBZ work
+     - ADD now does sf (W or X regs)
+     - CMP fixed, both for CMP shifted and CMP immediate
+     - Now supports .jtool files. Jtool will generate a <binaryName>.arch.uuid.jtool file (don't worry, the uuid part is automatically generated), which you can add symbols to, if you specify -S[*] arguments (** Not in release version **)
+
+
+04/01/15: v0.86
+
+     - Tool made significantly faster (alas, still x5 times slower than otool.. But at least not x70! And x5 is understandable, I guess, given more features)
+     - Now prints __TEXT.__cstring automatically. @TODO: do so by section flags, not section reserved name
+     - jtool -L now does NOT print LC_ID_DYLIB - and only prints dependencies (in this way it breaks compatibility with otool -L, but makes more sense - who wants to see the library name itself repeated?!)
+
+
+
+04/14/15: v0.88
+
+     - Fixed crash on extraction from shared cache (thanks to libgmalloc!)
+     - Now understands both "armv8" and "arm64" as an argument to arch
+
+04/20/15: v0.88a
+
+     - Better LC_FUNCTION_STARTS handling (way faster, doesn't do symbols if just -l'ing binary)
+     - modified code signature handling slightly
+     - added ARM64 SVC instruction (only really useful for libsystem_kernel, but ...)
+     - Fixed jtool -bind and -l so it doesn't crash on monstrous files like Microsoft Outlook, with over 200k DYLD Bindings (*sick!*)
+ 
+
+05/13/15: v0.90
+
+     - Initial support for jtool companion file. Use --jtooldir . to create. Format (for now) is address:Symbol
+     - Objective C class linking(!) -- done
+
+06/27/15: v0.91
+
+     - Fixes for TaiG malformed binaries
+     - -extract switch now accepts "arch" (to work like lipo(1))
+     - Fixed cases where "-" in pathname would accidentally be interpreted as a switch.. (e.g. usr-libexec)
+     - 64-bit -S -v shows indirects as well (stupid fix)
+     - Companion files now support comments
+
+07/03/15: v0.92
+
+     - Added "--slide" feature for experimental ASLR (and binary comparison between TaiG versions)
+     - Vast improvements to HTML output (--html - try it "> out.html" and then open in browser!)
+     - LDR/STR instructions fixed
+     - can now -d from symbols in companion file. Also fixed bug where -d would treat symbols as addresses!
+     - Max # of load commands upped to 1024 (to handle core files), and segments/sections to 1024/2048 respectively
+
+08/04/15: v0.95
+
+     - Objective C! 
+	- Specify class name as argument to "-d" to dump specific class by name
+	- objective-C methods in the Mach-O will automatically be symbolicated
+	- All this, *without* using libobjc.dylib - so you can use this in the Linux version of the tool as well!
+	- Since this is experimental, NOOBJC=1 will disable these features (say, if something crashes)
+
+08/10/15: v0.95.L
+	
+	- Fix for L. Halphon's bug for dyld opcode SET_SPECIAL_DYLIB_ORDINAL < 0
+
+08/14/15: v0.95.J
+  
+	 - Fix for John of BB - won't crash on iBooks (or any app with flat namespace symbols) no more. Thank you!
+ 	 - Fixed bug for disassembling till end of section - now does end of section, not segment.
+
+
+	  (Hey, reader - report bugs and your name will be commemorated here as well!)
+
+08/20/15: v0.9.6
+
+	  - Properly follows register assignments (I hope)
+
+09/07/15: v0.9.7
+	  - Smarter, (and more colorful) dump (try -d __DATA.__const)
+ 	  - Fixed ObjC dump bugs (try -d __DATA.__objc_data)
+	  - Fixed --pages so as to not display regions which aren't mapped (__DATA.__bss, __common)
+	  - New option: -d objc : Dumps objc class list. Use -v to dump class interfaces, too
+
+09/17/15:
+	  - LC_LINKER_OPTION now supported (Thanks to Claud Xiao!)
+	  - support PRFM instruction 0xd9f9942b (Addr 00000001003a88f0 in SpringBoard9 64  - take that, Otool!)
+
+10/14/15: Luca, this one's for you :)
+
+ 	  - Luca's fix: make the binary be anywhere 
+	  - --jtooldir ... will create the companion file and auto-populate with function_starts info
+	  - "-do" (dump/disassemble from offset) now works properly
+	  - "--pcrelative" advanced option (shows B[.cond] targets as offsets, not addresses)
+	  - Auto labels for jump targets (@TODO: save reg state)
+
+10/18/15 "Seoul": Code signing (ldid)
+	  Use --sign [adhoc] to self sign (same as ldid) (no certs... yet)
+	  Use --sign [adhoc] --ent entfile to embed entitlements (same as ldid -Sentfile)
+	  Fixed objective-C issue in shared cache extraction (Thanks to Oroi!)
+	  Weak binding display now works well (thanks Guhyeon!)
+	  
+
+
+10/26/15 "Manila": Better shared cache handling
+	 You can now operate in-place on a shared cache file with -l, *and* -d
+	 using syntax like
+	
+		jtool -d dyld_shared_cache_arm64:UIKit
+
+	 Objc: Now recognizes class methods, not just instance methods
+	       Now also dumps @properties (still need to implement getters/setters, but that's rare, and later)
+
+	 Use --sign [adhoc] --ident com.whatever.whereever to embed identity
+
+	 Fixed dumps in fat files. Had a bug not compensating for file start..
+	  @TODO: still a bug on symbols in FAT
+
+	 Fixed data dump bug on SpringBoard 9
+	
+	 Can now dump Objective-C methods by specifying class:method (instead of "[class method]" which would mess up shell command line)
+	
+	 Autopopulates objective-C classes/methods in companion symbol file
+
+	 Note you don't need the full ...dylib of the framework, just a partial match would do.
+
+	 CBZ, CBNZ instructions fixed (show reg AND branch addr or symbol)
+
+	 ARCH=x86_64h (for Haswell binaries) now supported (not much different than x86_64..)
+
+12/15/15 0.988 "La Ciotat" (it's been a while :-)
+ 
+          - Fixed -h (-v) to properly display cpu subtype and architecture name (but not on Linux, yet)
+	  - Fixed Objective C handling to not double cache classes (20% more efficient on Springboard)
+
+	  - J's in the process of forming balls to up to version 1 (soon, for MOXiI 2!)
+
+
+12/22/15 0.988 Rosh Haayin
+
+	- JTool now follows block pointers, and displays the function in the block
+	- Code signature for ARM32 fixed
+	- Fixed max resolved values (strings) to allow up to 4k (locationd __DATA.__const!) and snprintf, too.
+	- Fixed getter= in Obj-C classdump
+	- Need to fix crash on keynote
+
+01/03/16 0.98999 Addis Ababa
+	
+	- resolveValue now follows and resolves CFStrings
+	- -lazy_bind also prints index (quick and long overdue fix)
+	- Annoying FAT bug on dumping finally fixed
+	- quick mode as default when not necessary to do objc/function_starts
+	- Won't try to disassemble or dump __TEXT when encrypted
+	- New option: --rebase (useful on kextracted kexts, try --rebase 0)
+	- Packed switch tables now autodetected
+
+
+01/18/16 0.9899999 NYC
+
+	- Fixed embarrassing 'jtool -e' segfault if no argument!
+	- Fixed decompilation bug (strings as junk) due to refactoring..
+	- Now correctly auto disassembles __TEXT.__text and stubs automatically, and dumps rest
+	- Fixed CMPs accidentally being treated as SUBS (which they are, technically)
+	- Apparently, 9.x insists on (null byte) padding for entitlements blob - so that's fixed
+	- Code signature now matches LINKEDIT vmsize to filesize (apparently a new check in 9.x)
+	- MIG Detection!
+
+	- SORTING SEGMENTS!!! This is crucial for handling extracted dylibs from shared cache!
+	- Default behavior of -d is to now -d __TEXT.__text (and not main). You can use "main" (no _) always
+	  now as a reserved symbol for entry point (even if you haven't defined it in a companion file)
+	- Now recognizing (but not yet handling) ar(5) files.
+	- Now handles the MIN_TVOS (0x2f) load command. 
+            Hey AAPL - if you're reading this -
+	    Wouldn't it make sense to just have a MIN_OS_ with another int specifying OS TYPE rather
+	    than have separate LC's for every derivative? What's next? CAR_OS?
+
+02/20/16 0.9899999 哈尔滨
+
+	- Improvements to --html (hyperlinks only internal syms, now shows function name in tooltip on hover)
+	- Made jtool quicker (i.e. skip objc and advanced parsing) for more operations
+		(e.g. --sig , -d __TEXT.__cstring) by default
+        - Remove LCs deemed stable
+	- <sys/disk.h> ioctl codes recognized
+	- --sig now works on shared caches as well  (-h on shared caches now displays signature size correctly)
+	- and, lest I forget -- STACK SUPPORT!!!!!
+
+03/01/16 Penang
+
+	- ARMv7k binaries (WatchOS) recognized - Luca - you're the man!
+	- Shared cache print corrected (Thanks, @windknown!)
+	- MIG detection works in 32-bit mode (an oversight on my part since I don't do much 32-bit analysis)
+	- ARM64 STP negative offsets fixed
+	- --inplace option added for destructive options!
+	- code signatures can be done in place and on an existing code signed binary
+	- Stack support improved
+	- Better kext support: Can now identify kernel symbol wrappers in a kext from a kextcache
+	- Fixed minor bug that would crash when creating companion file and encountering addresses without symbols yet
+
+03/16/16 ADRP, ADR fixed to uppercase registers (Thank Eric)
+	 switch cases now display any labels you may have assigned in companion file
+
+03/31/16 Cayman
+	
+	- Better resilience in face of corrupted Mach-O headers (e.g. iOS 7.1 kernel dump)
+	- Fixed -d with no arguments to go to actual __TEXT.__text, not start of __TEXT. Makes it more accurate for kernel dumps
+
+	- Installed decompilation callbacks!!!!!!!!! Crucial for Joker 2.4
+	- Now what(1) friendly (to show version)
+	
+04/20/16 Ottawa
+
+	- Fixed [TC]B[NZ] to decompile correctly
+	- Fixed LDR <<2 (thanks, Siguza)
+	- Rewrote ARM64 disassembly to be faster and cover more opcodes
+  	- Aesthetic fix to indent jtool -S symbols  (Thanks again, Siguza)
+	- Now added comments (# ...) in companion files
+	- CFNotificationCenterPostNotification recognized
+	- Fixed crash on corrupt symtables (like in kernel dumps)
+	- Can now extract (-e) from any symbol, till EOF (e.g. to get certs out of AMFI)
+	- Can now force disassemble with -d -v
+ 	- Fixed Siguza's fat binaries with single architecture
+
+05/15/16 Tel Aviv
+
+	- Added -enc to toggle LC_ENCRYPTION_INFO[_64] to 0:
+	  useful when getting decrypted binaries from a procexp core dump
+
+
+05/25/16 Copenhagen
+
+	- ARM64 special registers added to ARM64.c: TPIDR_EL[0/1/2], TTBR[01]_EL1, SCTLR_EL1, TCR_EL1, DAIF
+	
+06/02/16 Reykjavik
+
+	- Quick mode by default for non disassembly options (e.g. -S)
+   	- Fixes --sig to handle Pangu's crazy fake code signatures!
+    	- MIG detection now also works on __CONST.__constdata (for XNU 3750+)
+        - Handles sections not mapped to file for -d (like in KPP __DATA..)
+	
+06/25/16 Shanghai
+
+	- Improved Obj-c decompilation: now have selectors parsed, args auto-printed (if strings) and [ ] notation by default
+
+	- Annoying ARM64 NOPs suppressed - so you can read code more fluently! Toggle with NOPSUP=1
+		- Single NOPs just eliminated
+		- Longer sequences replaced with (%d NOPs suppressed)
+		- ANDS XZR, X%d, X%d is now correctly shown as TST
+
+	- When dumping a kext, look for kernelcache companion file as well :-)
+	- jtool --pages now gets -v to display size of each region in bytes
+	- fixed minor bug in dumping __DATA, where symbolicated addresses would also appear as content.
+	- Will now refuse to dump any __TEXT sections when segment is marked SG_PROTECTED
+	- automatically recognizes CFStrings in __DATA.__anywhere by address, not just __DATA.__cfstring
+
+
+08/04/16 Boston :-)
+
+	- Can now get argument of .app, .framework or .kext (and will locate corresponding binary!)
+	- SHA256 now detected and supported in Code Signatures (for Mac 10.12, but apparently not yet iOS 10)
+	- Self referential branches (i.e. HALT) now printed as such. Useful for KPP/iBoot
+	- Can now handle up to 16k segments (crazy, but necessary for core dumps..)
+
+08/15/16: San Fran
+
+	- Quick mode (-q) is now on by default, making jtool MUCH faster.
+	  I left the option since you'll still need to specify it if (and only if) you disassemble.
+	- Now tries __TEXT__EXEC.__text when disassembling iOS 10 kernels and kexts
+	- -m (modify segments/sections) is almost live. Not yet, though.
+	- jtool -opcodes now prints %08x
+	- disarm can now handle LSL/LSR (geez, how could I have missed those?)
+
+08/24/16: Singapore
+	
+	- jtool now auto-recognizes switches 
+	- Fixed bug in dyld handling (trying to get address from bss accidentally worked because dyld is fat)
+	- TB[N]Z now decompiles nicely (gets the right bit flag and converts into a mask)
+
+09/23/16:  Paris 
+
+	- Officially dropped ARM32 support for disassembly. All other -d options work well. (Siguza)
+	- Can now merge MOVZ/MOVK combinations into a MOVZK pseudo instruction if adjacent and on same reg
+	   (disable with NOMOVZK=1)
+	- Now prints "*" by pseudo instructions (e.g. MOVZK and Suppressed NOPs)
+	- "--str" undocumented but useful and convenient alias for "-d __TEXT.__cstring"
+        - LC_MAIN/LC_UNIXTHREAD now prints 0x.. :-P
+
+10/10/16:  Gothenborg
+
+	- Search in binaries (-F _string_) improved
+
+11/24/16:  Shanghai
+	
+	- Brought back ARMv7, (SLOWLY) for ARMv7k binaries, like WatchOS and the eOS, because it's not going away and the new otool (objdump, seriously?!?) sucks. BAD.
+
+12/25/16:  Moscow
+
+       - chmod(2) decomp now correctly shows octal and not hex
+       - Fix operation in files in cache
+       - Now automatically resolves symbols for files in shared cache when disassembling (i.e, gets all in-cache BL xxxxx! Luca - this one's for you ;-)
+       - Significant speedup after companion file is generated due to caching LC_FUNCTION_STARTS and skipping if companion file exists
+	 @TODO: Also cache all the DYLD bindings like I do for SLC..
+
+       - Fixed Objc crash on null protocol and a bunch of other crashes that until now necessitated NOOBJC=1.
+         jtool will now not crash if obj-C is malformed, but exit neatly and ask you to REPORT THE BINARY so I can fix it.
+         (and you can still use NOOBJC=1 to work around obj-c related crashes, as before)
+
+       - Now supports "-D", like "-d" but only shows lines jtool can decompile successfully (like grep(1)-ing "^; ", but works when color is on)
+
+02/03/17  哈尔滨 (II)
+
+	- Updated shared cache using dyld-421.2 headers
+	- Fix for @timacfr's keen observation that now some pointers 
+	  have an additional flag embedded in them (addr & 0xF0000000000) - thank you!
+        - Correctly gets Objective-C classes in Swift binaries (accounting for FAST_* bits)
+
+03/28/17  Singapore (II)
+
+	- Supports unnamed segments (as in core dump)
+	- Supports LC_IDENT (for kdp core dumps)
+	- Correctly identifies TLV_* sections and MH_HAS_TLV
+	- imrpoved support for files in shared cache: @TODO
+		iterates over target dylib's binding entries, resolves them, and then replaces the pointers.
+	- Better shared cache output so as to be scriptable (for tbdize.sh)
+
+
+04/22/17  Seoul (II)
+
+	- can also decompile signal(2), kill(2), etc (added T_SIG)
+	- more functions supported
+	- fixed -[weak/lazy]_bind output to correctly report bind type
+	- handles special dylib ordinals correctly in -S
+	- (Partial) Stack emulation - works on blocks and mach_msg!!!!
+
+04/25/17  DCA
+	
+	- Now supports OJTool better
+
+
+05/07/17  CBR
+
+	- added "__i_c", "__c" , "__c_c", "__cf", and "__i_cf" suffixes to symbols  to auto parse args for functions with (int, char *) and (char *), etc..
+	  (as a temporary solution before version 1.0 comes with full prototype declaration support)
+
+	- Fixed a few things in stack emulation
+	- Better handling of unknown values as char * and void *. No more of that "<CF><FA><ED><FE>^L" crap :-)
+	- Code signatures no longer beta :-)
+	- Linux ELF32 is back ...
+	- Jeremy's bugs fixed
+  	- Fixed "-d" on a shared cache to refuse unless ":" instead of failing on __TEXT.__text not found..
+
+05/15/2017 - SYD
+
+	- Now recognizes lseek args
+	- INS instruction (vector SIMD) 
+ 	- LDP/STP (SIMD) supported
+	- -d __DATA... now symbolicates text pointers in data
+	- Stack emulation improved (check for over/underflow)
+	- MUCH MUCH needed unit tests :-)
+	- resolveValue now resolves shared cache modified pointers
+	- shared cache companion files now work properly
+	- Now finally with prototypes for functions: simply suffix your symbol name with parentheses and specify args by type - 'c'haracter , 'b'oolean, 'B'lock,'@'(CFString), 's'tring, 'x' (hex) , 'i'nt or 'l'ong - and jtool will decompile arguments accordingly
+	- Fixed: pointers in shared cache __DATA_CONST fixed
+        - Fixed: __LINKEDIT dumps don't crash 
+
+06/05/2017 - Dallas - The 10.13 fixes
+
+	- LC_NOTE (0x31) and LC_BUILD_VERSION (0x32) supported, per dyld 509 additions
+	- Fixes for shared cache in iOS11 so it now correctly extracts
+	- -F now actually reports which region, not segment, the string was found in (better for stuff that ends up in signature, or whereever).
+	- -a and -o both works properly
+	- Extended -h for new Mach-O flags
+	- Correct entitlement blob extraction - actually gets blob, rather than old hack of strstr for XML
+	   (important now with new <cdhashes> plist Apple embeds as of 10.13...)
+	- Architecture extraction now outputs to /tmp if can't create file in same dir
+	- -d objc now also shows instance methods (so it's complete!)
+
+07/11/2017 - London
+
+	-  Finally fixed insidious bug I had with FAT files. Sheesh
+	-  jtool incache works well on iOS 11 shared cache
+	-  Objective-c now demangles arrays too (sorry, I had never encountered one till I tried DiskManagement..)
+
+09/01/2017 - HOME!
+
+	- Can dump addresses anywhere in the S/L/C!
+		- S/L/C disassembly is partially broken - I KNOW. It will be fixed.
+		  AAPL has $%#$%$# UP the cache with their slide infos..
+
+	- SHA-256 signatures are now generated by default. (--sign sha1 if you need old sigs)
+	- Code signature formats 0x20200 through 0x20400 (iOS11) now dumped with --sig
+	- -dd now forces disassembly even on non-TEXT segments. Like disarm
+	- weak bind information in LC_DYLD_INFO now displayed in same manner as other infos
+
+09/20/2017 - Montreal
+
+	- Lots of cache fixes for iOS 11 
+	- Branch islands now detected properly
+	- Can jtool -[l|d] dyld_shared_cache:Pool###
+	- STR XZR or WZR now comment as *.... = 0 
+	- jtool -h on shared cache will show UUID (so you can pair with /var/db/DSCSYM-*)
+		   will also show you file offsets versus addresses (with -v)
+	- fixed Obj-C +/- glitch (oops!). Can now cut/paste directly from -d objc -v to a .m
+	- follows my arguments (0x2410...) correctly on stores as well
+	- SCVTF and a couple more floating point instructions to disarm
+
+01/10/2017 - Gothenborg II
+
+	- Can now sign with team identifiers: --teamid ........ (will sign in 0x20200 format) - Thanks for the idea littlelailo!
+
+
+01/12/2017 - Oslo
+	
+	- jtool -a recognizes branch islands (pools) as well
+	- More importantly, jtool -d now resolves by following into pool!
+
+11/10/2017 - Paris II!
+
+        - dyldv3 shared caches recognized
+
+
+01/20/2018 - v1.0
+
+	- Because it's about time
+	- In-cache symbolication when disassembling works again, with branch pools, etc
+	
+	- (02/04/2018) Also added handling for @stek29's malformed Mach-Os. Thank you!
+
+
+03/14/2018 - (Amsterdam)
+
+	- Finally supports *FULL* codesigning on MacOS (just like codesign!)
+	  Use "--sident" and specify Team ID, Apple ID, or hash - jtool will automatically retrieve the right
+	  identity from your keychain (autodetecting iPhone or Mac developer) and will use it to sign RFC3852 CMS!
+
+======================================================
+
+
+@TODO:  (still)
+------
+
+	- implement boyermoore horspool memmem
+	- Get ALL OBjc-data from shared cache objects
+	- support -d Symbol + 0xoffset
+	- @Protocols - important for XPC
+		- Dump protocols
+		- Categories/Protocols in classref
+
+	- Fix Siguza's shared cache problem
+        - Search Refs for strings
+        - Fix on ZeroFill sections?
+	- extend functionality for kernelcaches
+	- Fix DecodeBitMasks (needed for ORR and friends .. currently args still show 0, which is clearly wrong)
+       - Lookup symbol for every address - by caching, and holding ptr to next sym
+       - Known Functions.txt
+       - Swift/c++ demangling
+       - Update functions in companion .jt (for now) or .dSYM (later)
+
+
+	taig b50c 0x01f1a4 sub.w r8,r4 , 1     
+
+ 
+ - get dlsym and dlopen to be of type T_FUNC and get addr of a symbol so known Funcs would work
+ - cache stubs!!
+ - differentiate between func symbols and normal labels in companion file,not by "^_"
+
+ - Call graph to dot or xml?
+ - Handle file corruption
+
+3/28
+ - todo: jtool -a to get closest symbol and work on all segments 
+ - Make it so that jtool still parses FUNCTION STARTS even without a symbol file, so jtool -d _func... | grep BL works!
+
+ - Get UUID of cached file for companion file
+
+  -
+FIX:::::
+jtool -d  __DATA_CONST.__const dyld_shared_cache_arm64:libsystem_trace |more
+
+strings in fat files  (getFileStart()) - and other bugs like on UEA plugins
+
+
+REFACTORING:
+------------
+
+  - getRegionContainingAddress should get Segment, since we now have getRegionSpecific
+  - dump2 : TO FIX DUMPS OF FAT FILES!!! (e.g. com.apple.fsevents.matching)
+  - quicken companion file generation, possibly output a few messages to stderr
+
+
+

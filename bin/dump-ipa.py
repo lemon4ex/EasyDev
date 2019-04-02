@@ -1,1 +1,1 @@
-/opt/EasyDev/tools/frida-ios-dump/dump.py
+../tools/frida-ios-dump/dump.py

@@ -29,7 +29,7 @@
 			<key>SharedSettings</key>
 			<dict>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>CODE_SIGN_IDENTITY</key>
@@ -52,9 +52,9 @@
 				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
 				<string>___VARIABLE_TargetAppBundleId___</string>
 				<key>DEFINES_MODULE</key>
-				<string>YES</string>
+				<true/>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>Mac Developer</string>
 			</dict>

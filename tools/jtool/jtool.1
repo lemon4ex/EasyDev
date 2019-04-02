@@ -1,0 +1,354 @@
+.\" Copyright (c) 2012, 2014 Jonathan Levin
+.\" Copy this file to /usr/share/man/man1 to view using "man jtool"
+.\"
+.TH JTOOL 1 "December 16, 2016" "Jonathan Levin"
+.SH NAME
+jtool \- object file display, manipulation, and reverse-engineering tool
+.SH SYNOPSIS
+.B jtool
+[ 
+.I "option \&..."
+] [ 
+.I "file \&..."
+] 
+.SH DESCRIPTION
+The
+.I Jtool
+command is meant to meet and exceed the functionality to XCode's 
+.IR otool (1), 
+picking up along the way additional Mach-O commands such as 
+.IR atos (1), 
+.IR dyldinfo(1), 
+.IR nm(1), 
+.IR segedit (1), 
+.IR pagestuff(1),
+.IR strings(1), 
+and even 
+.IR codesign(1).
+.B jtool 
+also provides novel features, such in-binary search functionality, symbol injection and a disassembler functionality with (limited but constantly improving) emulation capabilities. It also provides color output.
+
+.SH OPTIONS 
+
+OTool Compatible Options:
+   -arch               	For fat (universal) binaries: i386,x86_64, arm[v[67]]
+   -h                  	print header (ELF or Mach-O)
+   -f                  	print fat header
+   -l                  	List sections/commands in binary
+   -L                  	List shared libraries used (like LDD)
+   -v                  	Verbose output
+
+New Options:
+   -a _offset_         	Find virtual address corresponding to file offset _offset
+   -e[xtract] _name_   	Extract section/segment _name_ in binary, or file _name_ from shared cache
+   -e[xtract] signature	Extract code signature from binary
+   -F [_string_]       	find all occurrences of _string_ in binary
+   -F [_string_]       	find all occurrences of _string_ in binary
+      -Fs _string_     	also show search results (experimental)
+   -S                  	List Symbols (like NM)
+      -Sa _address_ _symbolname_	Add symbolname manually for address (to .jtool)
+      -Sd _symbolname_ (not yet)	Remove symbolname for address (to .jtool)
+   -p _addr_[,_size_]  	Peek at _size_ bytes in virtual _address_ in binary (like OD, but on memory)
+
+dyldinfo Compatible Options:
+   -bind               	print addresses dyld will set based on symbolic lookups
+   -lazy_bind          	print symbols which dyld will lazily set on first use
+   -weak_bind          	print symbols which dyld must coalesce
+   -opcodes            	print opcodes used to generate the rebase and binding information
+   -function_starts    	print table of function start addresses
+   -data_in_code       	print any data-in-code inforamtion
+
+Destructive Options (will write output to /tmp):
+   -i                  	Inject (Experimental)
+     -iL _soname_            	Library (ELF only)
+     -iS _secname_ _size_    	Section (ELF only)
+     -is _sym:_val[,_sym:val]	Symbol(s) with value(s) (comma delimited)
+   -r                  	Remove/Resize (Experimental)
+     -rL _dylib/soname_      	Library
+     -rC _Load_Command_#_    	Load Command
+   -/+pie              	Toggle Position Independent Executable (ASLR)
+   -/+lcmain           	Toggle pre-Mountain-Lion/iOS6 compatibility (LC_UNIXTHREAD/LC_MAIN)
+
+Disassembly/Dump Options:
+   -d[_arg_[,size]]    	disassemble/dump (experimental) -  _arg_ may specify address/section/symbol. size is optional
+     -dA [_arg_[,size]]	Disassemble as ARM code (32-bit instructions)
+     -dT [_arg_[,size]]	Disassemble as Thumb/Thumb-2 code (16/32-bit instructions)
+     -db [_arg_[,size]]	Disassemble backwards (not fully implemented yet - but soon!)
+     -dD [_arg_[,size]]	Dump (even on a text segment)
+     -do [_arg_[,size]]	Dump/Disassemble from offset, rather than address
+   --jtooldir _path_   	specify directory path to search for companion jtool files (default: $PWD)
+
+
+Code Signing Options:
+   --sig               	Show code signature in binary (if any)
+   --sign [adhoc]	Sign binary (a la ldid)
+   --app               	Set App Path (for code signing and/or verification)
+
+Advanced Options:
+   --ent               	Show entitlements in binary (if any)
+   --map               	Generate map file for a shared library cache
+   --pages             	Show file page map (similar to pagestuff(1))
+   --version           	Show tool version and compilation date
+
+Output Options:
+   --html              	Output as HTML (implies color)
+   --curses            	Output as Color using ncurses (can also set JCOLOR=1)
+
+.SH OTOOL COMPATIBLE OPTIONS
+
+.BI \-arch " arch_type"
+
+  Specifies the architecture,
+.I arch_type,
+of the file to operate on when the file is a universal file.  (See
+.IR arch (3)
+for the currently known
+.IR arch_type s.)
+Unlike otool(1)
+.B jtool
+will refuse to operate on a fat binary without this switch. But since a lot of binaries are, indeed, fat - and it can get annoying to have to specify this switch -  you can set the ARCH environment variable for your default preferred architecture (e.g. ARCH=armv7 jtool, or export ARCH=armv7, before using jtool)
+
+.B -f
+ 
+  This options displays the fat (universal binary) headers, if any. It has no effect on a thin (single architecture) binary. The output is identical to that of otool(1)'s, with the exception of the capabilities field (which has been removed anyway).
+
+.B -h
+
+  This option displays the Mach-O header, in a manner similar to otool -hV. The output is formatted in rows, rather than in columns, which makes for easier parsing by scripts.
+
+.B -l
+
+  Display the Mach-O load commands, in a manner similar to otool -l. The output does not display the load command raw fields, and instead translates them into a script-friendly (and much more readable) format. When used with -v, some load commands (most notably, LC_FUNCTION_STARTS) are shown in more detail. 
+
+.B -L
+
+   List the names and numbers of shared binaries used by the binary. This is done by an enumeration of the LC_LOAD_DYLIB (or LC_REEXPORT_DYLIB) commands. The output is virtually identical to otool's. On an ELF binary, this is functionally equivalent to ldd(1).
+
+.SH NEW OPTIONS
+
+
+.B -e[xtract] _name_|signature
+
+   Extract segment or section specified by _name_ in binary. For a section, specify the full name as segment.section (e.g. __TEXT.__text). The segment or section will be extracted to a file in the current directory whose name is a concatenation of the Mach-O and the segment or section name. You can also use "signature" to extract the code signature of the binary (i.e. the contents pointed to by LC_CODE_SIGNATURE).
+
+   NEW - As of v0.75 this can also be used to extract a file from a dyld_shared cache. You need only specify the file base name (i.e. no need for full path, .framework, or .bundle), but you can specify a full path just the same if you wish)
+
+.B -F 
+
+   Find strings or byte-sequences in the binary. See "SEARCH OPTIONS", below. This used to be "-f", until "-f" was added for otool(1) compatibilty (print fat headers, arguably a lot less useful than search).
+
+
+
+.B -S
+ 
+  This option dumps the symbol table of the Mach-O, in a manner similar to nm(1), and with identical output (to nm -p, using symbol table ordering). This is intentional, to provide compatibility with the frequent usage of the latter. When used with -v, however, this option will also resolve the library the symbol is bound to (assuming two-level binding is used), and display the symbol table offset. Using -v will also break compatibility with nm(1), and show read only symbols (those in a const section) as "R/r", as per the ELF version of nm.
+
+  When used with modifiers ('a' or 'd') this option also enables you to map addresses to symbols manually. This is discussed in "Symbol Handling", later.
+
+.B -p	_address[,len]
+
+  "Peek" at an address in memory. This option takes an address in the address space created by the Mach-O binary, finds its corresponding offset in the file, and dumps the contents of the len bytes specified (default: 64) in a manner similar to 
+.B od -t x1.
+
+.SH SMART DUMPING
+
+.I jtool
+is pretty versatile when it comes to dumping stuff. The -d switch can accept any address, or the name of a segment, section, symbol, or even Objective-C class. The output will be automatically adapted to the type of data being dump: Pointers, strings, etc are detected automatically. This is even more powerful with the new Objective-C support. Dumping __objc_classrefs, for example, will display the name of the class referred to. Dumping a class by name will provide a "classdump-Z" like output.
+
+.SH SYMBOL HANDLING
+
+.I jtool 
+supports the notion of a "companion jtool file". The file is created automatically, and has the naming convention of
+
+    file.arch.UUID
+
+populated automatically from the Mach-O file which is provided as the argument. Using a UUID and architecture enables you to maintain multiple symbol files side by side without fear of conflicts between different versions of analyzed Mach-O (especially useful with fat binaries). The ordering is especially so that you can use shell autocomplete and/or wilecards instead of painstakingly typing the full UUID.
+
+  By default, the symbol files will be created in the current work directory. You can override that by specifying 
+.B --jtooldir
+, which enables you to set aside a special directory for these files. (@TODO: specify these in a JTOOL or JTOOLDIR env variable)
+
+.SH SEARCH OPTIONS
+.B jtool
+provides a useful search functionality that is binary format aware. Specifically, it can search for strings or byte sequences (specified in the common \\x notation). This is done by specifying the -f switch.
+ 
+.B jtool
+can additionally display snippets of the found string, if the "-s" suboption is specified (i.e. by using "-fs"). It will automatically seek back to the beginning of the string (as detected by the first non-printable or NULL byte).
+
+An experimental option of 
+.B jtool
+(on ARM binaries only) allows searching for references to a particular string or address. These may be specified by "-fr". 
+.B jtool
+will automatically disassemble the text segment of the Mach-O, and attempt to find locations wherein the address specified (or address of string specified) is loaded into a register.
+ 
+.SH DYLDINFO COMPATIBLE OPTIONS
+
+.I jtool
+is designed to be a drop in replacement for dyldinfo(1), and will honor command line arguments recognized by the latter. In fact, you can create a symbolic link from dyldinfo to jtool, thereby having jtool "fake" dyldinfo, a la busybox style.
+
+.B -function_starts
+
+  As dyld, prints the LC_FUNCTION_STARTS load command contents. Note this is also part of the output when using -l -v.
+
+.B -opcodes
+
+  As dyldinfo -opcodes : print the DYLD binding opcodes in the _LINKEDIT section
+
+.B -bind
+
+   Fill desc.. 
+
+.B -lazy_bind
+
+   Fill desc.. 
+
+
+.SH DISASSEMBLY OPTIONS
+
+.B jtool
+contains a built-in disassembler, similar to 
+.IR otool (1).
+Though limited to ARM architectures, it is more powerful than its kin, in that it contains limited emulation capabilities: Whenever register assignments are detected, 
+.B jtool
+will attempt to determine the register values. This is invaluable in disassembling iOS binaries, and in particular the kernel, wherein (as of iOS 6) addresses are loaded and computed relative to the PC. The values are specified as inline assembly comments, aiming to improve the readability of the code.
+.B jtool 
+will also detect function calls and display arguments in this way.
+
+
+  To disassemble, use the 
+.B \-d 
+switch, optionally specifying "A" for ARM disassembly, or "T" for Thumb/Thumb32/ThumbEE (default). As an argument to the disassembly option, you may specify an address, segment, section or symbol, and the number of instructions to disassemble. If you specify an address not on a 32-bit boundary, jtool will default to Thumb. I should note that with the move to ARM64, I've all but abandoned development of the v7 architectures in favor of (an almost complete) v8 disassembler. But then also that I'm bringing ARMv7 back (for ARMv7k, for WatchOS and eOS, because 32-bit isn't going away soon enough and Apple somehow ruined otool by getting it to run objdump under the hood.
+
+  If an address or symbol are not specified, 
+.B jtool
+will start the disassembly at the object file's entry point (LC_MAIN or LC_UNIXTHREAD) or (if it cannot be determined for whatever reason), its first TEXT section. You can always opt for __TEXT debugging by providing __TEXT.__text as an argument to -d.
+
+  If the binary is encrypted (LC_ENCRYPTION_INFO exists), jtool will print out a warning, but attempt to dump anyway. Be warned results are nonsensical and you'd be wasting your time.
+
+.SH CODE SIGNING OPTIONS
+
+.B --sig
+
+  Use this to display the code signature, as per codesign -d (but better). If you use -v jtool will also validate the signature for you.
+
+.B --sign [adhoc]
+
+  Use this to self sign a binary, optionally classifying signature as adhoc. As a precaution, the output file will be "out.bin"
+
+
+.B --app
+
+  Not yet. But soon
+
+.B --ent
+
+  This option dumps the entitlements embedded in the binary's code signature (assuming there are any). Entitlements are dumped as their raw property list format. This command may be used with --sig.
+
+.SH ADVANCED OPTIONS
+
+.B --pages
+
+   Somewhat similar to pagestuff(1), this provides a map of the file offsets and the corresponding load commands or regions they refer to. Unlike pagestuff, the granularity is finer than a page. Useful for looking into segments, in particular __LINKEDIT.
+
+.B --version
+
+  Not really that advanced, but useful so the author doesn't lose track of when the binary was compiled..
+
+.SH DESTRUCTIVE OPTIONS
+
+   Destructive options involve modifying the Mach-O header, and - as a precaution - will write output to "out.bin" in your current directory. These include:
+
+.B +/-pie
+  
+  This option toggles the MH_PIE bit in the Mach-O header, which controls the user-space Address Space Layout Randomization (ASLR). This is useful for debugging, fuzzing and exploit development.
+
+.B -i
+
+  This option is used for injection - modification of the Mach-O header so as to add additional content. The following sub-options are available:
+
+
+    -iL
+
+   This option inserts an LC_LOAD_DYLIB command for the specified library
+
+    -is _sym:_val[,sym:val]
+
+  This options adds symbol to the Mach-O symbol table (LC_DSYMTAB). The syntax specifies the symbol name, a colon, and the symbol value, with additional symbol and value pairs delimited by commas.
+
+.B -r
+
+  This option can be used to remove portions of the Mach-O header, while maintaining its structural integrity as much as possible. Note this is "as much as", because jtool will not object to removing LC_SEGMENT or other critical load commands - it trusts you to know what you're doing.
+
+   -rC #: Remove load command specified by #.
+
+.SH OUTPUT OPTIONS
+
+.B --html
+
+   This option can be used to output to HTML. Somewhat similar to WinDBG's "DML" (Debugger Markup Language), this provides both color and hyperlinks (when viewed in a browser).
+
+.B --curses
+  
+   This option can be used to output in color, to a supporting terminal. This is, IMHO, so useful, it is the default, unless jtool detects it is being piped.
+
+.SH DYLD SHARED CACHE SUPPORT
+
+   In *OS there are no free-floating dylibs - everything is compacted and shoved in the cache. JTool has long had support for cache file extraction (using -e dylib_name cache_name), but even after extraction the file is inexorably tied to the cache, as all its dependencies have been resolved and put in place - the normal operation via dyld stubs simply does not work anymore. A better approach is to therefore operate on the dylib while inside the cache, which jtool supports by specifying the dylib name separated from the cache file by a colon (e.g. -d dyld_shared_cache_arm64:SpringBoardServices).
+
+   Beginning with the December 2016 (Moscow) Build, jtool can also resolve dependencies in the cache. This is super useful, considering that the sliced and diced files extracted by XCode aren't resolved in this way. If you want to operate on the XCode files, however, you can easily create companion symbol files - jtool -S on the individual files will get you their exported symbols, and it's simple to amass them all and convert into a big companion file.
+
+.SH EXPERIMENTAL OPTIONS
+   
+  The
+.B    jtool
+also contains a "disassemble backwards" option, which may be specified by "B" following the disassembly options. This is similar in principle to the backwards disassembly offered by Microsoft's debuggers ("ub"), and is useful in analyzing dumps from a given address. 
+
+
+.SH ENVIRONMENT VARIABLES
+
+jtool recognizes the following environment variables:
+
+.B JCOLOR	
+set to a value in order to force color output in disassembly. Color output is actually default, unless piping, since more/less usually display escape sequences. Using "-R" on either will still allow color while paging, so it's generally a good move.
+
+.B ARCH 
+   set to the preferred architecture. Can be overridden with command line switch (-arch)
+
+.B NOOBJC
+   set to "1" if jtool crashes mysteriously when handling any binary which has objective-C sections. Jtool sometimes overzealously tries to analyze and reverse those.
+
+.SH EXAMPLES
+
+  Examples can be found in the "Tools" forum on http://newosxbook.com/forum.
+
+.SH HISTORY
+The 
+.B jtool 
+command first accompanied the author's book, "Mac OS X and iOS Internals - To The Apple's Core".  The tool is provided as one of the free downloads provided for the book, and the latest version can always be obtained at 
+.B http://www.newosxbook.com/.
+.B jtool
+shares no code with any other open sources, Apple's or otherwise. Its disassembly engine has been written, like everything else, from scratch (which helps explain slow progress).
+
+.SH BUGS
+1) Experimental functions deemed too unstable may not work in the publicly available version of this tool (and would likely be entirely disabled). If you feel daring, and would like to assist in beta-testing and improving this tool, simply contact the author anytime. Comments and suggestions for improvements are naturally welcome. 
+
+2) Sometimes even the features the author deems stable end up being not-so. This is because jtool is pretty much built around test cases encountered, crashed upon and resolved - and there's obviously a wide variety of Mach-O formats. 
+
+3) Symbol resolution (-S -v) is currently limited to 40960 symbols, due to hard coding (Bad, I know). Largest symbol table encountered so far was SpringBoard's (1846 and going strong), so it's unlikely this bug will be encountered. Also max limit on load commands is 16,384. Let me know if that's too small for you :-)
+
+4) As stated above, ARMv7 is partial (I only disassembled those instructions I encountered in my all disassmebly. ARMv8 is almost complete. I'm focusing more on it, rather than 32-bit, because soon enough all of iOS will be 64 (not soon enough with the watch and ARMv7k.. ). Update: Had to bring it back for ARMv7k, main focus is for control flow (i.e. finding them BL instructions..)
+
+5) 
+.I NXGetArchInfoFromCpuType
+needs to be implemented on Linux.. This is a minor annoyance when printing fat headers.
+
+6) Most important - I'm sure there are numerous buffer overflows/integer overflows and possibly format string issues with my tool. Tough. I usually advocate security, but A) This was too much coding for one person as is and B) just don't run this as root on unknown binaries. C) report bugs , and I'll gladly fix them.
+
+.SH ADVERTISEMENT
+
+I've demonstrated numerous applications of 
+.IR jtool
+in the 2nd Edition of MOXiI (now known as "*OS Internals", since it's expanded for all of Apple's OSes), in particular Volume III (Security & Insecurity), wherein I use it as the disassembler/decompiler of choice for those of us who can't afford IDA, or like the command line.
+
+.SH "SEE ALSO"
+otool(1), atos(1), nm(1), segedit(1), strings(1), dyldinfo(1), codesign(1)

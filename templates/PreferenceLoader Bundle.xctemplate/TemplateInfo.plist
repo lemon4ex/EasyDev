@@ -16,7 +16,7 @@
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
+				<true/>
 				<key>INFOPLIST_FILE</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Info.plist</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -40,7 +40,7 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/md --xcbp</string>
+					<string>/opt/EasyDev/bin/ed --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
