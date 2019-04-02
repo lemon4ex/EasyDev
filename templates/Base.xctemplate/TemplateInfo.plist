@@ -21,12 +21,6 @@
 			<dict>
 				<key>ENABLE_BITCODE</key>
 				<string>NO</string>
-				<key>EasyDevClearUiCacheOnInstall</key>
-				<string>NO</string>
-				<key>EasyDevKillProcessOnInstall</key>
-				<string>NO</string>
-				<key>EasyDevKillProcessName</key>
-				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 				<key>PRODUCT_NAME</key>
@@ -35,9 +29,15 @@
 				<string></string>
 				<key>EasyDevDevicePort</key>
 				<string></string>
+				<key>EasyDevInstallOnAnyBuild</key>
+				<string>NO</string>
 				<key>EasyDevInstallOnProfiling</key>
 				<string>NO</string>
-				<key>EasyDevInstallOnAnyBuild</key>
+				<key>EasyDevKillProcessOnInstall</key>
+				<string>NO</string>
+				<key>EasyDevKillProcessName</key>
+				<string></string>
+				<key>EasyDevClearUiCacheOnInstall</key>
 				<string>NO</string>
 				<key>EasyDevCopyExecutableOnAnyBuild</key>
 				<string>NO</string>

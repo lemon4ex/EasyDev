@@ -42,6 +42,8 @@ fi</string>
 				<string>YES</string>
 				<key>EasyDevBuildPackageOnAnyBuild</key>
 				<string>NO</string>
+				<key>EasyDevAlsoBuildZipPackageOnAnyBuild</key>
+				<string>NO</string>
 			</dict>
 		</dict>
 	</array>

@@ -956,7 +956,11 @@ function xcodeBuildPhase() # no args
 		[[ "$EasyDevUsePackageVersionPList" != "YES" ]] || \
 			versionPListPath="$packageVersionPListPath"	
 
-		buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
+		if [[ "$EasyDevAlsoBuildZipPackageOnAnyBuild" == "YES" ]]; then
+			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
+		else
+			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" false
+		fi
 		
 		#profile或者用户设置了build安装
 		if [[ "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
