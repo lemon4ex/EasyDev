@@ -24,6 +24,8 @@
 				<key>EasyDevClearUiCacheOnInstall</key>
 				<false/>
 				<key>EasyDevKillProcessOnInstall</key>
+				<false/>
+				<key>EasyDevKillProcessName</key>
 				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
@@ -39,6 +41,8 @@
 				<false/>
 				<key>EasyDevCopyExecutableOnAnyBuild</key>
 				<false/>
+				<key>EasyDevCopyExecutableToDevicePath</key>
+				<string></string>
 			</dict>
 		</dict>
 	</array>

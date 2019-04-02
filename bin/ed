@@ -16,6 +16,8 @@ export DefaultDeviceIP="localhost"
 #默认端口号
 export DefaultDevicePort="2222"
 
+export DefaultDeviceBuildsDir="/var/root/EasyDevBuilds"
+
 export userName="${SUDO_USER-$USER}"
 export userGroup=`id -g $userName`
 export userHome=`eval echo ~$userName`
@@ -881,14 +883,14 @@ function xcodeBuildPhase() # no args
 	[[ $EasyDevDeviceIP != "" ]] || \
 		EasyDevDeviceIP=`getBashProfileEnvVarValue "EasyDevDeviceIP"`
 	[[ $EasyDevDeviceIP != "" ]] || \
-		EasyDevDeviceIP="$DefaultDeviceIP" && echo "use default $DefaultDeviceIP"
+		EasyDevDeviceIP="$DefaultDeviceIP" && echo "use default deviceIP $DefaultDeviceIP"
 
 	#如果编译设置里面EasyDevDevicePort为空的话，就从用户的profile里面去拿，否则使用默认值
 	[[ $EasyDevDevicePort != "" ]] || \
 		EasyDevDevicePort=`getBashProfileEnvVarValue "EasyDevDevicePort"`
 
 	[[ $EasyDevDevicePort != "" ]] || \
-		EasyDevDevicePort="$DefaultDevicePort"
+		EasyDevDevicePort="$DefaultDevicePort" && echo "use default devicePort $DefaultDevicePort"
 
 	#验证必要文件的存在
 	requireFile "$builtExecutable" false
@@ -930,9 +932,9 @@ function xcodeBuildPhase() # no args
 	
 		#拷贝到设备的/var/root/EasyDevBuilds/
 		if [[ "$EasyDevDeviceIP" != "" ]]; then
-			echo "Copying $builtExecutable to /var/root/EasyDevBuilds/$PROJECT_NAME..."
+			echo "Copying $builtExecutable to ${DefaultDeviceBuildsDir}/$PROJECT_NAME..."
 
-			copyFileToDevice "$builtExecutable" "/var/root/EasyDevBuilds/$PROJECT_NAME" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+			copyFileToDevice "$builtExecutable" "${DefaultDeviceBuildsDir}/$PROJECT_NAME" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 		else
 			# build setting EasyDevDeviceIP is empty #
 			panic 1 "Unable to copy executable to device since build setting EasyDevDeviceIP is not set or is empty and it is not exported in your Bash personal initialization file"
@@ -973,13 +975,14 @@ function xcodeBuildPhase() # no args
 						# install package on device #					
 						managePackageOnDevice "install" "$allPackagesDir/$packageFileName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 						
-						if [[ "$EasyDevKillProcessOnInstall" != "" ]]; then
-							if [[ "$EasyDevKillProcessOnInstall" == "SpringBoard" ]]; then
+						if [[ "$EasyDevKillProcessOnInstall" == "YES" && "$EasyDevKillProcessName" != "" ]]; then
+
+							if [[ "$EasyDevKillProcessName" == "SpringBoard" ]]; then
 								echo "respring device..."
 								runFuncOnDevice "respring" "$EasyDevDeviceIP" "$EasyDevDevicePort" 
 							else
-								echo "killall -9 $EasyDevKillProcessOnInstall"
-								runFuncOnDevice "killall -9 $EasyDevKillProcessOnInstall" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+								echo "killall -9 $EasyDevKillProcessName"
+								runFuncOnDevice "killall -9 $EasyDevKillProcessName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 							fi
 						fi
 
