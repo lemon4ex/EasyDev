@@ -20,11 +20,11 @@
 			<key>SharedSettings</key>
 			<dict>
 				<key>ENABLE_BITCODE</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevClearUiCacheOnInstall</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevKillProcessOnInstall</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevKillProcessName</key>
 				<string></string>
 				<key>CODE_SIGN_IDENTITY</key>
@@ -36,13 +36,11 @@
 				<key>EasyDevDevicePort</key>
 				<string></string>
 				<key>EasyDevInstallOnProfiling</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevCopyExecutableOnAnyBuild</key>
-				<false/>
-				<key>EasyDevCopyExecutableToDevicePath</key>
-				<string></string>
+				<string>NO</string>
 			</dict>
 		</dict>
 	</array>

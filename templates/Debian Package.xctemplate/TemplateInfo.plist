@@ -39,9 +39,9 @@ fi</string>
 			<key>SharedSettings</key>
 			<dict>
 				<key>EasyDevUsePackageVersionPList</key>
-				<true/>
+				<string>YES</string>
 				<key>EasyDevBuildPackageOnAnyBuild</key>
-				<false/>
+				<string>NO</string>
 			</dict>
 		</dict>
 	</array>

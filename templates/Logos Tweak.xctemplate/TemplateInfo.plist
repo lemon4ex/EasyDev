@@ -29,7 +29,7 @@
 				<key>HEADER_SEARCH_PATHS</key>
 				<string>$(inherited) $(EasyDevTheosPath)/vendor/include</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<true/>
+				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>INSTALL_PATH</key>
@@ -39,9 +39,9 @@
 				<key>DYLIB_COMPATIBILITY_VERSION</key>
 				<string>1</string>
 				<key>EasyDevInstallOnProfiling</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<false/>
+				<string>NO</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>

@@ -23,13 +23,13 @@
 			<key>SharedSettings</key>
 			<dict>
 				<key>EasyDevInstallOnAnyBuild</key>
-				<false/>
+				<string>NO</string>
 				<key>EasyDevInstallOnProfiling</key>
-				<false/>
+				<string>NO</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<true/>
+				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>INSTALL_PATH</key>

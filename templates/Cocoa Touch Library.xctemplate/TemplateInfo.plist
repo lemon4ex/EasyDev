@@ -25,7 +25,7 @@
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<true/>
+				<string>YES</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>

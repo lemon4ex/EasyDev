@@ -16,7 +16,7 @@
 				<key>GCC_PREFIX_HEADER</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<true/>
+				<string>YES</string>
 				<key>INFOPLIST_FILE</key>
 				<string>___PACKAGENAME___/___PACKAGENAME___-Info.plist</string>
 				<key>WRAPPER_EXTENSION</key>
