@@ -10,3 +10,6 @@
 [submodule "tools/PPiOS-Rename"]
 	path = tools/PPiOS-Rename
 	url = https://github.com/preemptive/PPiOS-Rename.git
+[submodule "tools/classdump-dyld"]
+	path = tools/classdump-dyld
+	url = https://github.com/limneos/classdump-dyld.git

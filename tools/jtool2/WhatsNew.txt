@@ -1,0 +1,301 @@
+JTool 2 begins: (Aqaba)
+---------------
+
+  - Matched JTool features:
+
+	- -F (find string)
+	- -a
+	- -l
+	- -S, -v
+	- --pages (automatically in quick)
+	- -h (for shared cache)
+
+   - Everything is faster.  Especially disassembly, and in some cases by an order of magnitude:
+	- When using -q jtool2 is produces almost same output (but faster than) otool/objdump
+	- Without -q jtool2 is still on par with otool, often faster, AND provides strings + basic decompilation
+	- When testing on SpringBoard (THE pathological case), -q -d finishes in under 2s! jtool v1 would get take minutes (even with -q)
+	- Companion file speedup is now dramatic:
+
+		$ ./jtool2.x64  -d  SpringBoard > /dev/null       # Full
+		  377.51s user 0.58s system 99% cpu 6:18.50 total 
+		$ ./jtool2.x64 -q -d  SpringBoard > /dev/null     # Quick
+	 	  1.15s user 0.02s system 99% cpu 1.181 total
+		$ ./jtool2.x64 --jtooldir /tmp -d  SpringBoard > /dev/null     # Slow, With companion file
+		 10.91s user 0.22s system 99% cpu 11.233 total
+
+07/2018 (Singapore):
+--------------------
+   - Caching in particular is way faster. 
+	- Jtool v1 had an unnecessary cache lookup when adding, which slowed it considerably. No more.
+	- Sequential address lookups in cache now use cursor
+
+   - Decompilation is smarter:
+
+	- JTool detects the number of arguments for a given function automatically. Two corner cases are:
+		- First function call in a given function (won't know how many arguments)
+		- Functions with no arguments (void) may still show up with their first argument
+	- Arguments are also autodetected by type! No need to specify the ([ic@b...) etc (although this
+	  will be supported again in a future release, for those cases where the arguments need to be refined)
+
+   - New argument: --analyze, to create companion file with maximum information
+
+
+09/2018 (Paris):
+----------------
+
+   - New Architectures: arm64e (A12 chipset and later), ARM64_32 (0x2000000c/0x1, for Apple Watch 4)
+
+   - ARMv8.1 instructions (CASP, PAN so far)
+
+   - ARMv8.3 instructions (so you don't have to wait for IDA plugins from people who won't ever deliver)
+	B[L]RA[A/B][Z], RETA[A/B], LDRA[A/B] - still need ERETA[A/B] and XPACD, XPACI, XPACLRI (C6-1002)
+	AUTIA/PACIA/PACGAA Appear to be unused as yet by AAPL
+
+   - Can now work directly on *COMPRESSED* kernelcaches!  Plan is to integrate joker fully into jtool2 - and soon
+
+   - Fix for weird functions like zinit, which seems to ignore (i.e. not get) some arguments (case in point, X2 is not
+     set, while X3 is! Weird)
+
+   - The '-a' and '-o' switch are now much more precise when in shared caches
+	
+morpheus@Zephyr (~/jtool2) % jtool2 -o 0x364d1470 ~/Documents/iOS/12/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e
+Offset 0x364d1470 is in libolaf.dylib:__DATA_CONST.__const, loaded at address 0x1b84d1470
+morpheus@Zephyr (~/jtool2) % jtool2 -a 0x1b84d1470  ~/Documents/iOS/12/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e
+
+   - Dyld-625 support: BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB and BIND_SUBOPCODE_THREADED_APPLY
+	 Shows opcodes in -opcodes
+	 Successfully reconstruct the bindings for dyldinfo -bind (even though it's no longer the real table..)
+
+09/24/2018 (Buenos Aires)
+-------------------------
+
+    - jtool -S is now exactly like nm (when both are sorted).
+    - In fact, it's better than nm, which reports wrong symbol types (e.g. 'S' instead of 'T' on functions) on kernels
+      with __TEXT_EXEC. So another built-in can be replaced.
+
+    - Also supports MacOS kernelcaches (prelinkedkernel, etc), which are single slice FAT
+
+    - Joker now integrated into jtool2 as jokerlib!
+	- Instead of "-K" you can now use "-e ....kext..... /path/to/kernelcache"
+
+    - -e function also works on regular Mach-Os (and kernel) to extract segments or sections
+ 
+10/19/2018 (Paris II)
+------------------
+
+	- Implemented -L... Sorry, jonios :-)
+
+10/24/2018 (Belize City)
+------------------------
+	
+	- dyldinfo assimilation is nearly complete (for now - have -opcodes, -bind, -weak_bind, -lazy_bind, with Tests/dyldinfo.sh)
+	- joker integration - now have some 800 symbols for 1469 kernelcaches fit in
+	- Can operate directly on detached code signatures - ignores switches and does --sig -v (try on iOS /System/Library/AppSignatures/*/.. to get an idea)
+
+
+11/01/2018 (Maui!)
+------------------
+
+	- jtool -l now does 32-bit again..
+	- Supports MH_PRELOAD. Yes, I know XNU doesn't. But iPhone11,*'s Petra does! So you can now disassemble those images
+	  (can your IDA do that?)
+
+	- Code signature improvements: 0x20500 (Thanks to Jeremy Agostino!)
+				       Finally, requirement parsing works (Again, thanks to Jeremy Agostino asking for it)
+				       Colorized output :-)
+	- (VERY) Initial support for notarization tickets
+
+12/08/2018 (Columbia (MD, not the country, unfortunately))
+----------------------------------------------------------
+
+	- TBD generation now built into jtool with --tbd. Must be the only argument.	
+	- Fixed -S crash..
+	- -S -v now displays libraries (like jtool1 did)
+	- jtool2 -d now dumps data as hexdump -C (no need for -v)
+	- Fixed jtool2 -d glitch on in-shared-cache dylib
+	- Jtool2 detects branch pool like 1 did..
+	- Incorporated Darwin 18 shared cache header into JTool; Now will also
+	  tell you which Darwin version a shared cache is built for, by header size.
+	- Will now process older (Darwin 15 and earlier) shared caches.
+	
+12/18/2018 (Jo'Burg)
+--------------------
+	- Minor bug fixes. Don't use this version.
+
+
+12/28/2018 (Vic Falls)
+-----------------------
+	- -vv can now be used for "very verbose" (e.g. print page hashes with --sig, where just -v won't unless they mismatch)
+	- -fix for code signature page hashes in fat files (thanks, jonios)
+	- arm64e correctly identified in fat (now properly handling other various subtypes as well - went back to double check armv7/s/k as well)
+	- arm64_32 (Watch Series IV) now identified and disassembled as well (same as ARM64)
+
+	Many Jokerlib improvements: (2,260 symbols)
+	-------------------------------------------
+
+	- more joker symbols (for --analyze) including scheduler and some skywalk
+
+	- -d __DATA...* now automatically resolves tagged pointers when in a kernelcache! 
+	   Value is still displayed tagged, but resolved to untagged symbol
+
+	- "-dec" now available (like joker classic) to decompress compressed (lzvn/lzss) kernelcaches, 
+	   though you probably won't need it since now jtool2 handles compressed kernelcaches natively.
+
+	- integrated with Xn00p
+
+	- shows all zones (by tracking zinit, in case you IDA folk are wondering)
+	- reconstructs IOService object in __DATA_CONST.__const (the rest of the IO Objects will arrive soon)
+		(and just wait for Vol II coverage :-)
+
+
+01/01/2019 (Chobe)
+------------------
+	
+	- Happy New 2019, people!
+	- Fixed -[lazy/]bind bug I had, especially with ARM64e bindings.. Now tables displayed correctly
+	- Now resolving all stubs in arm64e binaries. -d works to resolve all functions.
+	- Also resolves "B", not just BL (for functions wrapping and returning other functions)
+
+01/7/2019 (19˚30'45"/23˚37'30") - Mostly joker improvements - and substantial ones
+-------------------------------
+
+	- 2600+ symbols in joker
+	- IOKit classes!
+	- With no arguments, will identify a kernelcache (@TODO: Do this for all MachO)
+	- Fixed some FAT binary handling (for those with capabilities != 0x0)
+
+01/23/2019 (哈尔滨 IV) - joker improvements, Obj-C is coming back soon
+----------------------
+
+	- Now Beta, no longer Alpha
+
+	- Companion file format is now '0x....|_symbol[|comment]' (that is, |-delimited instead of :)
+	   A bit confusing and breaks compatibility with older jtool, but better for upcoming Obj-C
+	   support and more parseable in general. If you want to convert old companion files to new:
+		tr ':' '|' 
+	   will do the trick
+
+	- x2.5 faster symbol cache performance:
+
+before (using 1469 kernelcache as test)
+
+morpheus@Zephyr (~/Downloads) %time jtool2 -d ~/Downloads/kernelcache.XS.12.1 > /dev/null
+Disassembling 22412880 bytes from address 0xfffffff007a00000 (offset 0x9fc000):
+jtool2 -d ~/Downloads/kernelcache.XS.12.1 > /dev/null  426.22s user 1.32s system 99% cpu 7:11.13 total
+
+after:
+Disassembling 22412880 bytes from address 0xfffffff007a00000 (offset 0x9fc000):
+jtool2 -d ~/Downloads/kernelcache.XS.12.1 > /dev/null  172.82s user 0.57s system 99% cpu 2:53.96 total
+
+And SpringBoard:
+
+morpheus@Zephyr (~/Downloads) % jtool2 --analyze /Volumes/PeaceBSeed16B5084a.D331DeveloperOS/System/Library/CoreServices/SpringBoard.app/SpringBoard
+Analyzing file...
+Processing __DATA..
+opened companion file ./SpringBoard.ARM64.4EAFF7DB-E2E8-32AA-A0E7-0F8A80AEA0D0
+Dumping symbol cache to file
+Symbolicated 18084 symbols to ./SpringBoard.ARM64.4EAFF7DB-E2E8-32AA-A0E7-0F8A80AEA0D0
+morpheus@Zephyr (~/Downloads) % time jtool2 -d /Volumes/PeaceBSeed16B5084a.D331DeveloperOS/System/Library/CoreServices/SpringBoard.app/SpringBoard > /dev/null
+opened companion file ./SpringBoard.ARM64.4EAFF7DB-E2E8-32AA-A0E7-0F8A80AEA0D0
+Disassembling 7156024 bytes from address 0x100008124 (offset 0x8124):
+jtool2 -d  > /dev/null  4.28s user 0.10s system 99% cpu 4.405 total
+
+
+	- Analysis is *WAY* faster: x7-10 times!
+
+Before:
+
+morpheus@Zephyr (~/Downloads) %time jtool2 --analyze kernelcache.XS.12.1.1_16C50 
+Analyzing kernelcache..
+...
+Symbolicated 4468 symbols to ./kernelcache.XS.12.1.1_16C50.ARM64.557D0BCE-5CB7-351A-88BA-65A0A68390A3
+jtool2 --analyze kernelcache.XS.12.1.1_16C50  68.81s user 0.69s system 99% cpu 1:10.08 total
+
+After:
+
+morpheus@Zephyr (~/Downloads) %time jtool2 --analyze kernelcache.XS.12.1.1_16C50   
+Analyzing kernelcache..
+...
+Symbolicated 4468 symbols to ./kernelcache.XS.12.1.1_16C50.ARM64.557D0BCE-5CB7-351A-88BA-65A0A68390A3
+jtool2 --analyze kernelcache.XS.12.1.1_16C50  6.37s user 0.51s system 99% cpu 6.909 total
+
+	- Unleashed full functionality of IOKit classes - now have over 1800+!
+
+	- Total symbol count jumped to 4,600 thanks to new IOKit classes AND IOUserClient methods
+
+	- bcopy/bzero/kernel_task/etc (for s0rrymybad's tfp0)
+
+01/27/2019 (TLV)  
+----------------
+
+	- Smaller binary
+	- LC_REEXPORT_DYLIB shows dylib in -l (stupid switch case omission...)
+	- Fixed dump bug on sections with 0x1 bit set (mistakenly thought to be zero filled)
+	- -a now shows which symbol is resolved if/when address resolves to a symbol
+	- Missing PACIA instructions are back :-)
+	- -k works on 1469 kernel caches as well
+	- jtool2 -pages on pre-1469 kernelcaches shows kext breakdown
+	- kextracted kexts (from joker) no longer mistakenly identified as kernelcaches
+	- kernelcache search (on pre-1469) is improved so that '-F' shows kext name instead of __PRELINK_TEXT.
+
+02/06/2019 (Cheltenham)
+-----------------------
+
+	- -D (Decompile!) in really, really, early stage alpha
+	- Disassembly of 'B' now takes into account a jump to a symbol (but not _func..)
+	- Accidentally supplying a directory name no longer produces mmap(2) error. I need to update this still to work on apps, though, like jtool1
+	- Fixed rare crash in cursor logic
+	- arm64_32 slice now also included in fat 
+	- A few other instructions that were @TODO (namely, UMULL, PACGA) are in
+
+02/23/2019 (Aruba)
+-----------------------
+
+	- Now works again on object files or files with virtual address 0 mapped  (thanks,  darkknight  & acura)
+	- more symbols in jokerlib..
+	- Compiles more cleanly (still a few minor warnings) on Linux
+	- Fixed LC_RPATH so it prints not just on verbose (-v)
+	- Ignoring S_ZEROFILL regions (so won't report anything falling in DATA.__bss)
+	- Disassembles PPL, and (joker) symbolicates ppl symbols
+	- -G (Gadget search) now works in Jtool2, not just disarm (and case sensitive, as it should be)
+
+03/14/2019 (Happy Birthday, PiDay) - NY
+----------------------------------------
+
+	- MIG dumping and smart value now works on ARM64e binaries (untag pointers automatically)
+	- Specific kernel symbols in --analyze (for @pwn20ned)
+	- Fixed companion file support when found in same directory as target file, but not in current.
+	- Fixed dup symbols sometimes showing up..
+	- Stack emulation is back.
+	- os_log strings also decompiled now
+	- --analyze on standard Mach-O now auto-resolves all stubs too
+	- global symbols now recognized and interpolated in Obj-C and function decompilation
+	- Over 7,000 symbols in X12 kernelcaches and going strong. If you're reading this and have specific symbols you need - just drop me a line..
+	- Also fixed dumping data in kexts and dylibs (due to not resolving any value under too low a threshold)
+
+
+Coming soon:
+------------
+	- *Sigh* FAT binary signing and multiple binary signing (for @pwn20ned :-)
+	- add entitlements, not just --ent
+	- sign both SHA1 and 256 (as switch: --alg sha1,sha256,384)
+
+	- Operating on SLC when on iDevice to use in memory SLC instead of on disk cache, saving the mmap(2) operation
+	- SLC branch islands
+	- significant improvements in caching mechanism - should speed up -d by orders of magnitude
+	- --analyze on shared caches creates companion file of every symbol
+   	- Kernelcache support: Work on the kexts directly in a Kernelcache (works already, but 1469 threw this back)
+	- Objective-C parsing, and better than JTool 1's (Working on it, Dark Knight. Working on it..)
+	- Swift, maybe?
+	- Shared cache extraction: The right way, producing minimal sized and fully relocatable dylibs which can then be DYLD_INSERT...ed into any process!
+	- Scripting... (JToolPython? ;-)
+
+ 	- Branch pools (in ARM64 SLCs) accessible again through :pool[0-9]
+	-- jtool --ent in jlutil format
+	- fix 0xdac12be8 (IOAccessoryPortSerial)
+
+Bugs:
+-----
+
+	jtool2 -d __TEXT.__cstring on shared cache 
+fffffff0081ea478        0xd50323ff  __2DO       0xd50323ff  ?
