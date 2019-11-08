@@ -157,6 +157,31 @@
 					<key>ShellScript</key>
 					<string>#!/bin/sh
 
+function doCodeSign() {
+    SAVEIFS=&quot;$IFS&quot;
+    IFS=$&apos;\n&apos;
+    
+    signatures=($(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;))
+    
+    for signature in ${signatures[@]}; do
+        rm -rf &quot;${signature}&quot;
+    done
+    
+    # resign dylib
+    dylibs=($(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;))
+    for dylib in ${dylibs[@]}; do
+        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
+    done
+    
+    # resign frameworks
+    frameworks=($(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;))
+    for framework in ${frameworks[@]}; do
+        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
+    done
+    
+    IFS=&quot;$SAVEIFS&quot;
+}
+
 if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ]; then
     target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
 elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ]; then
@@ -225,10 +250,8 @@ fi
 # 注意，这一步必须
 chmod 777 &quot;${product_exe_path}&quot;
 
-# 只需要签名dylib的动态库就行，app和framework签名xcode会自己处理
-#doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;
-#/usr/bin/codesign -i &quot;${sign_id}&quot; -t &quot;${product_app_path}&quot;
-#/usr/bin/codesign --force --sign &quot;${sign_id}&quot; &quot;${product_app_path}&quot;
+# 必须执行重签名，否则出现导致ipa安装失败
+doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;
 </string>
 				</dict>
 			</array>
