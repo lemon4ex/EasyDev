@@ -6,93 +6,53 @@
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
 	<string>net.ymlab.easyDev.cocoaPluginFramework</string>
-	<key>Concrete</key>
-	<true/>
-	<key>Description</key>
-	<string>This template creates a framework that uses Cocoa.</string>
-	<key>Platforms</key>
-	<array>
-		<string>com.apple.platform.macosx</string>
-	</array>
 	<key>Ancestors</key>
 	<array>
 		<string>com.apple.dt.unit.base</string>
 		<string>com.apple.dt.unit.osxBase</string>
 	</array>
+	<key>Concrete</key>
+	<true/>
+	<key>Description</key>
+	<string>This template builds a library that links against the Cocoa framework.</string>
+	<key>SortOrder</key>
+	<integer>10</integer>
 	<key>Targets</key>
 	<array>
 		<dict>
-			<key>ProductType</key>
-			<string>com.apple.product-type.library.dynamic</string>
 			<key>TargetIdentifier</key>
-			<string>plugin</string>
+			<string>com.apple.dt.cocoaLibraryOrFrameworkTarget</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Mac Developer</string>
-			</dict>
-			<key>BuildPhases</key>
-			<array/>
-		</dict>
-		<dict>
-			<key>Name</key>
-			<string>___VARIABLE_TargetAppName___</string>
-			<key>ProductType</key>
-			<string>com.apple.product-type.application</string>
-			<key>SharedSettings</key>
-			<dict>
-				<key>INFOPLIST_FILE</key>
-				<string>___PACKAGENAME___/Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>___VARIABLE_TargetAppName___</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>___VARIABLE_TargetAppBundleId___</string>
-				<key>DEFINES_MODULE</key>
-				<string>YES</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Mac Developer</string>
+				<key>INSTALL_PATH</key>
+				<string>@executable_path/lib___PACKAGENAME___.dylib</string>
+				<key>EXECUTABLE_PREFIX</key>
+				<string>lib</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
 				<dict>
 					<key>Class</key>
-					<string>ShellScript</string>
+					<string>Sources</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Frameworks</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Headers</string>
+				</dict>
+				<dict>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/tools/pack-osx.sh</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
-					<key>ShowEnvVarsInLog</key>
-					<string>true</string>
-					<key>ShellScript</key>
-					<string>#!/bin/sh
-
-target_exe_name=&quot;${TARGET_NAME}_x86_64&quot;
-resource_path=&quot;${SRCROOT}/Resources&quot;
-target_app_name=&quot;${TARGET_NAME}.app&quot;
-sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
-dylib_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.dylib&quot;
-resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
-product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Contents/MacOS/${TARGET_NAME}&quot;
-product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
-
-rm -rf &quot;${pruduct_app_path}&quot;
-cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
-cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
-cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}/Contents/MacOS&quot;
-
-/opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
-
-chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须</string>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
 				</dict>
-			</array>
-			<key>Dependencies</key>
-			<array>
-				<string>plugin</string>
 			</array>
 		</dict>
 	</array>
@@ -100,41 +60,165 @@ chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须</string>
 	<array>
 		<dict>
 			<key>Identifier</key>
-			<string>TargetAppName</string>
-			<key>Required</key>
-			<true/>
+			<string>libraryFramework</string>
 			<key>Name</key>
-			<string>Target App Name:</string>
+			<string>Framework:</string>
 			<key>Description</key>
-			<string>Target App Name.</string>
+			<string>What system framework the library will be based on</string>
 			<key>Type</key>
-			<string>text</string>
-			<key>Placeholder</key>
-			<string>AppStore</string>
+			<string>popup</string>
+			<key>Values</key>
+			<array>
+				<string>Cocoa</string>
+				<string>STL (C++ Library)</string>
+				<string>None (Plain C/C++ Library)</string>
+			</array>
+			<key>Default</key>
+			<string>Cocoa</string>
+			<key>Units</key>
+			<dict>
+				<key>Cocoa</key>
+				<array>
+					<dict>
+						<key>Nodes</key>
+						<array>
+							<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+							<string>___PACKAGENAMEASIDENTIFIER___.m</string>
+						</array>
+						<key>Definitions</key>
+						<dict>
+							<key>___PACKAGENAMEASIDENTIFIER___.h</key>
+							<dict>
+								<key>Path</key>
+								<string>Cocoa___PACKAGENAMEASIDENTIFIER___.h</string>
+							</dict>
+							<key>___PACKAGENAMEASIDENTIFIER___.m</key>
+							<dict>
+								<key>Path</key>
+								<string>Cocoa___PACKAGENAMEASIDENTIFIER___.m</string>
+							</dict>
+						</dict>
+					</dict>
+				</array>
+				<key>STL (C++ Library)</key>
+				<array>
+					<dict>
+						<key>Targets</key>
+						<array>
+							<dict>
+								<key>SharedSettings</key>
+								<dict>
+									<key>GCC_ENABLE_CPP_EXCEPTIONS</key>
+									<string>YES</string>
+									<key>GCC_ENABLE_CPP_RTTI</key>
+									<string>YES</string>
+								</dict>
+							</dict>
+						</array>
+						<key>Nodes</key>
+						<array>
+							<string>___PACKAGENAMEASIDENTIFIER___.hpp</string>
+							<string>___PACKAGENAMEASIDENTIFIER___Priv.hpp</string>
+							<string>___PACKAGENAMEASIDENTIFIER___.cpp</string>
+						</array>
+						<key>Definitions</key>
+						<dict>
+							<key>___PACKAGENAMEASIDENTIFIER___.hpp</key>
+							<dict>
+								<key>Path</key>
+								<string>STL___PACKAGENAMEASIDENTIFIER___.hpp</string>
+							</dict>
+							<key>___PACKAGENAMEASIDENTIFIER___.cpp</key>
+							<dict>
+								<key>Path</key>
+								<string>STL___PACKAGENAMEASIDENTIFIER___.cpp</string>
+							</dict>
+							<key>___PACKAGENAMEASIDENTIFIER___Priv.hpp</key>
+							<dict>
+								<key>Path</key>
+								<string>STL___PACKAGENAMEASIDENTIFIER___Priv.hpp</string>
+							</dict>
+						</dict>
+					</dict>
+					<dict>
+						<key>RequiredOptions</key>
+						<dict>
+							<key>libraryType</key>
+							<string>Dynamic</string>
+						</dict>
+						<key>Targets</key>
+						<array>
+							<dict>
+								<key>SharedSettings</key>
+								<dict>
+									<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
+									<string>YES</string>
+								</dict>
+							</dict>
+						</array>
+					</dict>
+				</array>
+				<key>None (Plain C/C++ Library)</key>
+				<array>
+					<dict/>
+				</array>
+			</dict>
 		</dict>
 		<dict>
 			<key>Identifier</key>
-			<string>TargetAppBundleId</string>
-			<key>Required</key>
-			<true/>
+			<string>libraryType</string>
 			<key>Name</key>
-			<string>Target App Bundle Id:</string>
+			<string>Type:</string>
 			<key>Description</key>
-			<string>Target App Bundle Id.</string>
+			<string>Which type of library to create</string>
 			<key>Type</key>
-			<string>text</string>
-			<key>Placeholder</key>
-			<string>com.apple.appStore</string>
+			<string>popup</string>
+			<key>Default</key>
+			<string>Dynamic</string>
+			<key>Units</key>
+			<dict>
+				<key>Dynamic</key>
+				<array>
+					<dict>
+						<key>Targets</key>
+						<array>
+							<dict>
+								<key>ProductType</key>
+								<string>com.apple.product-type.library.dynamic</string>
+								<key>SharedSettings</key>
+								<dict>
+									<key>DYLIB_COMPATIBILITY_VERSION</key>
+									<string>1</string>
+									<key>DYLIB_CURRENT_VERSION</key>
+									<string>1</string>
+								</dict>
+							</dict>
+						</array>
+					</dict>
+				</array>
+				<key>Static</key>
+				<array>
+					<dict>
+						<key>Targets</key>
+						<array>
+							<dict>
+								<key>ProductType</key>
+								<string>com.apple.product-type.library.static</string>
+							</dict>
+						</array>
+					</dict>
+				</array>
+			</dict>
 		</dict>
 	</array>
-	<key>Nodes</key>
-	<array>
-		<string>Info.plist</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
-		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
-		<string>../Resources/readme.txt</string>
-	</array>
+	<key>Project</key>
+	<dict>
+		<key>SharedSettings</key>
+		<dict>
+			<key>EasyDevPath</key>
+			<string>/opt/EasyDev</string>
+		</dict>
+	</dict>
 	<key>Definitions</key>
 	<dict>
 		<key>Info.plist</key>
@@ -180,20 +264,21 @@ chmod 777 &quot;${product_exe_path}&quot; #注意，这一步必须</string>
 			<key>Path</key>
 			<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
 		</dict>
-		<key>../Resources/readme.txt</key>
+		<key>TargetApp/put mac app here</key>
 		<dict>
-			<key>Beginning</key>
-			<string>此文件夹内存放需要使用的资源文件，请按照以下结构存放，如有资源名字调整，请到编译脚本里修改相关脚本代码。
-
-├── ___VARIABLE_TargetAppName___.app 	被调试的目标app
-├── ___VARIABLE_TargetAppName____x86_64	目标64位二进制，强烈建议恢复符号
-└── 其他文件
-└── ......</string>
 			<key>Group</key>
 			<array>
-				<string>Resources</string>
+				<string>TargetApp</string>
 			</array>
 		</dict>
 	</dict>
+	<key>Nodes</key>
+	<array>
+		<string>Info.plist</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+		<string>___PACKAGENAMEASIDENTIFIER___.m</string>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>TargetApp/put mac app here</string>
+	</array>
 </dict>
 </plist>

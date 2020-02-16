@@ -5,389 +5,67 @@
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
-	<string>net.ymlab.easyDev.pluginFramework</string>
+	<string>net.ymlab.easyDev.singleViewApplication</string>
+	<key>Ancestors</key>
+	<array>
+		<string>com.apple.dt.unit.bundleBase</string>
+		<string>com.apple.dt.unit.iosBase</string>
+	</array>
 	<key>Concrete</key>
 	<true/>
 	<key>Description</key>
-	<string>This template builds a plugin framework that links against the Foundation and UIKit frameworks.</string>
-	<key>Platforms</key>
-	<array>
-		<string>com.apple.platform.iphoneos</string>
-	</array>
-	<key>Ancestors</key>
-	<array>
-		<string>net.ymlab.easyDev.base</string>
-	</array>
-	<key>Project</key>
-	<dict>
-		<key>SharedSettings</key>
-		<dict>
-			<key>CODE_SIGN_IDENTITY</key>
-			<string>iPhone Developer</string>
-			<key>ENABLE_BITCODE</key>
-			<string>NO</string>
-			<key>TARGETED_DEVICE_FAMILY</key>
-			<string>1,2</string>
-			<key>GCC_WARN_ABOUT_MISSING_PROTOTYPES</key>
-			<string>YES</string>
-			<key>GCC_WARN_UNUSED_VARIABLE</key>
-			<string>YES</string>
-			<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-			<string>YES</string>
-			<key>GCC_C_LANGUAGE_STANDARD</key>
-			<string>gnu99</string>
-			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
-			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
-			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-			<string>8.0</string>
-		</dict>
-		<key>SDK</key>
-		<string>iphoneos</string>
-		<key>Configurations</key>
-		<dict>
-			<key>Debug</key>
-			<dict>
-				<key>VALIDATE_PRODUCT</key>
-				<string>NO</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<string>DEBUG=1 $(inherited)</string>
-				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-				<string>NO</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-			</dict>
-			<key>Release</key>
-			<dict>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-		</dict>
-	</dict>
-	<key>Targets</key>
-	<array>
-		<dict>
-			<key>TargetIdentifier</key>
-			<string>plugin</string>
-			<key>ProductType</key>
-			<string>com.apple.product-type.library.dynamic</string>
-			<key>SharedSettings</key>
-			<dict>
-				<key>HEADER_SEARCH_PATHS</key>
-				<string>$(inherited) $(EasyDevPath)/include $(EasyDevTheosPath)/vendor/include/**</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
-				<key>INSTALL_PATH</key>
-				<string>/Library/MobileSubstrate/DynamicLibraries</string>
-				<key>DYLIB_CURRENT_VERSION</key>
-				<string>1</string>
-				<key>DYLIB_COMPATIBILITY_VERSION</key>
-				<string>1</string>
-				<key>EasyDevInstallOnAnyBuild</key>
-				<string>NO</string>
-				<key>EasyDevInstallOnProfiling</key>
-				<string>NO</string>
-			</dict>
-			<key>BuildPhases</key>
-			<array>
-				<dict>
-					<key>Class</key>
-					<string>Sources</string>
-				</dict>
-				<dict>
-					<key>Class</key>
-					<string>Frameworks</string>
-				</dict>
-				<dict>
-					<key>Class</key>
-					<string>Headers</string>
-				</dict>
-				<dict>
-					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/ed --xcbp</string>
-					<key>ShellPath</key>
-					<string>/bin/sh</string>
-					<key>RunOnlyForDeploymentPostprocessing</key>
-					<false/>
-					<key>Class</key>
-					<string>ShellScript</string>
-				</dict>
-			</array>
-			<key>Frameworks</key>
-			<array>
-				<string>Foundation</string>
-			</array>
-		</dict>
-		<dict>
-			<key>Name</key>
-			<string>___VARIABLE_TargetAppName___</string>
-			<key>ProductType</key>
-			<string>com.apple.product-type.application</string>
-			<key>SharedSettings</key>
-			<dict>
-				<key>INFOPLIST_FILE</key>
-				<string>___PACKAGENAME___/Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>___VARIABLE_TargetAppName___</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>___VARIABLE_TargetAppBundleId___</string>
-				<key>DEFINES_MODULE</key>
-				<string>YES</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
-			</dict>
-			<key>BuildPhases</key>
-			<array>
-				<dict>
-					<key>Class</key>
-					<string>ShellScript</string>
-					<key>ShellPath</key>
-					<string>/bin/sh</string>
-					<key>ShowEnvVarsInLog</key>
-					<string>true</string>
-					<key>ShellScript</key>
-					<string>#!/bin/sh
-
-function doCodeSign() {
-    SAVEIFS=&quot;$IFS&quot;
-    IFS=$&apos;\n&apos;
-    
-    signatures=($(/usr/bin/find &quot;${1}&quot; -name &quot;_CodeSignature&quot;))
-    
-    for signature in ${signatures[@]}; do
-        rm -rf &quot;${signature}&quot;
-    done
-    
-    # resign dylib
-    dylibs=($(/usr/bin/find &quot;${1}&quot; -name &quot;*.dylib&quot;))
-    for dylib in ${dylibs[@]}; do
-        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$dylib&quot;
-    done
-    
-    # resign frameworks
-    frameworks=($(/usr/bin/find &quot;${1}&quot; -name &quot;*.framework&quot;))
-    for framework in ${frameworks[@]}; do
-        /usr/bin/codesign --force --sign &quot;${2}&quot; &quot;$framework&quot;
-    done
-    
-    IFS=&quot;$SAVEIFS&quot;
-}
-
-if [ &quot;${CONFIGURATION}&quot; == &quot;Debug&quot; ]; then
-    target_exe_name=&quot;${TARGET_NAME}_arm64&quot;
-elif [ &quot;${CONFIGURATION}&quot; == &quot;Debug_32&quot; ]; then
-    target_exe_name=&quot;${TARGET_NAME}_armv7&quot;
-else
-    echo &quot;错误的工程配置&quot;
-    exit
-fi
-
-resource_path=&quot;${SRCROOT}/Resources&quot;
-target_app_name=&quot;${TARGET_NAME}.app&quot;
-sign_id=&quot;${EXPANDED_CODE_SIGN_IDENTITY}&quot;
-dylib_path=&quot;${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}.dylib&quot;
-resource_exe_path=&quot;${resource_path}/${target_exe_name}&quot;
-product_exe_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/${TARGET_NAME}&quot;
-product_app_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}&quot;
-resource_app_path=&quot;${resource_path}/${target_app_name}&quot;
-product_framework_path=&quot;${BUILT_PRODUCTS_DIR}/${target_app_name}/Frameworks&quot;
-
-# xcode版本号导出变量，如下是xcode9.4.1
-# export XCODE_VERSION_ACTUAL=0941
-# export XCODE_VERSION_MAJOR=0900
-# export XCODE_VERSION_MINOR=0940
-
-# 修复xcode10下embedded.mobileprovision文件生成后又被删除的问题
-if [[ ${XCODE_VERSION_MAJOR} -gt 900 ]]; then
-    mv -f &quot;${product_app_path}/embedded.mobileprovision&quot; &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot;
-fi
-
-rm -rf &quot;${product_app_path}&quot;
-cp -rf &quot;${resource_app_path}&quot; &quot;${product_app_path}&quot;
-cp -rf &quot;${resource_exe_path}&quot; &quot;${product_exe_path}&quot;
-cp -rf &quot;${dylib_path}&quot; &quot;${product_app_path}&quot;
-
-if [[ ${XCODE_VERSION_MAJOR} -gt 900 ]]; then
-    mv -f &quot;${BUILT_PRODUCTS_DIR}/embedded.mobileprovision&quot; &quot;${product_app_path}/embedded.mobileprovision&quot;
-fi
-
-# 删除 Plugin 和 Watch 文件夹，提高安装拷贝速度
-rm -rf &quot;$product_app_path/PlugIns&quot;
-rm -rf &quot;$product_app_path/Watch&quot;
-
-# 修复xcode10自动生成info.plist导致覆盖原应用info.plist文件的问题
-if [[ ${XCODE_VERSION_MAJOR} -gt 900 ]]; then
-    project_info_path=&quot;${SRCROOT}/${PROJECT_NAME}/Info.plist&quot;
-    resource_info_path=&quot;${resource_app_path}/Info.plist&quot;
-    if [ -f &quot;${project_info_path}&quot; ] &amp;&amp; [ -f &quot;${resource_info_path}&quot; ]; then
-        diff &quot;${project_info_path}&quot; &quot;${resource_info_path}&quot; &gt;/dev/null
-        if [ $? != 0 ]; then
-            /usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier ${PRODUCT_BUNDLE_IDENTIFIER}&quot; &quot;${resource_info_path}&quot;
-            cp -rf &quot;${resource_info_path}&quot; &quot;${project_info_path}&quot;
-        fi
-    else
-        echo &quot;${project_info_path} or ${resource_info_path} does not exist, please check filename.&quot;
-    fi
-else 
-    /usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier ${PRODUCT_BUNDLE_IDENTIFIER}&quot; &quot;${product_app_path}/Info.plist&quot;
-fi
-
-# 加入Reveal库
-# cp -rf &quot;${EasyDevPath}/frameworks/RevealServer.framework&quot; &quot;${product_framework_path}/RevealServer.framework&quot;
-# /opt/EasyDev/bin/optool install -p &quot;@rpath/RevealServer.framework/RevealServer&quot; -t &quot;${product_exe_path}&quot;
-
-/opt/EasyDev/bin/optool install -p &quot;@executable_path/${PROJECT_NAME}.dylib&quot; -t &quot;${product_exe_path}&quot;
-
-# 注意，这一步必须
-chmod 777 &quot;${product_exe_path}&quot;
-
-# 必须执行重签名，否则出现导致ipa安装失败
-doCodeSign &quot;${product_app_path}&quot; &quot;${sign_id}&quot;
-</string>
-				</dict>
-			</array>
-			<key>Dependencies</key>
-			<array>
-				<string>plugin</string>
-			</array>
-		</dict>
-	</array>
-	<key>Options</key>
-	<array>
-		<dict>
-			<key>Identifier</key>
-			<string>TargetAppName</string>
-			<key>Required</key>
-			<true/>
-			<key>Name</key>
-			<string>Target App Name:</string>
-			<key>Description</key>
-			<string>Target App Name.</string>
-			<key>Type</key>
-			<string>text</string>
-			<key>Placeholder</key>
-			<string>AppStore</string>
-		</dict>
-		<dict>
-			<key>Identifier</key>
-			<string>TargetAppBundleId</string>
-			<key>Required</key>
-			<true/>
-			<key>Name</key>
-			<string>Target App Bundle Id:</string>
-			<key>Description</key>
-			<string>Target App Bundle Id.</string>
-			<key>Type</key>
-			<string>text</string>
-			<key>Placeholder</key>
-			<string>com.apple.appStore</string>
-		</dict>
-	</array>
+	<string>This template provides a starting point for an application that uses a single view. It provides a view controller to manage the view, and a storyboard or nib file that contains the view.</string>
+	<key>SortOrder</key>
+	<integer>1</integer>
 	<key>Nodes</key>
 	<array>
-		<string>Info.plist</string>
-		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.m</string>
-		<string>Package/DEBIAN/control:debianControl:section</string>
-		<string>Package/DEBIAN/control:debianControl:depends</string>
-		<string>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</string>
-		<string>../Resources/README.txt</string>
+		<string>icon.png</string>
+		<string>Info.plist:PackageType</string>
+		<string>Info.plist:IconFiles</string>
+		<string>TargetApp/put ipa or app here</string>
 		<string>../.gitignore</string>
 		<string>../README.md</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
-		<key>___PACKAGENAMEASIDENTIFIER___.h</key>
+		<key>icon.png</key>
 		<dict>
+			<key>TargetIndices</key>
+			<array/>
 			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
+			<string>icon.png</string>
 		</dict>
-		<key>___PACKAGENAMEASIDENTIFIER___.m</key>
-		<dict>
-			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.m</string>
-		</dict>
-		<key>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>Package</string>
-				<string>Library</string>
-				<string>MobileSubstrate</string>
-				<string>DynamicLibraries</string>
-			</array>
-			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.plist</string>
-		</dict>
-		<key>*:debianControl:section</key>
-		<string>Section: Tweaks</string>
-		<key>*:debianControl:depends</key>
-		<string>Depends: firmware (&gt;= 7.0), mobilesubstrate</string>
-		<key>../Resources/README.txt</key>
+		<key>main.m:main</key>
 		<dict>
 			<key>Beginning</key>
-			<string>此文件夹内存放需要使用的资源文件，请按照以下结构存放，如有资源名字调整，请到编译脚本里修改相关脚本代码。
-
-├── WeChat.app 	被调试的目标app
-├── WeChat_arm64	目标64位二进制，强烈建议恢复符号
-└── WeChat_armv7	目标32位二进制，强烈建议恢复符号
-└── 其他文件
-└── ......
-
-以上文件或目录可以使用`软链接`形式（不能用替身！必须是软链），避免增加磁盘占用。
-
-```
-cd Resources
-ln -fs xxxxxxx/Resources/WeChat.app ~/WeChat.app
-ln -fs xxxxxxx/Resources/WeChat_arm64 ~/WeChat_arm64
-```</string>
-			<key>Group</key>
-			<array>
-				<string>Resources</string>
-			</array>
+			<string>int main(int argc, const char * argv[]) {</string>
+			<key>End</key>
+			<string>}</string>
+			<key>Indent</key>
+			<integer>1</integer>
 		</dict>
-		<key>Info.plist</key>
+		<key>main.m</key>
 		<dict>
-			<key>Path</key>
-			<string>Info.plist</string>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
+			<key>SortOrder</key>
+			<integer>999</integer>
 		</dict>
-		<key>PackageVersion.plist</key>
+		<key>Info.plist:PackageType</key>
+		<string>&lt;key&gt;CFBundlePackageType&lt;/key&gt;
+&lt;string&gt;APPL&lt;/string&gt;
+</string>
+		<key>Info.plist:IconFiles</key>
+		<string>&lt;key&gt;CFBundleIconFiles&lt;/key&gt;
+&lt;array&gt;
+&lt;string&gt;___PACKAGENAME___/icon.png&lt;/string&gt;
+&lt;/array&gt;</string>
+		<key>TargetApp/put ipa or app here</key>
 		<dict>
+			<key>TargetIndices</key>
+			<array/>
 			<key>Group</key>
 			<array>
-				<string>Supporting Files</string>
+				<string>TargetApp</string>
 			</array>
-			<key>Beginning</key>
-			<string>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
-&lt;plist version=&quot;1.0&quot;&gt;
-&lt;dict&gt;
-	&lt;key&gt;Major&lt;/key&gt;
-	&lt;string&gt;1&lt;/string&gt;
-	&lt;key&gt;Minor&lt;/key&gt;
-	&lt;string&gt;0&lt;/string&gt;
-	&lt;key&gt;BugFix&lt;/key&gt;
-	&lt;string&gt;&lt;/string&gt;
-	&lt;key&gt;Stage&lt;/key&gt;
-	&lt;string&gt;&lt;/string&gt;
-	&lt;key&gt;PackageRevision&lt;/key&gt;
-	&lt;string&gt;1&lt;/string&gt;
-&lt;/dict&gt;
-&lt;/plist&gt;</string>
 		</dict>
 		<key>../.gitignore</key>
 		<dict>
@@ -408,5 +86,96 @@ ln -fs xxxxxxx/Resources/WeChat_arm64 ~/WeChat_arm64
 			</array>
 		</dict>
 	</dict>
+	<key>Targets</key>
+	<array>
+		<dict>
+			<key>ProductType</key>
+			<string>com.apple.product-type.application</string>
+			<key>SharedSettings</key>
+			<dict>
+				<key>EASYDEV_TARGET_BUNDLEID</key>
+				<string>NO</string>
+				<key>EASYDEV_ADD_SUBSTRATE</key>
+				<string>NO</string>
+				<key>EASYDEV_INSERT_DYLIB</key>
+				<string>YES</string>
+				<key>ENABLE_BITCODE</key>
+				<string>NO</string>
+			</dict>
+			<key>BuildPhases</key>
+			<array>
+				<dict>
+					<key>Class</key>
+					<string>Sources</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Frameworks</string>
+				</dict>
+				<dict>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/tools/pack-ios.sh</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Resources</string>
+				</dict>
+				<dict>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>DstSubfolderSpec</key>
+					<integer>10</integer>
+					<key>DstPath</key>
+					<string></string>
+					<key>Class</key>
+					<string>CopyFiles</string>
+				</dict>
+				<dict>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/tools/pack-ios.sh codesign</string>
+				</dict>
+			</array>
+			<key>TargetIdentifier</key>
+			<string>net.ymlab.easyDev.TargetApp</string>
+		</dict>
+	</array>
+	<key>Options</key>
+	<array/>
+	<key>Project</key>
+	<dict>
+		<key>SharedSettings</key>
+		<dict>
+			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+			<string>8.0</string>
+		</dict>
+	</dict>
+	<key>Components</key>
+	<array>
+		<dict>
+			<key>ProductBuildPhaseInjections</key>
+			<array>
+				<dict>
+					<key>TargetIdentifier</key>
+					<string>net.ymlab.easyDev.TargetApp</string>
+				</dict>
+			</array>
+			<key>Identifier</key>
+			<string>net.ymlab.easyDev.captainHookTweak</string>
+			<key>Name</key>
+			<string>lib___PACKAGENAME___</string>
+		</dict>
+	</array>
 </dict>
 </plist>
