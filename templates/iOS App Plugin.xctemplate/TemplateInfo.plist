@@ -99,8 +99,6 @@
 				<string>NO</string>
 				<key>EASYDEV_INSERT_DYLIB</key>
 				<string>YES</string>
-				<key>ENABLE_BITCODE</key>
-				<string>NO</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
@@ -157,6 +155,12 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
+			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
+			<key>ENABLE_BITCODE</key>
+			<string>NO</string>
+			<key>CODE_SIGN_IDENTITY</key>
+			<string>iPhone Developer</string>
 			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 			<string>8.0</string>
 		</dict>

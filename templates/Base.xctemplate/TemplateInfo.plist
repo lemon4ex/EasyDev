@@ -60,6 +60,8 @@
 			<string>/opt/theos</string>
 			<key>TARGETED_DEVICE_FAMILY</key>
 			<string>1,2</string>
+			<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+			<string>NO</string>
 			<key>GCC_WARN_ABOUT_MISSING_PROTOTYPES</key>
 			<string>YES</string>
 			<key>GCC_WARN_UNUSED_VARIABLE</key>
