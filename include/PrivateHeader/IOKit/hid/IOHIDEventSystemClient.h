@@ -75,11 +75,8 @@ extern "C" {
 	Boolean IOHIDEventSystemClientSetProperty(IOHIDEventSystemClientRef client, CFStringRef property, CFPropertyListRef value);
 	
 	IOHIDEventSystemClientRef IOHIDEventSystemClient(void);
-    
     IOHIDEventSystemClientRef IOHIDEventSystemClientCreate(CFAllocatorRef allocator);
-    
     void IOHIDEventSystemClientDispatchEvent(IOHIDEventSystemClientRef client, IOHIDEventRef event);
-    void IOHIDEventSystemConnectionDispatchEvent(IOHIDEventSystemConnectionRef connection, IOHIDEventRef event);
 	
 #if __cplusplus
 }

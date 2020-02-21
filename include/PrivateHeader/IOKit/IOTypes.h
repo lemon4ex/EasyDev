@@ -32,10 +32,14 @@
 #define IOKIT 1
 #endif /* !IOKIT */
 
+#if KERNEL
+#include <IOKit/system.h>
+#else
 #include <mach/message.h>
 #include <mach/vm_types.h>
+#endif
 
-#include <IOKit/IOReturn.h>
+#include "IOReturn.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +65,9 @@ extern "C" {
 #endif /* __TYPES__ */
 #endif /* __MACTYPES__ */
 
+#if KERNEL
+#include <libkern/OSBase.h>
+#endif
 
 typedef UInt32		IOOptionBits;
 typedef SInt32		IOFixed;
@@ -156,7 +163,11 @@ typedef unsigned int	IOAlignment;
 
 #ifndef __IOKIT_PORTS_DEFINED__
 #define __IOKIT_PORTS_DEFINED__
+#ifdef KERNEL
+typedef struct OSObject * io_object_t;
+#else /* KERNEL */
 typedef mach_port_t	io_object_t;
+#endif /* KERNEL */
 #endif /* __IOKIT_PORTS_DEFINED__ */
 
 #include <device/device_types.h>
@@ -203,6 +214,9 @@ enum {
     kIOMapStatic		= 0x01000000,
     kIOMapReference		= 0x02000000,
     kIOMapUnique		= 0x04000000
+#ifdef XNU_KERNEL_PRIVATE
+    , kIOMap64Bit		= 0x08000000
+#endif
 };
 
 /*! @enum Scale Factors
@@ -223,9 +237,11 @@ enum {
 
 /* compatibility types */
 
+#ifndef KERNEL
 
 typedef unsigned int IODeviceNumber;
 
+#endif
 
 #ifdef __cplusplus
 }

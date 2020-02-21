@@ -95,6 +95,8 @@ extern const CFStringRef kIOSurfaceCacheMode;
 /* kIOSurfaceIsGlobal - CFBoolean     If true, the IOSurface may be looked up by any task in the system by its ID. */
 extern const CFStringRef kIOSurfaceIsGlobal;
 
+extern const CFStringRef kIOSurfaceMemoryRegion;
+
 /* kIOSurfacePixelFormat - CFNumber	A 32-bit unsigned integer that stores the traditional Mac OS X buffer format  */
 extern const CFStringRef kIOSurfacePixelFormat;
 
@@ -167,6 +169,8 @@ size_t IOSurfaceGetElementWidth(IOSurfaceRef buffer);
 size_t IOSurfaceGetElementHeight(IOSurfaceRef buffer);
 
 OSType IOSurfaceGetPixelFormat(IOSurfaceRef buffer);
+
+void IOSurfaceFlushProcessorCaches(IOSurfaceRef buffer);
 
 /* This will return the current seed value of the buffer and is a cheap call to make to see
    if the contents of the buffer have changed since the last lock/unlock. */
