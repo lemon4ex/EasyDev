@@ -22,8 +22,7 @@ product/
 Build/
 build/
 Packages/
-Resources/*
-!Resources/README.txt
 LatestBuild/
 **/DynamicLibraries/*.dylib
 Pods/
+TargetApp/
