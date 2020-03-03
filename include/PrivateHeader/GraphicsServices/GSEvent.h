@@ -33,7 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GSEVENT_H
 #define GSEVENT_H
 
-#include "GSWindow.h"
+// instad of adding GSWindow header, we just define it as a void *
+// #include "GSWindow.h"
+typedef void * GSWindowRef;
+
 #include <mach/message.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
@@ -75,6 +78,7 @@ extern "C" {
 		float _0x58;
 		unsigned char _0x5C;
 		unsigned char pathInfosCount;	// 0x22 == 0x5D
+        uint16_t x52;		
 		GSPathInfo pathInfos[0];		// 0x60
 	} GSHandInfo;	// sizeof = 0x24.
 	
