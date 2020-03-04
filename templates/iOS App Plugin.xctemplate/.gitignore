@@ -25,4 +25,5 @@ Packages/
 LatestBuild/
 **/DynamicLibraries/*.dylib
 Pods/
-TargetApp/
+**/TargetApp/*.app
+**/TargetApp/*.ipa
