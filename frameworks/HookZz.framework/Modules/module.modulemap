@@ -1,0 +1,6 @@
+framework module HookZz {
+  umbrella header "HookZz.h"
+
+  export *
+  module * { export * }
+}

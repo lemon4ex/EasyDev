@@ -208,7 +208,7 @@ function pack(){
 }
 
 if [[ "$1" == "codesign" ]]; then
-	/usr/bin/codesign -fs -i "${EXPANDED_CODE_SIGN_IDENTITY}" -t "${BUILD_APP_PATH}"
+	/usr/bin/codesign -fs "${EXPANDED_CODE_SIGN_IDENTITY}" "${BUILD_APP_PATH}"
 	if [[ ${EASYDEV_INSERT_DYLIB} == "NO" ]];then
 		rm -rf "${BUILD_APP_PATH}/Frameworks/lib${TARGET_NAME}.dylib"
 	fi
