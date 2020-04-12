@@ -374,7 +374,7 @@ function getPackageFileNameUsingControlFile() # args: controlFile
 	pkgArch=`getControlFieldValue "$controlFile" Architecture true`
 
 	# return #
-	echo "${pkgId}_${pkgVer}_${pkgArch}"
+	echo "${pkgVer}_${pkgId}_${pkgArch}"
 }
 
 
