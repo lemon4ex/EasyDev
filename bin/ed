@@ -365,16 +365,19 @@ function getPackageFileNameUsingControlFile() # args: controlFile
 	$setCmd
 	
 	local controlFile="$1"
-	local pkgId
+	# local pkgId
 	local pkgVer
 	local pkgArch
+	local name
 		
-	pkgId=`getControlFieldValue "$controlFile" Package true`
+	# pkgId=`getControlFieldValue "$controlFile" Package true`
 	pkgVer=`getControlFieldValue "$controlFile" Version true`
 	pkgArch=`getControlFieldValue "$controlFile" Architecture true`
+	name=`getControlFieldValue "$controlFile" Name true`
 
 	# return #
-	echo "${pkgVer}_${pkgId}_${pkgArch}"
+	# echo "${pkgId}_${pkgVer}_${pkgArch}"
+	echo "${name}_${pkgVer}_${pkgArch}"
 }
 
 
