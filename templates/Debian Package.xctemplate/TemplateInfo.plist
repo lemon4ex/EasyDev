@@ -56,7 +56,7 @@ fi</string>
 		<string>Package/DEBIAN/control</string>
 		<string>Package/DEBIAN/control.txt</string>
 		<string>Package/DEBIAN/control:debianControl</string>
-		<string>PackageVersion.plist</string>
+		<string>Supporting Files/PackageVersion.plist</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -163,7 +163,7 @@ Icon:
 # For information about this file, see http://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html#s-maintscripts.
 </string>
 		</dict>
-		<key>PackageVersion.plist</key>
+		<key>Supporting Files/PackageVersion.plist</key>
 		<dict>
 			<key>Group</key>
 			<array>
