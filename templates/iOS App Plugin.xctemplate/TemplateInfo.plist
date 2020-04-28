@@ -23,8 +23,6 @@
 		<string>Info.plist:PackageType</string>
 		<string>Info.plist:IconFiles</string>
 		<string>TargetApp/put ipa or app here</string>
-		<string>../.gitignore</string>
-		<string>../README.md</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -65,24 +63,6 @@
 			<key>Group</key>
 			<array>
 				<string>TargetApp</string>
-			</array>
-		</dict>
-		<key>../.gitignore</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
-			<key>Path</key>
-			<string>.gitignore</string>
-		</dict>
-		<key>../README.md</key>
-		<dict>
-			<key>Path</key>
-			<string>README.md</string>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
 			</array>
 		</dict>
 	</dict>

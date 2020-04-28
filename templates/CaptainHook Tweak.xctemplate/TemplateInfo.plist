@@ -80,8 +80,6 @@
 		<string>Package/DEBIAN/control:debianControl:section</string>
 		<string>Package/DEBIAN/control:debianControl:depends</string>
 		<string>Package/Library/MobileSubstrate/DynamicLibraries/___PACKAGENAMEASIDENTIFIER___.plist</string>
-		<string>../.gitignore</string>
-		<string>../README.md</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -111,24 +109,6 @@
 		<string>Section: Tweaks</string>
 		<key>*:debianControl:depends</key>
 		<string>Depends: firmware (&gt;= 7.0), mobilesubstrate</string>
-		<key>../.gitignore</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
-			<key>Path</key>
-			<string>.gitignore</string>
-		</dict>
-		<key>../README.md</key>
-		<dict>
-			<key>Path</key>
-			<string>README.md</string>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
-		</dict>
 	</dict>
 </dict>
 </plist>

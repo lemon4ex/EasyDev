@@ -19,6 +19,8 @@
 			<string>___PACKAGENAME___</string>
 			<key>SharedSettings</key>
 			<dict>
+				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
+				<string>NO</string>
 				<key>ENABLE_BITCODE</key>
 				<string>NO</string>
 				<key>CODE_SIGN_IDENTITY</key>
