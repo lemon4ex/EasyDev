@@ -862,7 +862,11 @@ function xcodeBuildPhase() # no args
 	#安装的目录
 	local packageInstallPath="$packageDirectory$INSTALL_PATH"
 	#打包版本文件
-	local packageVersionPListPath="$PROJECT_DIR/$TARGET_NAME/PackageVersion.plist"
+	local packageVersionPListPath="$PROJECT_DIR/$TARGET_NAME/Supporting Files/PackageVersion.plist"
+	#兼容旧版工程
+	if [ ! -f "${packageVersionPListPath}" ]; then
+		packageVersionPListPath="${PROJECT_DIR}/${TARGET_NAME}/PackageVersion.plist"
+	fi
 	#存放所有deb目录
 	local allPackagesDir="$PROJECT_DIR/Packages"
 	#编译产品输出目录
