@@ -120,7 +120,14 @@
 &lt;/array&gt;
 &lt;key&gt;UserName&lt;/key&gt;
 &lt;string&gt;mobile&lt;/string&gt;
-</string>
+&lt;key&gt;StandardOutPath&lt;/key&gt;
+&lt;string&gt;/var/log/___PACKAGENAME___.log&lt;/string&gt;
+&lt;key&gt;StandardErrorPath&lt;/key&gt;
+&lt;string&gt;/var/log/___PACKAGENAME___.log&lt;/string&gt;
+&lt;key&gt;KeepAlive&lt;/key&gt;
+&lt;true/&gt;
+&lt;key&gt;RunAtLoad&lt;/key&gt;
+&lt;true/&gt;</string>
 		<key>*:debianControl:section</key>
 		<string>Section: System</string>
 		<key>*:debianControl:depends</key>
