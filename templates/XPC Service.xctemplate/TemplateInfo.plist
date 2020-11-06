@@ -118,6 +118,10 @@
 &lt;array&gt;
 	&lt;string&gt;/usr/bin/___PACKAGENAME___&lt;/string&gt;
 &lt;/array&gt;
+&lt;key&gt;JetsamProperties&lt;/key&gt;
+&lt;dict/&gt;
+&lt;key&gt;EnvironmentVariables&lt;/key&gt;
+&lt;dict/&gt;
 &lt;key&gt;UserName&lt;/key&gt;
 &lt;string&gt;mobile&lt;/string&gt;
 &lt;key&gt;StandardOutPath&lt;/key&gt;
@@ -127,7 +131,10 @@
 &lt;key&gt;KeepAlive&lt;/key&gt;
 &lt;true/&gt;
 &lt;key&gt;RunAtLoad&lt;/key&gt;
-&lt;true/&gt;</string>
+&lt;true/&gt;
+&lt;key&gt;ExecuteAllowed&lt;/key&gt;
+&lt;true/&gt;
+</string>
 		<key>*:debianControl:section</key>
 		<string>Section: System</string>
 		<key>*:debianControl:depends</key>
