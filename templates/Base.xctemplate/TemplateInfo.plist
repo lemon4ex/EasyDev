@@ -9,8 +9,6 @@
 	<key>Ancestors</key>
 	<array>
 		<string>com.apple.dt.unit.iosBase</string>
-		<string>net.ymlab.easyDev.debianPackage</string>
-		<string>net.ymlab.easyDev.preferenceLoader</string>
 	</array>
 	<key>Targets</key>
 	<array>
@@ -54,6 +52,10 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+			<string>YES</string>
+			<key>GCC_PREFIX_HEADER</key>
+			<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 			<key>CLANG_ENABLE_OBJC_ARC</key>
 			<string>YES</string>
 			<key>ENABLE_BITCODE</key>
@@ -77,7 +79,7 @@
 			<key>HEADER_SEARCH_PATHS</key>
 			<string>$(inherited) $(EasyDevPath)/include  $(EasyDevTheosPath)/vendor/include</string>
 			<key>LIBRARY_SEARCH_PATHS</key>
-			<string>$(inherited) $(EasyDevTheosPath)/vendor/lib</string>
+			<string>$(inherited) $(EasyDevPath)/vendor/lib $(EasyDevTheosPath)/vendor/lib</string>
 			<key>EasyDevPath</key>
 			<string>/opt/EasyDev</string>
 			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
@@ -194,8 +196,6 @@
 // Prefix header for all source files of the &apos;___PACKAGENAME___&apos; target in the &apos;___PACKAGENAME___&apos; project
 //
 </string>
-			<key>Group</key>
-			<string>Supporting Files</string>
 			<key>TargetIndices</key>
 			<array/>
 		</dict>
@@ -209,5 +209,9 @@
 			<integer>0</integer>
 		</dict>
 	</dict>
+	<key>Nodes</key>
+	<array>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+	</array>
 </dict>
 </plist>

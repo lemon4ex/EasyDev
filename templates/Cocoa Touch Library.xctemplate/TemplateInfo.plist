@@ -26,6 +26,10 @@
 				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
+				<key>EasyDevPath</key>
+				<string>/opt/EasyDev</string>
+				<key>EasyDevTheosPath</key>
+				<string>/opt/theos</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>

@@ -28,6 +28,16 @@
 				<string>@executable_path/lib___PACKAGENAME___.dylib</string>
 				<key>EXECUTABLE_PREFIX</key>
 				<string>lib</string>
+				<key>EasyDevTheosPath</key>
+				<string>/opt/theos</string>
+				<key>EasyDevPath</key>
+				<string>/opt/EasyDev</string>
+				<key>HEADER_SEARCH_PATHS</key>
+				<string>$(inherited) $(EasyDevTheosPath)/vendor/include</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
@@ -221,15 +231,6 @@
 	</dict>
 	<key>Definitions</key>
 	<dict>
-		<key>Info.plist</key>
-		<dict>
-			<key>Path</key>
-			<string>Info.plist</string>
-			<key>Group</key>
-			<array>
-				<string>Supporting Files</string>
-			</array>
-		</dict>
 		<key>*:*:importFoundation</key>
 		<string>#import &lt;Foundation/Foundation.h&gt;
 </string>
@@ -242,15 +243,13 @@
 			<key>Indent</key>
 			<integer>1</integer>
 		</dict>
-		<key>___PACKAGENAME___-Prefix.pch</key>
+		<key>Supporting Files/___PACKAGENAME___-Prefix.pch</key>
 		<dict>
 			<key>Beginning</key>
 			<string>//
 // Prefix header for all source files of the &apos;___PACKAGENAME___&apos; target in the &apos;___PACKAGENAME___&apos; project
 //
 </string>
-			<key>Group</key>
-			<string>Supporting Files</string>
 			<key>TargetIndices</key>
 			<array/>
 		</dict>
@@ -274,11 +273,10 @@
 	</dict>
 	<key>Nodes</key>
 	<array>
-		<string>Info.plist</string>
 		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
 		<string>___PACKAGENAMEASIDENTIFIER___.m</string>
-		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
 		<string>TargetApp/put mac app here</string>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
 	</array>
 </dict>
 </plist>

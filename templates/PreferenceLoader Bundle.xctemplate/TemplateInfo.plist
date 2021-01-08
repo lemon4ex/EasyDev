@@ -60,6 +60,8 @@
 	<key>Ancestors</key>
 	<array>
 		<string>net.ymlab.easyDev.base</string>
+		<string>net.ymlab.easyDev.debianPackage</string>
+		<string>net.ymlab.easyDev.preferenceLoader</string>
 	</array>
 	<key>Nodes</key>
 	<array>

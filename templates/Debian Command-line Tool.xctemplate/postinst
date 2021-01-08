@@ -1,0 +1,6 @@
+#!/bin/sh
+
+chown root:wheel /usr/bin/___PACKAGENAME___
+chmod 755 /usr/bin/___PACKAGENAME___
+
+exit 0
