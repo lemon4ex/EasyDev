@@ -16,6 +16,8 @@ extern NSString *BKSOpenApplicationOptionKeyActivateForEvent;
 extern NSString *BKSDebugOptionKeyDebugOnNextLaunch;
 extern NSString *BKSDebugOptionKeyCancelDebugOnNextLaunch;
 
+void BKSTerminateApplicationForReasonAndReportWithDescription(CFStringRef bundleID, int reasonID, bool report, CFStringRef description);
+
 @interface BKSSystemService : NSObject {
     // FBSSystemService* _fbsSystemService;
 }
