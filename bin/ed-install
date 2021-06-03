@@ -295,6 +295,11 @@ function writeDictToSpecification(){ #args: filePath, content
 	/usr/libexec/PlistBuddy -x -c "merge $tempfile 0" "$filePath" > /dev/null
 }
 
+#比较版本号，v1大于等于v2
+function versionGe() {
+	test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" == "$1";
+}
+
 # start it
 # 创建/opt/EasyDev
 mkdir -p "$EasyDevPath" || \
@@ -344,9 +349,24 @@ requireBackup "$specificationFile"
 hasPackageTypeForCommandLineTool=`doesFileContain "$specificationFile" 'com.apple.package-type.mach-o-executable'`
 hasProductTypeForCommandLineTool=`doesFileContain "$specificationFile" 'com.apple.product-type.tool'`
 
-macosxSDKSpecificationsPath=$macosSdkPlatformPath/Developer/Library/Xcode/Specifications
-packageTypesForMacOSXPath="$macosxSDKSpecificationsPath/MacOSX Package Types.xcspec"
-productTypesForMacOSXPath="$macosxSDKSpecificationsPath/MacOSX Product Types.xcspec"
+xcodeVersion=`xcodebuild -version`
+regex="Xcode ([0-9.]+)"
+if [[ ${xcodeVersion} =~ ${regex} ]]; then
+    versionNumber=${BASH_REMATCH[1]}
+	echo "Current xcode vsrsion ${versionNumber}"
+	# 如果当前xcode版本大于等于12.0
+    if versionGe ${versionNumber} "12.0"; then
+		macosxSDKSpecificationsPath=$macosSdkPlatformPath/Developer/Library/Xcode/PrivatePlugIns
+		packageTypesForMacOSXPath="$macosxSDKSpecificationsPath/IDEOSXSupportCore.ideplugin/Contents/Resources/MacOSX Package Types.xcspec"
+		productTypesForMacOSXPath="$macosxSDKSpecificationsPath/IDEOSXSupportCore.ideplugin/Contents/Resources/MacOSX Product Types.xcspec"
+	else
+		macosxSDKSpecificationsPath=$macosSdkPlatformPath/Developer/Library/Xcode/Specifications
+		packageTypesForMacOSXPath="$macosxSDKSpecificationsPath/MacOSX Package Types.xcspec"
+		productTypesForMacOSXPath="$macosxSDKSpecificationsPath/MacOSX Product Types.xcspec"
+    fi
+else
+    panic 1 "Failed to get xcode vsrsion"
+fi
 
 requireFile "$packageTypesForMacOSXPath" false
 requireFile "$productTypesForMacOSXPath" false
