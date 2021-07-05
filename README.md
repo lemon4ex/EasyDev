@@ -43,24 +43,25 @@ xcode-select -p
 
 执行安装命令:
 ```
+git clone --recursive https://lemon4ex@bitbucket.org/lemon4ex/easydev.git /opt/EasyDev
 cd /opt/EasyDev/bin
-chmod +x md-install
-./md-install
+chmod +x ed-install
+./ed-install
 ```
 
 ### 卸载
 ```
 cd /opt/EasyDev/bin
-chmod +x md-install
-./md-uninstall
+chmod +x ed-uninstall
+./ed-uninstall
 ```
 
 ### 更新(暂无)
 如果没有发布特殊说明，使用如下命令更新即可:
 ```
 cd /opt/EasyDev/bin
-chmod +x md-install
-./md-update
+chmod +x ed-update
+./ed-update
 ```
 
 安装/更新之后重启下Xcode再新建项目。

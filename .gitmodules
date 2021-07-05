@@ -13,3 +13,6 @@
 [submodule "tools/classdump-dyld"]
 	path = tools/classdump-dyld
 	url = https://github.com/limneos/classdump-dyld.git
+[submodule "tools/xia0LLDB"]
+	path = tools/xia0LLDB
+	url = https://github.com/4ch12dy/xia0LLDB.git
