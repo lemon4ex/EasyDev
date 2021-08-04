@@ -54,7 +54,7 @@ function cleanup() # no args
 	local exitCode=$?
 	set +e
 	trap - $signals
-	
+
 	removeTempData
 
 	exit $exitCode
@@ -66,7 +66,7 @@ function panic() # args: exitCode, message...
 {
 	local exitCode=$1
 	set +e
-	
+
 	shift
 	[[ "$@" == "" ]] || \
 		echo "$@" >&2
@@ -80,7 +80,7 @@ function determineBashProfileFile()
 
 	local f
 	local filePath
-	
+
 	for f in "${bashProfileFiles[@]}"; do
 		if [[ -f "$f" ]]; then
             if [[ -n `perl -ne 'print $1 if /^(?:export)? *'"EasyDevPath"'=(.*)$/' "$f"` ]]; then
@@ -89,18 +89,18 @@ function determineBashProfileFile()
             fi
 		fi
 	done
-	
+
 	if [[ $filePath == "" ]]; then
 
 		filePath="$bashProfileFiles" # use first array item
-		
+
 		touch "$filePath" || \
 			panic $? "Failed to touch $filePath"
-			
+
 		changeOwn "$userName:$userGroup" "$filePath"
 		changeMode 0600 "$filePath"
 	fi
-	
+
 	# return #
 	echo "$filePath"
 }
@@ -108,14 +108,14 @@ function determineBashProfileFile()
 function removeTempData() # no args
 {
 	local tempDirs
-	
+
 	if [[ -f "$tempDirsFile" ]]; then
 		tempDirs=(`cat "$tempDirsFile"`)
-		
+
 		for td in "${tempDirs[@]}"; do
 			rm -rf "$td" || true # forget abou' it.
 		done
-		
+
 		rm -rf "`dirname \"$tempDirsFile\"`" || true # forget abou' it.
 	fi
 }
@@ -124,13 +124,13 @@ function requireDir() # args: dirPath [, makeDirIfNotFound]
 {
 	local dirPath="$1"
 	local makeDirIfNotFound="$2"
-				
+
 	if [[ ! -d "$dirPath" ]]; then
 		if [[ $makeDirIfNotFound == "true" ]]; then
 
 			mkdir -p "$dirPath" || \
 				panic $? "Failed to create directory $dirPath"
-				
+
 		else
 			panic 1 "Directory $dirPath not found"
 		fi
@@ -141,7 +141,7 @@ function copyFile() # args: sourceFile, targetDirOrFile
 {
 	local sourceFile="$1"
 	local targetDirOrFile="$2"
-	
+
 	cp -fR "$sourceFile" "$targetDirOrFile" || \
 		panic $? "Failed to copy file $sourceFile to $targetDirOrFile"
 }
@@ -150,9 +150,9 @@ function changeMode() # args: mode, target
 {
 	local mode="$1"
 	local target="$2"
-	
+
 	if [[ -e "$target" ]]; then
-	
+
 		chmod $mode "$target" || \
 			panic $? "Failed to change mode to $mode on $target"
 	fi
@@ -162,9 +162,9 @@ function changeOwn() # args: ownerAndOrGroup, target
 {
 	local ownerAndOrGroup="$1"
 	local target="$2"
-	
+
 	if [[ -e "$target" ]]; then
-	
+
 		chown "$ownerAndOrGroup" "$target" || \
 			panic $? "Failed to change ownership to $ownerAndOrGroup on $target"
 	fi
@@ -174,13 +174,13 @@ function requireFile() # args: filePath [, touchFileIfNotFound]
 {
 	local filePath="$1"
 	local touchFileIfNotFound="$2"
-	
+
 	if [[ ! -f "$filePath" ]]; then
 		if [[ $touchFileIfNotFound == "true" ]]; then
 
 			touch "$filePath" || \
 				panic $? "Failed to touch $filePath"
-				
+
 		else
 			panic 1 "File $filePath not found"
 		fi
@@ -192,10 +192,10 @@ function requireExportedVariable() # args: envVarName[, message]
 	local envVarName="$1"
 	local message="$2"
 	local value
-	
+
 	if [[ ${!envVarName} == "" ]]; then
 		value=`getBashProfileEnvVarValue "$envVarName"`
-	
+
 		[[ $value != "" ]] || \
 			panic 1 "Environment variable $envVarName is not set or is empty"
 
@@ -208,7 +208,7 @@ function createSymlink() # args: sourcePath, linkPath
 {
 	local sourcePath="$1"
 	local linkPath="$2"
-	
+
 	ln -fhs "$sourcePath" "$linkPath" || \
 		panic $? "Failed to create symbolic link $linkPath -> $sourcePath"
 }
@@ -221,16 +221,16 @@ function copyFileToDevice() # args: sourceFile, targetDir, hostAddress, hostPort
 	local hostAddress="$3"
 	local hostPort="$4"
 	local targetFilePath
-	
+
 	ssh -p$hostPort root@$hostAddress mkdir -p "\"$targetDir\"" || \
 		panic $? "Failed to create directory $targetDir on device $hostAddress"
-	
+
 	targetFilePath="$targetDir/`basename \"$sourceFile\"`" || \
 		panic $? "Failed to build target file path"
-		
+
 	ssh -p$hostPort root@$hostAddress rm -f "\"$targetFilePath\"" || \
 		panic $? "Failed to remove existing file $targetFilePath on device $hostAddress"
-	
+
 	scp -P$hostPort "$sourceFile" root@$hostAddress:"\"$targetFilePath\"" || \
 		panic $? "Failed to copy file $sourceFile to device $hostAddress at directory $targetDir"
 }
@@ -242,12 +242,12 @@ function getBashProfileEnvVarValue() # args: envVarName
 	local envVarName="$1"
 	local perlValue
 	local bashProfileFile
-	
+
 	bashProfileFile=`determineBashProfileFile`
-	
+
 	perlValue=`perl -ne 'print $1 if /^(?:export)? *'"$envVarName"'=(.*)$/' "$bashProfileFile"` || \
 		panic $? "Failed to perl"
-	
+
 	# return #
 	echo "$perlValue"
 }
@@ -255,14 +255,14 @@ function getBashProfileEnvVarValue() # args: envVarName
 function getTempDir() # no args
 {
 	$setCmd
-	
+
 	local tempDir
-	
+
 	tempDir=`mktemp -d -t $scriptName` || \
 		panic $? "Failed to create temporary directory"
 
 	# remember the temp dir path; in cleanup() these are rm'd #
-	
+
 	echo "$tempDir" >> "$tempDirsFile" || \
 		panic $? "Failed to echo into temporary file $tempDirsFile"
 
@@ -281,14 +281,14 @@ function signCode() # args: executableToSign, identityToSignWith
 	local entitlements="$CODE_SIGN_ENTITLEMENTS"
 
 	# process arguments #
-	
+
 	requireFile "$executableToSign" false
-		
+
 	if [[ "$identityToSignWith" == "" || "$identityToSignWith" == "-" ]]; then
 
 		# use ldid #
 		cmdBin="ldid"
-		
+
 		if [[ "$entitlements" == "" ]]; then
 			cmdArg=("-S")
 		else
@@ -309,11 +309,11 @@ function signCode() # args: executableToSign, identityToSignWith
 			cmdArg=("-fs" "$identityToSignWith")
 		else
 			cmdArg=("-fs" "$identityToSignWith" "--entitlements" "${PROJECT_DIR}/${entitlements}")
-		fi		
+		fi
 	fi
 
 	echo -n "Signing $executableToSign with `basename \"$cmdBin\"`... "
-	
+
 	"$cmdBin" "${cmdArg[@]}" "$executableToSign" || \
 		panic $? "Failed."
 
@@ -326,12 +326,12 @@ function signCode() # args: executableToSign, identityToSignWith
 function readDefaultsValue() # args: plistPath, propertyName
 {
 	$setCmd
-	
+
 	local plistPath="$1"
 	local propertyName="$2"
 	local value
-	
-	value=`defaults read "${plistPath%.*}" "$propertyName"` || \
+
+	value=`/usr/libexec/PlistBuddy -c "Print $propertyName" "${plistPath}"` || \
 		panic $? "Failed to read defaults property $propertyName from $plistPath"
 
 	# return #
@@ -342,19 +342,19 @@ function readDefaultsValue() # args: plistPath, propertyName
 function getControlFieldValue() # args: controlFile, fieldName [, isRequired]
 {
 	$setCmd
-	
+
 	local controlFile="$1"
 	local fieldName="$2"
 	local isRequired="$3"
 	local perlValue
-		
+
 	perlValue=`perl -ne 'print $1 if /^'"$fieldName"': *(.*) *$/' "$controlFile"` || \
 		panic $? "Failed perl command using $controlFile"
 
 	if [[ "$perlValue" == "" ]] && [[ "$isRequired" == "true" ]]; then
 		panic 1 "Missing control field: $fieldName"
 	fi
-	
+
 	# return #
 	echo "$perlValue"
 }
@@ -363,13 +363,13 @@ function getControlFieldValue() # args: controlFile, fieldName [, isRequired]
 function getPackageFileNameUsingControlFile() # args: controlFile
 {
 	$setCmd
-	
+
 	local controlFile="$1"
 	# local pkgId
 	local pkgVer
 	local pkgArch
 	local name
-		
+
 	# pkgId=`getControlFieldValue "$controlFile" Package true`
 	pkgVer=`getControlFieldValue "$controlFile" Version true`
 	pkgArch=`getControlFieldValue "$controlFile" Architecture true`
@@ -384,7 +384,7 @@ function getPackageFileNameUsingControlFile() # args: controlFile
 function getVersionFromVersionPList() # args: plistPath
 {
 	$setCmd
-	
+
 	local plistPath="$1"
 	local version
 	local major
@@ -392,7 +392,7 @@ function getVersionFromVersionPList() # args: plistPath
 	local bugFix
 	local stage
 	local pkgRev
-	
+
 	major=`readDefaultsValue "$plistPath" "Major"`
 	minor=`readDefaultsValue "$plistPath" "Minor"`
 	bugFix=`readDefaultsValue "$plistPath" "BugFix"`
@@ -400,11 +400,11 @@ function getVersionFromVersionPList() # args: plistPath
 	pkgRev=`readDefaultsValue "$plistPath" "PackageRevision"`
 
 	version="$major.$minor"
-		
+
 	[[ "$bugFix" == "" ]] || version+=".$bugFix"
 	[[ "$stage" == "" ]] || version+="$stage"
 	[[ "$pkgRev" == "" ]] || version+="-$pkgRev"
-		
+
 	# return #
 	echo "$version"
 }
@@ -414,14 +414,14 @@ function setControlFileVersionFieldUsingVersionPList() # args: controlFile, plis
 	local controlFile="$1"
 	local plistPath="$2"
 	local versionReadFromPList
-	
+
 	requireFile "$controlFile" false
 	requireFile "$plistPath" false
-	
+
 	# read plist to get version #
-	
+
 	versionReadFromPList=`getVersionFromVersionPList "$plistPath"`
-	
+
 	[[ $versionReadFromPList != "" ]] || \
 		panic 1 "Failed to read version from $plistPath"
 
@@ -448,11 +448,11 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 	local packageFileName
 	local packageName
 	local zipFileName
-	
+
 	echo "Preparing to build package..."
-	
+
 	# verify arguments #
-	
+
 	requireDir "$packageDir"
 
 	requireDir "$outputDir" true
@@ -465,7 +465,7 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 	[[ ! -f "$subFileControlTxtToRemove" ]] || \
 		rm -f "$subFileControlTxtToRemove" || \
 			panic $? "Failed to remove file $subFileControlTxtToRemove"
-	
+
 	for f in "${subFilesToRemove[@]}"; do
 		find "$packageDir" -type f -name "$f" -exec rm -f '{}' \; || \
 			panic $? "Failed to remove file $f"
@@ -478,7 +478,7 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 	changeMode 0755 "$packageDir/DEBIAN/postinst"
 	changeMode 0755 "$packageDir/DEBIAN/prerm"
 	changeMode 0755 "$packageDir/DEBIAN/postrm"
-	
+
 	# set control file version field #
 
 	[[ "$versionPList" == "" ]] || \
@@ -487,29 +487,29 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 	# determine package name #
 
 	packageName=`getPackageFileNameUsingControlFile "$packageDir/DEBIAN/control"`
-		
+
 	# create package #
 
 	createDebianPackage "$packageDir" "$packageName" "$outputDir"
-	
+
 	# create zip #
-	
+
 	if [[ $useZOption == "true" ]]; then
 
 		zipFileName="$outputDir/${packageName}.zip"
 
 		echo -n "Creating zip $zipFileName... "
-		
+
 		rm -f "$zipFileName" || \
 			panic $? "Failed to remove $zipFileName"
-		
+
 		pushd "$packageDir" 1> /dev/null
-		
+
 		zip -qrX "$zipFileName" * || \
 			panic $? "Failed."
 
 		popd 1> /dev/null
-		
+
 		echo "Done."
 	fi
 }
@@ -518,23 +518,23 @@ function buildPackage() # args: packageDir, outputDir, versionPList [, useZOptio
 function createDebianPackage() # args: sourceDir, packageName [, outputDir]
 {
 	$setCmd
-	
+
 	local sourceDir="$1"
 	local packageName="$2"
 	local outputDir="$3"
-	
+
 	local packageFile="${outputDir:-.}/$packageName.deb"
-	
+
 	echo -n "Building package $packageFileName... "
 
 	local tempDir="`getTempDir`"
-	
+
 	createTarForDebianPackage "$sourceDir/DEBIAN" "$tempDir" "control" "-n"
 	createTarForDebianPackage "$sourceDir" "$tempDir" "data" "--exclude" "DEBIAN/*" "--exclude" "DEBIAN"
-	
+
 	echo "2.0" > "$tempDir/debian-binary" || \
 		panic $? "Failed to create debian-binary file"
-	
+
 	ar -rc "$packageFile" "$tempDir/debian-binary" "$tempDir/control.tar.gz" "$tempDir/data.tar.gz" || \
 		panic $? "Failed to create Debian archive"
 
@@ -545,12 +545,12 @@ function createDebianPackage() # args: sourceDir, packageName [, outputDir]
 function createTarForDebianPackage() # args: sourceDir, outputDir, tarName [, options]
 {
 	$setCmd
-	
+
 	local sourceDir="$1"
 	local outputDir="$2"
 	local tarName="$3"
 	shift 3
-	
+
 	pushd "$sourceDir" 1> /dev/null
 
 	tar -cLpz --disable-copyfile --exclude ".*" "$@" -f "$outputDir/$tarName.tar.gz" * || \
@@ -559,7 +559,7 @@ function createTarForDebianPackage() # args: sourceDir, outputDir, tarName [, op
 	popd 1> /dev/null
 }
 
-#deb包管理 
+#deb包管理
 function managePackageOnDevice() # args: manageAction, packageFileOrName, hostAddress, hostPort
 {
 	local manageAction="$1"
@@ -572,7 +572,7 @@ function managePackageOnDevice() # args: manageAction, packageFileOrName, hostAd
 	local cmdBin="dpkg"
 	local cmdArg
 	local devicePackagesDir
-	
+
 	if [[ "$manageAction" == "install" ]]; then
 		doingWhat="Installing"
 		direction="on"
@@ -591,13 +591,13 @@ function managePackageOnDevice() # args: manageAction, packageFileOrName, hostAd
 	else
 		panic 1 "Invalid manage action: $manageAction"
 	fi
-	
+
 	if [[ $hostAddress == "" ]]; then
-	
+
 		requireExportedVariable "EasyDevDeviceIP"
-		
+
 		hostAddress="$EasyDevDeviceIP"
-		
+
 		[[ $hostAddress != "" ]] || \
 			hostAddress="$DefaultDeviceIP" && echo "Host address not provided and environment variable EasyDevDeviceIP is not set or is empty, use default $DefaultDeviceIP"
 	fi
@@ -612,7 +612,7 @@ function managePackageOnDevice() # args: manageAction, packageFileOrName, hostAd
 
 	# if installing, copy package to device #
 	if [[ $manageAction == "install" ]]; then
-	
+
 		requireFile "$packageFileOrName" false
 
 		devicePackagesDir="/var/root/EasyDevPackages"
@@ -621,13 +621,13 @@ function managePackageOnDevice() # args: manageAction, packageFileOrName, hostAd
 
 		packageFileOrName="$devicePackagesDir/`basename \"$packageFileOrName\"`"
 	fi
-	
+
 	# install, remove or purge package #
 	echo "$doingWhat package `basename \"$packageFileOrName\"` $direction device $hostAddress... "
 
 	ssh -p$hostPort root@$hostAddress "$cmdBin" $cmdArg "$packageFileOrName" || \
 		panic $? "Failed."
-	
+
 	# success #
 	echo "Done."
 }
@@ -641,11 +641,11 @@ function runFuncOnDevice() # args: function, hostAddress, hostPort
 	local cmd
 
 	if [[ $hostAddress == "" ]]; then
-	
+
 		requireExportedVariable "EasyDevDeviceIP"
-		
+
 		hostAddress="$EasyDevDeviceIP"
-		
+
 		[[ $hostAddress != "" ]] || \
 			hostAddress="$DefaultDeviceIP" && echo "Host address not provided and environment variable EasyDevDeviceIP is not set or is empty, use default $DefaultDeviceIP"
 	fi
@@ -658,7 +658,7 @@ function runFuncOnDevice() # args: function, hostAddress, hostPort
 			hostPort="$DefaultDevicePort"
 
 	fi
-	
+
 	case "$func" in
 	reboot)
 		cmd="reboot"
@@ -683,9 +683,9 @@ function runFuncOnDevice() # args: function, hostAddress, hostPort
 function requireSudo() # args: ...
 {
 	if [[ $EUID != 0 ]]; then
-	
+
 		removeTempData
-		
+
 		exec sudo "$0" "$@" || \
 			panic $? "Failed to re-execute as root"
 	fi
@@ -695,12 +695,12 @@ function requireSudo() # args: ...
 function doesFileContain() # args: filePath, pattern
 {
 	$setCmd
-	
+
 	local filePath="$1"
 	local pattern="$2"
 	local perlValue
 	local funcReturn
-	
+
 	perlValue=`perl -ne 'if (/'"$pattern"'/) { print "true"; exit; }' "$filePath"` || \
 		panic $? "Failed to perl"
 
@@ -709,7 +709,7 @@ function doesFileContain() # args: filePath, pattern
 	else
 		funcReturn="false"
 	fi
-	
+
 	# return #
 	echo $funcReturn
 }
@@ -723,7 +723,7 @@ function Processor()
 	if [[ $currentDirectory =~ "Build/Products" ]] || [[ $currentDirectory =~ "Build/Intermediates" ]] || [[ $currentDirectory =~ "Index/DataStore" ]] || [[ $currentDirectory =~ "/LatestBuild/" ]]; then
 		return
 	fi
-	
+
 	for file in `ls "$currentDirectory"`;
     do
 		extension="${file#*.}"
@@ -739,7 +739,7 @@ function Processor()
 	  		echo "Logos Processor: $filename -> ${filename%.*}.mm..."
 	  		logosStdErr=$(("$logosProcessor" "$currentDirectory/$file" > "$currentDirectory/${file%.*}.m") 2>&1) || \
 				panic $? "Failed Logos Processor: $logosStdErr"
-			
+
 	  	fi
     done
 }
@@ -749,7 +749,7 @@ function xcodeBuildPhase_Logos() # no args
 {
 	[[ "$ACTION" == "build" ]] || \
 		panic 1 "For Xcode Build Phase use only"
-	
+
 	echo "Preparing to run Xcode Build Phase for Logos Processor..."
 
 	local pbxProjectFilePath="$PROJECT_FILE_PATH/project.pbxproj"
@@ -765,72 +765,72 @@ function xcodeBuildPhase_Logos() # no args
 	local projectXFiles
 	local logosStdErr
 	local logosErr=0
-	
+
 	[[ -f "$pbxProjectFilePath" ]] || \
 		panic 1 "Xcode project file not found: $pbxProjectFilePath"
-	
+
 	#没有安装Theos？
 	logosProcessor=`which logos.pl` || \
 		panic $? "Failed to locate Logos Processor. Is Theos installed? If not, see https://github.com/theos/theos/wiki/Installation."
-	
+
 	#修改文件类型
 	projectContainsXmFiles=`doesFileContain "$pbxProjectFilePath" '\/\* .+\.xm \*\/ *= *\{.*?isa *= *PBXFileReference\b'`
 	projectContainsXFiles=`doesFileContain "$pbxProjectFilePath" '\/\* .+\.x \*\/ *= *\{.*?isa *= *PBXFileReference\b'`
-	
+
 	if [[ $projectContainsXmFiles == "true" ]]; then
-	
+
 		lastKnownXmFileTypeNotObjCpp=`doesFileContain "$pbxProjectFilePath" '\/\* .+\.xm \*\/ *= *\{.*?isa *= *PBXFileReference\b[^\}]*?\blastKnownFileType *= *text\b'`
-		
+
 		if [[ $lastKnownXmFileTypeNotObjCpp == "true" ]]; then
 			echo "Modifying Xcode project file: setting *.xm file-types to Objective-C++..."
-			
+
 			perl -i -pe 's/^(.*\/\* .+\.xm \*\/ *= *{.*?isa *= *PBXFileReference\b[^}]*?\blastKnownFileType *= *)[^;]+(.*)$/\1sourcecode.cpp.objcpp\2/g' "$pbxProjectFilePath" || \
 				panic $? "Failed to modify Xcode project file"
-	
+
 			projectFileModified=true
 		fi
-	
+
 		xmFileLangSpecNotObjCpp=`perl -ne 'if ($_ =~ /\/\* .+\.xm \*\/ *= *\{.*?isa *= *PBXFileReference\b/ && $_ !~ /\bxcLanguageSpecificationIdentifier *= *xcode\.lang\.objcpp\b/) { print "true"; exit; }' "$pbxProjectFilePath"` || \
 			panic $? "Failed to execute perl on $pbxProjectFilePath"
-	
+
 		if [[ $xmFileLangSpecNotObjCpp == "true" ]]; then
 			echo "Modifying Xcode project file: setting *.xm language to Objective-C++..."
-			
+
 			perl -i -pe 'if ($_ =~ /\/\* .+\.xm \*\/ *= *\{.*?isa *= *PBXFileReference\b/ && $_ !~ /\bxcLanguageSpecificationIdentifier *= *xcode\.lang\.objcpp\b/) { s/^(.*\/\* .+\.xm \*\/ *= *{.*?isa *= *PBXFileReference\b[^}]*)(.*)$/\1xcLanguageSpecificationIdentifier = xcode.lang.objcpp; \2/g; }' "$pbxProjectFilePath" || \
 				panic $? "Failed to modify Xcode project file"
-		
+
 			projectFileModified=true
 		fi
 
 		#explicitFileType
 	fi
-	
+
 	if [[ $projectContainsXFiles == "true" ]]; then
-	
+
 		lastKnownXFileTypeNotObjCpp=`doesFileContain "$pbxProjectFilePath" '\/\* .+\.x \*\/ *= *\{.*?isa *= *PBXFileReference\b[^\}]*?\blastKnownFileType *= *text\b'`
-	
+
 		if [[ $lastKnownXFileTypeNotObjC == "true" ]]; then
 			echo "Modifying Xcode project file: setting *.x file-types to Objective-C..."
-			
+
 			perl -i -pe 's/^(.*\/\* .+\.x \*\/ *= *{.*?isa *= *PBXFileReference\b[^}]*?\blastKnownFileType *= *)[^;]+(.*)$/\1sourcecode.c.objc\2/g' "$pbxProjectFilePath" || \
 				panic $? "Failed to modify Xcode project file"
-	
+
 			projectFileModified=true
 		fi
-	
+
 		xFileLangSpecNotObjC=`perl -ne 'if ($_ =~ /\/\* .+\.x \*\/ *= *\{.*?isa *= *PBXFileReference\b/ && $_ !~ /\bxcLanguageSpecificationIdentifier *= *xcode\.lang\.objc\b/) { print "true"; exit; }' "$pbxProjectFilePath"` || \
 			panic $? "Failed to execute perl on $pbxProjectFilePath"
-	
+
 		if [[ $xFileLangSpecNotObjC == "true" ]]; then
 			echo "Modifying Xcode project file: setting *.x language to Objective-C..."
-			
+
 			perl -i -pe 'if ($_ =~ /\/\* .+\.x \*\/ *= *\{.*?isa *= *PBXFileReference\b/ && $_ !~ /\bxcLanguageSpecificationIdentifier *= *xcode\.lang\.objc\b/) { s/^(.*\/\* .+\.x \*\/ *= *{.*?isa *= *PBXFileReference\b[^}]*)(.*)$/\1xcLanguageSpecificationIdentifier = xcode.lang.objc; \2/g; }' "$pbxProjectFilePath" || \
 				panic $? "Failed to modify Xcode project file"
-		
+
 			projectFileModified=true
 		fi
 	fi
-	
+
 	if [[ $projectFileModified == "true" ]]; then
 		echo "DON'T WORRY, EVERYTHING IS OK!"
 		echo "The Xcode project file was modified to provide better *.xm & *.x file support."
@@ -852,9 +852,9 @@ function xcodeBuildPhase() # no args
 {
 	[[ "$ACTION" == "build" ]] || \
 		panic 1 "For Xcode Build Phase use only"
-	
+
 	echo "Preparing to run Xcode Build Phase..."
-	
+
 	#编译可执行文件路径
 	local builtExecutable="$TARGET_BUILD_DIR/$EXECUTABLE_PATH"
 	#deb打包文件夹目录
@@ -877,7 +877,7 @@ function xcodeBuildPhase() # no args
 	local stripOption
 	local versionPListPath
 	local packageFileName
-	
+
 	#目标文件路径
 	local packageInstallSource
 	if [[ $SHALLOW_BUNDLE != "YES" ]]; then
@@ -901,7 +901,7 @@ function xcodeBuildPhase() # no args
 
 	#验证必要文件的存在
 	requireFile "$builtExecutable" false
-	
+
 	#创建最后一个编译的符号链接
 	createSymlink "$builtProductsDir" "$latestBuildSymlink"
 
@@ -936,7 +936,7 @@ function xcodeBuildPhase() # no args
 
 	#是否需要拷贝可执行程序到设备
 	if [[ "$EasyDevCopyExecutableOnAnyBuild" == "YES" ]]; then
-	
+
 		#拷贝到设备的/var/root/EasyDevBuilds/
 		if [[ "$EasyDevDeviceIP" != "" ]]; then
 			echo "Copying $builtExecutable to ${DefaultDeviceBuildsDir}/$PROJECT_NAME..."
@@ -946,7 +946,7 @@ function xcodeBuildPhase() # no args
 			# build setting EasyDevDeviceIP is empty #
 			panic 1 "Unable to copy executable to device since build setting EasyDevDeviceIP is not set or is empty and it is not exported in your Bash personal initialization file"
 		fi
-	
+
 	fi
 
 	#如果是profie或者用户设置了每次build都install或package，生成deb
@@ -954,43 +954,43 @@ function xcodeBuildPhase() # no args
 		requireDir "$packageDirectory"
 		#准备打包
 		echo "Copying $packageInstallSource to package directory at $packageInstallPath..."
-		
+
 		requireDir "$packageInstallPath" true
-		
+
 		#拷贝目标文件到/Package/Library/MobileSubstrate/DynamicLibraries
 		copyFile "$packageInstallSource" "$packageInstallPath"
 
 		[[ "$EasyDevUsePackageVersionPList" != "YES" ]] || \
-			versionPListPath="$packageVersionPListPath"	
+			versionPListPath="$packageVersionPListPath"
 
 		if [[ "$EasyDevAlsoBuildZipPackageOnAnyBuild" == "YES" ]]; then
 			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
 		else
 			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" false
 		fi
-		
+
 		#profile或者用户设置了build安装
 		if [[ "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
-		
+
 			if [[ "$DEPLOYMENT_POSTPROCESSING" == "NO" || "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
-			
+
 				# if build setting EasyDevInstallOnProfiling is enabled, installation of package is enabled...
 				if [[ "$EasyDevInstallOnProfiling" == "YES"  || "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
-				
+
 					# if EasyDevDeviceIP has a value, install package on device...
 					if [[ "$EasyDevDeviceIP" != "" ]]; then
-	
+
 						# get package file name #
 						packageFileName="`getPackageFileNameUsingControlFile \"$packageDirectory/DEBIAN/control\"`.deb"
-							
-						# install package on device #					
+
+						# install package on device #
 						managePackageOnDevice "install" "$allPackagesDir/$packageFileName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
-						
+
 						if [[ "$EasyDevKillProcessOnInstall" == "YES" && "$EasyDevKillProcessName" != "" ]]; then
 
 							if [[ "$EasyDevKillProcessName" == "SpringBoard" ]]; then
 								echo "respring device..."
-								runFuncOnDevice "respring" "$EasyDevDeviceIP" "$EasyDevDevicePort" 
+								runFuncOnDevice "respring" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 							else
 								echo "killall -9 $EasyDevKillProcessName"
 								runFuncOnDevice "killall -9 $EasyDevKillProcessName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
@@ -1021,18 +1021,18 @@ function showUsageAndExit() # args: showEverything
 {
 	local showEverything="$1"
 	local n
-	
+
 	echo "$scriptName (v$scriptVer) -- EasyDev Command-line Tool"
 	echo "Usages:"
-	
+
 	for n in "${ActionNames[@]}"; do
 		eval echo "\"    $scriptName \${Action_$n[$ActionProperty_ShortArg]} \${Action_$n[$ActionProperty_ShortUsage]}\""
 	done
-	
+
 	if [[ $showEverything == "true" ]]; then
 		echo
 		echo "Actions:"
-		
+
 		for n in "${ActionNames[@]}"; do
 			eval echo "\"    \${Action_$n[$ActionProperty_ShortArg]} \${Action_$n[$ActionProperty_ShortUsage]}\""
 			eval echo "\"\${Action_$n[$ActionProperty_LongUsage]}\""
@@ -1049,7 +1049,7 @@ function showSingleUsageAndExit()
 
 ${activeActionArg[$ActionProperty_LongUsage]}
 "
-		
+
 }
 
 #脚本开始
