@@ -130,7 +130,87 @@
 		</dict>
 	</array>
 	<key>Options</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>tweakTypeChoice</string>
+			<key>Required</key>
+			<true/>
+			<key>Name</key>
+			<string>Tweak Type:</string>
+			<key>Description</key>
+			<string>Your primary implementation language for tweak.</string>
+			<key>SortOrder</key>
+			<integer>100</integer>
+			<key>Type</key>
+			<string>popup</string>
+			<key>Default</key>
+			<string>CaptainHook</string>
+			<key>Variables</key>
+			<dict>
+				<key>CaptainHook</key>
+				<dict>
+					<key>ibCustomModuleProvider</key>
+					<string>target</string>
+					<key>moduleNamePrefixForClasses</key>
+					<string>$(PRODUCT_MODULE_NAME).</string>
+				</dict>
+				<key>Logos</key>
+				<dict>
+					<key>ibCustomModuleProvider</key>
+					<string></string>
+					<key>moduleNamePrefixForClasses</key>
+					<string></string>
+				</dict>
+			</dict>
+			<key>Values</key>
+			<array>
+				<string>CaptainHook</string>
+				<string>Logos</string>
+			</array>
+			<key>Units</key>
+			<dict>
+				<key>CaptainHook</key>
+				<dict>
+					<key>Components</key>
+					<array>
+						<dict>
+							<key>ProductBuildPhaseInjections</key>
+							<array>
+								<dict>
+									<key>TargetIdentifier</key>
+									<string>net.ymlab.easyDev.TargetApp</string>
+								</dict>
+							</array>
+							<key>Identifier</key>
+							<string>net.ymlab.easyDev.captainHookTweak</string>
+							<key>Name</key>
+							<string>lib___PACKAGENAME___</string>
+						</dict>
+					</array>
+				</dict>
+				<key>Logos</key>
+				<dict>
+					<key>Components</key>
+					<array>
+						<dict>
+							<key>ProductBuildPhaseInjections</key>
+							<array>
+								<dict>
+									<key>TargetIdentifier</key>
+									<string>net.ymlab.easyDev.TargetApp</string>
+								</dict>
+							</array>
+							<key>Identifier</key>
+							<string>net.ymlab.easyDev.logosTweak</string>
+							<key>Name</key>
+							<string>lib___PACKAGENAME___</string>
+						</dict>
+					</array>
+				</dict>
+			</dict>
+		</dict>
+	</array>
 	<key>Project</key>
 	<dict>
 		<key>SharedSettings</key>
@@ -146,20 +226,6 @@
 		</dict>
 	</dict>
 	<key>Components</key>
-	<array>
-		<dict>
-			<key>ProductBuildPhaseInjections</key>
-			<array>
-				<dict>
-					<key>TargetIdentifier</key>
-					<string>net.ymlab.easyDev.TargetApp</string>
-				</dict>
-			</array>
-			<key>Identifier</key>
-			<string>net.ymlab.easyDev.captainHookTweak</string>
-			<key>Name</key>
-			<string>lib___PACKAGENAME___</string>
-		</dict>
-	</array>
+	<array/>
 </dict>
 </plist>

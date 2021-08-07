@@ -17,10 +17,6 @@
 			<string>___PACKAGENAME___</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
-				<string>NO</string>
-				<key>ENABLE_BITCODE</key>
-				<string>NO</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>
 				<key>PRODUCT_NAME</key>
@@ -52,6 +48,8 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
+			<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
+			<string>NO</string>
 			<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 			<string>YES</string>
 			<key>GCC_PREFIX_HEADER</key>
@@ -77,15 +75,15 @@
 			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
 			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
 			<key>HEADER_SEARCH_PATHS</key>
-			<string>$(inherited) $(EasyDevPath)/include  $(EasyDevTheosPath)/vendor/include</string>
+			<string>$(inherited) $(EasyDevPath)/include  $(EasyDevTheosPath)/include $(EasyDevTheosPath)/vendor/include</string>
 			<key>LIBRARY_SEARCH_PATHS</key>
-			<string>$(inherited) $(EasyDevPath)/vendor/lib $(EasyDevTheosPath)/vendor/lib</string>
+			<string>$(inherited) $(EasyDevPath)/lib $(EasyDevTheosPath)/lib $(EasyDevTheosPath)/vendor/lib</string>
 			<key>EasyDevPath</key>
 			<string>/opt/EasyDev</string>
 			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 			<string>8.0</string>
 			<key>FRAMEWORK_SEARCH_PATHS</key>
-			<string>$(inherited) $(EasyDevPath)/frameworks $(EasyDevTheosPath)/vendor/lib</string>
+			<string>$(inherited) $(EasyDevPath)/lib $(EasyDevTheosPath)/lib $(EasyDevTheosPath)/vendor/lib</string>
 		</dict>
 		<key>SDK</key>
 		<string>iphoneos</string>
