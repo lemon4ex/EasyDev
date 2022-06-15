@@ -1,2 +1,2 @@
 #!/bin/sh
-python /Users/h4ck/WorkSpace/iOSRETools/usbmuxd-1.0.8/python-client/tcprelay.py -t 22:2222 1111:1111 1234:1234
+iproxy 2222:22 1111:1111 1234:1234

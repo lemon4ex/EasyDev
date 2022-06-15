@@ -1,18 +1,21 @@
 [submodule "tools/frida-ios-dump"]
 	path = tools/frida-ios-dump
-	url = https://github.com/AloneMonkey/frida-ios-dump.git
+	url = git@github.com:AloneMonkey/frida-ios-dump.git
 [submodule "tools/ios-cmake"]
 	path = tools/ios-cmake
-	url = https://github.com/leetal/ios-cmake.git
+	url = git@github.com:leetal/ios-cmake.git
 [submodule "tools/restore-symbol"]
 	path = tools/restore-symbol
-	url = https://github.com/tobefuturer/restore-symbol.git
+	url = git@github.com:tobefuturer/restore-symbol.git
 [submodule "tools/PPiOS-Rename"]
 	path = tools/PPiOS-Rename
-	url = https://github.com/preemptive/PPiOS-Rename.git
+	url = git@github.com:preemptive/PPiOS-Rename.git
 [submodule "tools/classdump-dyld"]
 	path = tools/classdump-dyld
-	url = https://github.com/limneos/classdump-dyld.git
+	url = git@github.com:limneos/classdump-dyld.git
 [submodule "tools/xia0LLDB"]
 	path = tools/xia0LLDB
-	url = https://github.com/4ch12dy/xia0LLDB.git
+	url = git@github.com:4ch12dy/xia0LLDB.git
+[submodule "tools/LLDB"]
+	path = tools/LLDB
+	url = git@github.com:DerekSelander/LLDB.git
