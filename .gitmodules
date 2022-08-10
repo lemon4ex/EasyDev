@@ -18,4 +18,4 @@
 	url = git@github.com:4ch12dy/xia0LLDB.git
 [submodule "tools/LLDB"]
 	path = tools/LLDB
-	url = git@github.com:DerekSelander/LLDB.git
+	url = git@github.com:lemon4ex/LLDB.git
