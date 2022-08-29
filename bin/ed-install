@@ -129,7 +129,7 @@ function extractTar() # args: tarPath, outputPath
 {
 	local tarPath="$1"
 	local outputPath="$2"
-	
+
 	tar -C "$outputPath" -zxf "$tarPath" || \
 		panic $? "Failed to extract $tarPath to $outputPath"
 }
@@ -151,9 +151,9 @@ function downloadGithubTarball() # args: url, outputDir, title
 
 	tempDirForTar=`getTempDir`
 	tempDirForFiles=`getTempDir`
-	
+
 	downloadFile "$url" "$tempDirForTar/$tarFile"
-	
+
 	extractTar "$tempDirForTar/$tarFile" "$tempDirForFiles"
 
 	untardDir=`find "$tempDirForFiles/"* -type d -depth 0` || \
@@ -189,7 +189,7 @@ function determineUserBashProfileFile()
 
 	local f
 	local filePath
-	
+
 	for f in "${bashProfileFiles[@]}"; do
 		if [[ -f "$f" ]]; then
 			filePath="$f"
@@ -198,19 +198,19 @@ function determineUserBashProfileFile()
 			break
 		fi
 	done
-	
+
 	if [[ $filePath == "" ]]; then
 		filePath="$bashProfileFiles"
 
 		touch "$filePath" || \
 			panic $? "Failed to touch $filePath"
-			
+
 		chown "$userName:$userGroup" "$filePath" || \
 			panic $? "Failed to change owner-group of $filePath"
-		
+
 		changeMode 0600 "$filePath"
 	fi
-	
+
 	# return #
 	echo "$filePath"
 }
@@ -220,13 +220,13 @@ function requireFile() # args: filePath [, touchFileIfNotFound]
 {
 	local filePath="$1"
 	local touchFileIfNotFound="$2"
-	
+
 	if [[ ! -f "$filePath" ]]; then
 		if [[ $touchFileIfNotFound == "true" ]]; then
 
 			touch "$filePath" || \
 				panic $? "Failed to touch $filePath"
-				
+
 		else
 			panic 1 "File $filePath not found"
 		fi
@@ -242,22 +242,22 @@ function addToFileIfMissing() # args: filePath, pattern, value
 	local doesContain
 
 	doesContain=`doesFileContain "$filePath" "$pattern"`
-	
+
 	[[ $doesContain == "true" ]] || \
 		echo "$value" >> "$filePath" || \
-			panic $? "Failed to echo into $filePath"	
+			panic $? "Failed to echo into $filePath"
 }
 
 #判断文件是否包含内容
 function doesFileContain() # args: filePath, pattern
 {
 	$setCmd
-	
+
 	local filePath="$1"
 	local pattern="$2"
 	local perlValue
 	local funcReturn
-	
+
 	perlValue=`perl -ne 'if (/'"$pattern"'/) { print "true"; exit; }' "$filePath"` || \
 		panic $? "Failed to perl"
 
@@ -266,7 +266,7 @@ function doesFileContain() # args: filePath, pattern
 	else
 		funcReturn="false"
 	fi
-	
+
 	# return #
 	echo $funcReturn
 }
@@ -319,7 +319,7 @@ userTemplatesDir="$userDevDir/Xcode/Templates"
 if [[ ! -d "$userTemplatesDir" ]]; then
 	mkdir -p "$userTemplatesDir" || \
 		panic $? "Failed to make directory: $userTemplatesDir"
-		
+
 	chown -R "$userName:$userGroup" "$userDevDir" || \
 		panic $? "Failed to change ownership-group of $userDevDir"
 fi
@@ -354,8 +354,12 @@ regex="Xcode ([0-9.]+)"
 if [[ ${xcodeVersion} =~ ${regex} ]]; then
     versionNumber=${BASH_REMATCH[1]}
 	echo "Current xcode vsrsion ${versionNumber}"
-	# 如果当前xcode版本大于等于12.0
-    if versionGe ${versionNumber} "12.0"; then
+	# 如果当前xcode版本大于等于13.0
+	if versionGe ${versionNumber} "13.0"; then
+		macosxSDKSpecificationsPath=$(cd $iosSdkPlatformPath/../../.. && pwd)/PlugIns
+		packageTypesForMacOSXPath="$macosxSDKSpecificationsPath/XCBSpecifications.ideplugin/Contents/Resources/Darwin Package Types.xcspec"
+		productTypesForMacOSXPath="$macosxSDKSpecificationsPath/XCBSpecifications.ideplugin/Contents/Resources/Darwin Product Types.xcspec"
+    elif versionGe ${versionNumber} "12.0"; then
 		macosxSDKSpecificationsPath=$macosSdkPlatformPath/Developer/Library/Xcode/PrivatePlugIns
 		packageTypesForMacOSXPath="$macosxSDKSpecificationsPath/IDEOSXSupportCore.ideplugin/Contents/Resources/MacOSX Package Types.xcspec"
 		productTypesForMacOSXPath="$macosxSDKSpecificationsPath/IDEOSXSupportCore.ideplugin/Contents/Resources/MacOSX Product Types.xcspec"
