@@ -79,6 +79,10 @@
 				<string>NO</string>
 				<key>EASYDEV_INSERT_DYLIB</key>
 				<string>YES</string>
+				<key>GENERATE_INFOPLIST_FILE</key>
+				<string>NO</string>
+				<key>INFOPLIST_FILE</key>
+				<string>${TARGET_NAME}/Info.plist</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>

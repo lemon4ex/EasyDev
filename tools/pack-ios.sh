@@ -66,6 +66,31 @@ function checkApp(){
 	# fi
 }
 
+function codesignFramework() {
+    SAVEIFS="$IFS"
+    IFS=$'\n'
+    
+    signatures=($(/usr/bin/find "${1}" -name "_CodeSignature"))
+    
+    for signature in ${signatures[@]}; do
+        rm -rf "${signature}"
+    done
+    
+    # resign dylib
+    dylibs=($(/usr/bin/find "${1}" -name "*.dylib"))
+    for dylib in ${dylibs[@]}; do
+        /usr/bin/codesign --force --sign "${2}" "$dylib"
+    done
+    
+    # resign frameworks
+    frameworks=($(/usr/bin/find "${1}" -name "*.framework"))
+    for framework in ${frameworks[@]}; do
+        /usr/bin/codesign --force --sign "${2}" "$framework"
+    done
+    
+    IFS="$SAVEIFS"
+}
+
 function pack(){
 	TARGET_INFO_PLIST=${SRCROOT}/${TARGET_NAME}/Info.plist
 	# environment
@@ -209,10 +234,11 @@ function pack(){
 }
 
 if [[ "$1" == "codesign" ]]; then
-	/usr/bin/codesign -fs "${EXPANDED_CODE_SIGN_IDENTITY}" "${BUILD_APP_PATH}"
 	if [[ ${EASYDEV_INSERT_DYLIB} == "NO" ]];then
 		rm -rf "${BUILD_APP_PATH}/Frameworks/lib${TARGET_NAME}.dylib"
 	fi
+	# /usr/bin/codesign -fs "${EXPANDED_CODE_SIGN_IDENTITY}" "${BUILD_APP_PATH}"
+	codesignFramework "${BUILD_APP_PATH}" "${EXPANDED_CODE_SIGN_IDENTITY}"
 else
 	pack
 fi
