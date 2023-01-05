@@ -44,7 +44,7 @@ fi
 				<key>EasyDevUsePackageVersionPList</key>
 				<string>YES</string>
 				<key>EasyDevBuildPackageOnAnyBuild</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>EasyDevAlsoBuildZipPackageOnAnyBuild</key>
 				<string>NO</string>
 			</dict>
