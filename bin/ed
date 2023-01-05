@@ -949,8 +949,16 @@ function xcodeBuildPhase() # no args
 
 	fi
 
+	if [[ "$EasyDevUpdatePackageVersionOnProfiling" == "YES" && "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevUpdatePackageVersionOnAnyBuild" == "YES" ]]; then
+		versionPListPath="$packageVersionPListPath"
+		buildNumber=$(/usr/libexec/PlistBuddy -c "Print PackageRevision" "${versionPListPath}")
+		buildNumber=$(($buildNumber + 1))
+		/usr/libexec/PlistBuddy -c "Set :PackageRevision $buildNumber" "${versionPListPath}"
+		echo "build number increase"
+	fi
+
 	#如果是profie或者用户设置了每次build都install或package，生成deb
-	if [[ "$EasyDevInstallOnProfiling" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]] || [[ "$EasyDevBuildPackageOnAnyBuild" == "YES" ]]; then
+	if [[ "$EasyDevInstallOnProfiling" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]] || [[ "$EasyDevBuildPackageOnProfiling" == "YES" ]] || [[ "$EasyDevBuildPackageOnAnyBuild" == "YES" ]]; then
 		requireDir "$packageDirectory"
 		#准备打包
 		echo "Copying $packageInstallSource to package directory at $packageInstallPath..."
@@ -960,10 +968,7 @@ function xcodeBuildPhase() # no args
 		#拷贝目标文件到/Package/Library/MobileSubstrate/DynamicLibraries
 		copyFile "$packageInstallSource" "$packageInstallPath"
 
-		[[ "$EasyDevUsePackageVersionPList" != "YES" ]] || \
-			versionPListPath="$packageVersionPListPath"
-
-		if [[ "$EasyDevAlsoBuildZipPackageOnAnyBuild" == "YES" ]]; then
+		if [[ "$EasyDevBuildZipPackageOnProfiling" == "YES" && "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevBuildZipPackageOnAnyBuild" == "YES" ]]; then
 			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" true
 		else
 			buildPackage "$packageDirectory" "$allPackagesDir" "$versionPListPath" false

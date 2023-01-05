@@ -9,43 +9,19 @@
 	<key>Targets</key>
 	<array>
 		<dict>
-			<key>BuildPhases</key>
-			<array>
-				<dict>
-					<key>ShellScript</key>
-					<string>#!/bin/sh
-
-# 自动更新deb包版本号
-echo $CONFIGURATION
-if [ &quot;Release&quot; == &quot;${CONFIGURATION}&quot; ]; then
-    if [ &quot;${EasyDevUsePackageVersionPList}&quot; == &quot;YES&quot; ]; then
-        packInfoPlist=&quot;${PROJECT_DIR}/${TARGET_NAME}/Supporting Files/PackageVersion.plist&quot;
-        # 兼容旧版工程
-        if [ ! -f &quot;${packInfoPlist}&quot; ]; then
-            packInfoPlist=&quot;${PROJECT_DIR}/${TARGET_NAME}/PackageVersion.plist&quot;
-        fi
-        buildNumber=$(/usr/libexec/PlistBuddy -c &quot;Print PackageRevision&quot; &quot;${packInfoPlist}&quot;)
-        buildNumber=$(($buildNumber + 1))
-        /usr/libexec/PlistBuddy -c &quot;Set :PackageRevision $buildNumber&quot; &quot;${packInfoPlist}&quot;
-        echo &quot;build number increase&quot;
-    fi
-fi
-</string>
-					<key>ShellPath</key>
-					<string>/bin/sh</string>
-					<key>RunOnlyForDeploymentPostprocessing</key>
-					<false/>
-					<key>Class</key>
-					<string>ShellScript</string>
-				</dict>
-			</array>
 			<key>SharedSettings</key>
 			<dict>
-				<key>EasyDevUsePackageVersionPList</key>
+				<key>EasyDevUpdatePackageVersionOnAnyBuild</key>
+				<string>NO</string>
+				<key>EasyDevUpdatePackageVersionOnProfiling</key>
 				<string>YES</string>
 				<key>EasyDevBuildPackageOnAnyBuild</key>
+				<string>NO</string>
+				<key>EasyDevBuildPackageOnProfiling</key>
 				<string>YES</string>
-				<key>EasyDevAlsoBuildZipPackageOnAnyBuild</key>
+				<key>EasyDevBuildZipPackageOnAnyBuild</key>
+				<string>NO</string>
+				<key>EasyDevBuildZipPackageOnProfiling</key>
 				<string>NO</string>
 			</dict>
 		</dict>
