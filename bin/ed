@@ -950,7 +950,7 @@ function xcodeBuildPhase() # no args
 	fi
 
 	#如果是profie或者用户设置了每次build都install或package，生成deb
-	if [[ "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]] || [[ "$EasyDevBuildPackageOnAnyBuild" == "YES" ]]; then
+	if [[ "$EasyDevInstallOnProfiling" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]] || [[ "$EasyDevBuildPackageOnAnyBuild" == "YES" ]]; then
 		requireDir "$packageDirectory"
 		#准备打包
 		echo "Copying $packageInstallSource to package directory at $packageInstallPath..."
@@ -970,46 +970,41 @@ function xcodeBuildPhase() # no args
 		fi
 
 		#profile或者用户设置了build安装
-		if [[ "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
+		if [[ "$EasyDevInstallOnProfiling" == "YES" && "$CONFIGURATION" == "Release" && "$VALIDATE_PRODUCT" == "YES" ]] || [[ "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
 
-			if [[ "$DEPLOYMENT_POSTPROCESSING" == "NO" || "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
+			# if build setting EasyDevInstallOnProfiling is enabled, installation of package is enabled...
 
-				# if build setting EasyDevInstallOnProfiling is enabled, installation of package is enabled...
-				if [[ "$EasyDevInstallOnProfiling" == "YES"  || "$EasyDevInstallOnAnyBuild" == "YES" ]]; then
+			# if EasyDevDeviceIP has a value, install package on device...
+			if [[ "$EasyDevDeviceIP" != "" ]]; then
 
-					# if EasyDevDeviceIP has a value, install package on device...
-					if [[ "$EasyDevDeviceIP" != "" ]]; then
+				# get package file name #
+				packageFileName="`getPackageFileNameUsingControlFile \"$packageDirectory/DEBIAN/control\"`.deb"
 
-						# get package file name #
-						packageFileName="`getPackageFileNameUsingControlFile \"$packageDirectory/DEBIAN/control\"`.deb"
+				# install package on device #
+				managePackageOnDevice "install" "$allPackagesDir/$packageFileName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 
-						# install package on device #
-						managePackageOnDevice "install" "$allPackagesDir/$packageFileName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+				if [[ "$EasyDevKillProcessOnInstall" == "YES" && "$EasyDevKillProcessName" != "" ]]; then
 
-						if [[ "$EasyDevKillProcessOnInstall" == "YES" && "$EasyDevKillProcessName" != "" ]]; then
-
-							if [[ "$EasyDevKillProcessName" == "SpringBoard" ]]; then
-								echo "respring device..."
-								runFuncOnDevice "respring" "$EasyDevDeviceIP" "$EasyDevDevicePort"
-							else
-								echo "killall -9 $EasyDevKillProcessName"
-								runFuncOnDevice "killall -9 $EasyDevKillProcessName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
-							fi
-						fi
-
-						if [[ "$EasyDevClearUiCacheOnInstall" == "YES" ]]; then
- 							echo "Clearing uicache device..."
- 							runFuncOnDevice "uicache" "$EasyDevDeviceIP" "$EasyDevDevicePort"
-						fi
+					if [[ "$EasyDevKillProcessName" == "SpringBoard" ]]; then
+						echo "respring device..."
+						runFuncOnDevice "respring" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 					else
-						# build setting EasyDevDeviceIP is empty #
-						panic 1 "Unable to install package on device since build setting EasyDevDeviceIP is not set or is empty and it is not exported in your Bash personal initialization file"
+						echo "killall -9 $EasyDevKillProcessName"
+						runFuncOnDevice "killall -9 $EasyDevKillProcessName" "$EasyDevDeviceIP" "$EasyDevDevicePort"
 					fi
-				else
-					# build setting EasyDevInstallOnProfiling is disabled #
-					echo "Installation of package on device is disabled. To enable, set build setting EasyDevInstallOnProfiling to YES."
 				fi
+
+				if [[ "$EasyDevClearUiCacheOnInstall" == "YES" ]]; then
+					echo "Clearing uicache device..."
+					runFuncOnDevice "uicache" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+				fi
+			else
+				# build setting EasyDevDeviceIP is empty #
+				panic 1 "Unable to install package on device since build setting EasyDevDeviceIP is not set or is empty and it is not exported in your Bash personal initialization file"
 			fi
+		else
+			# build setting EasyDevInstallOnProfiling is disabled #
+			echo "Installation of package on device is disabled. To enable, set build setting EasyDevInstallOnProfiling or EasyDevInstallOnAnyBuild to YES."
 		fi
 	fi
 
