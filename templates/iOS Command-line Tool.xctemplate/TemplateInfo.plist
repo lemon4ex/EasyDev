@@ -9,7 +9,7 @@
 	<key>Concrete</key>
 	<true/>
 	<key>Description</key>
-	<string>This template builds a command-line tool.</string>
+	<string>This template builds a iOS command-line tool.</string>
 	<key>Ancestors</key>
 	<array>
 		<string>net.ymlab.easyDev.base</string>
@@ -22,11 +22,9 @@
 			<dict>
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>___PACKAGENAME___/Entitlements.xml</string>
-				<key>EasyDevInstallOnAnyBuild</key>
+				<key>EasyDevRunExecutableOnAnyBuild</key>
 				<string>NO</string>
-				<key>EasyDevInstallOnProfiling</key>
-				<string>NO</string>
-				<key>EasyDevKillProcessOnInstall</key>
+				<key>EasyDevCopyExecutableOnAnyBuild</key>
 				<string>NO</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer</string>

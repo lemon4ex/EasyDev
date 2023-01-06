@@ -25,6 +25,8 @@
 				<string></string>
 				<key>EasyDevDevicePort</key>
 				<string></string>
+				<key>EasyDevDeviceBuildsDir</key>
+				<string></string>
 				<key>EasyDevInstallOnAnyBuild</key>
 				<string>NO</string>
 				<key>EasyDevInstallOnProfiling</key>

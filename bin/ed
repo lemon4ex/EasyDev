@@ -222,17 +222,36 @@ function copyFileToDevice() # args: sourceFile, targetDir, hostAddress, hostPort
 	local hostPort="$4"
 	local targetFilePath
 
-	ssh -p$hostPort root@$hostAddress mkdir -p "\"$targetDir\"" || \
+	ssh -o StrictHostKeyChecking=no -p$hostPort root@$hostAddress mkdir -p "$targetDir" || \
 		panic $? "Failed to create directory $targetDir on device $hostAddress"
 
 	targetFilePath="$targetDir/`basename \"$sourceFile\"`" || \
 		panic $? "Failed to build target file path"
 
-	ssh -p$hostPort root@$hostAddress rm -f "\"$targetFilePath\"" || \
+	ssh -o StrictHostKeyChecking=no -p$hostPort root@$hostAddress rm -f "$targetFilePath" || \
 		panic $? "Failed to remove existing file $targetFilePath on device $hostAddress"
 
-	scp -P$hostPort "$sourceFile" root@$hostAddress:"\"$targetFilePath\"" || \
+	scp -o StrictHostKeyChecking=no -P$hostPort "$sourceFile" root@$hostAddress:"$targetFilePath" || \
 		panic $? "Failed to copy file $sourceFile to device $hostAddress at directory $targetDir"
+}
+
+#在设备上执行可执行文件
+function runExecutableOnDevice() # args: filePath, hostAddress, hostPort
+{
+	local filePath="$1"
+	local hostAddress="$2"
+	local hostPort="$3"
+	local processName
+
+	processName="`basename \"$filePath\"`"
+	ssh -o StrictHostKeyChecking=no -p$hostPort root@$hostAddress killall -9 "$processName" || \
+		panic $? "Failed to kill process $processName on device $hostAddress"
+
+	ssh -o StrictHostKeyChecking=no -p$hostPort root@$hostAddress chmod +x "$filePath" || \
+		panic $? "Failed to chmod file $filePath on device $hostAddress"
+
+	ssh -o StrictHostKeyChecking=no -p$hostPort root@$hostAddress "$filePath" || \
+		panic $? "Failed to execute file $filePath on device $hostAddress"
 }
 
 function getBashProfileEnvVarValue() # args: envVarName
@@ -899,6 +918,9 @@ function xcodeBuildPhase() # no args
 	[[ $EasyDevDevicePort != "" ]] || \
 		EasyDevDevicePort="$DefaultDevicePort" && echo "use default devicePort $DefaultDevicePort"
 
+	[[ $EasyDevDeviceBuildsDir != "" ]] || \
+		EasyDevDeviceBuildsDir="$DefaultDeviceBuildsDir" && echo "use default buildsDir $DefaultDeviceBuildsDir"
+
 	#验证必要文件的存在
 	requireFile "$builtExecutable" false
 
@@ -935,13 +957,17 @@ function xcodeBuildPhase() # no args
 	changeMode "$INSTALL_MODE_FLAG" "$builtExecutable"
 
 	#是否需要拷贝可执行程序到设备
-	if [[ "$EasyDevCopyExecutableOnAnyBuild" == "YES" ]]; then
+	if [[ "$EasyDevCopyExecutableOnAnyBuild" == "YES" ]] || [[ "$EasyDevRunExecutableOnAnyBuild" == "YES" ]]; then
 
 		#拷贝到设备的/var/root/EasyDevBuilds/
 		if [[ "$EasyDevDeviceIP" != "" ]]; then
-			echo "Copying $builtExecutable to ${DefaultDeviceBuildsDir}/$PROJECT_NAME..."
+			echo "Copying $builtExecutable to ${EasyDevDeviceBuildsDir}/$PROJECT_NAME..."
 
-			copyFileToDevice "$builtExecutable" "${DefaultDeviceBuildsDir}/$PROJECT_NAME" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+			copyFileToDevice "$builtExecutable" "${EasyDevDeviceBuildsDir}/$PROJECT_NAME" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+
+			if [[ "$EasyDevRunExecutableOnAnyBuild" == "YES" ]]; then
+				runExecutableOnDevice "${EasyDevDeviceBuildsDir}/$PROJECT_NAME/`basename \"$builtExecutable\"`" "$EasyDevDeviceIP" "$EasyDevDevicePort"
+			fi
 		else
 			# build setting EasyDevDeviceIP is empty #
 			panic 1 "Unable to copy executable to device since build setting EasyDevDeviceIP is not set or is empty and it is not exported in your Bash personal initialization file"
