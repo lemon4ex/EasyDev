@@ -13,7 +13,7 @@ CREATE_IPA="${EASYDEV_PATH}/bin/createIPA.command"
 BUILD_APP_PATH="${BUILT_PRODUCTS_DIR}/${TARGET_NAME}.app"
 
 # default demo app
-DEMO_TARGET_APP_PATH="${EASYDEV_PATH}/resource/TargetApp.app"
+DEMO_TARGET_APP_PATH="${EASYDEV_PATH}/resource/iOS.app"
 
 # link framework path
 # FRAMEWORKS_TO_INJECT_PATH="${EASYDEV_PATH}/frameworks/"
