@@ -5,39 +5,84 @@
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
-	<string>net.ymlab.easyDev.cocoaPluginFramework</string>
+	<string>net.ymlab.easyDev.cocoaApplication</string>
 	<key>Ancestors</key>
 	<array>
-		<string>com.apple.dt.unit.base</string>
+		<string>com.apple.dt.unit.bundleBase</string>
 		<string>com.apple.dt.unit.osxBase</string>
 	</array>
 	<key>Concrete</key>
 	<true/>
 	<key>Description</key>
-	<string>This template builds a library that links against the Cocoa framework.</string>
+	<string>This template provides a starting point for an application that uses a single view. It provides a view controller to manage the view, and a storyboard or nib file that contains the view.</string>
 	<key>SortOrder</key>
-	<integer>10</integer>
+	<integer>1</integer>
+	<key>Nodes</key>
+	<array>
+		<string>icon.png</string>
+		<string>Info.plist:PackageType</string>
+		<string>Info.plist:IconFiles</string>
+		<string>TargetApp/put ipa or app here</string>
+	</array>
+	<key>Definitions</key>
+	<dict>
+		<key>icon.png</key>
+		<dict>
+			<key>TargetIndices</key>
+			<array/>
+			<key>Path</key>
+			<string>icon.png</string>
+		</dict>
+		<key>main.m:main</key>
+		<dict>
+			<key>Beginning</key>
+			<string>int main(int argc, const char * argv[]) {</string>
+			<key>End</key>
+			<string>}</string>
+			<key>Indent</key>
+			<integer>1</integer>
+		</dict>
+		<key>main.m</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>999</integer>
+		</dict>
+		<key>Info.plist:PackageType</key>
+		<string>&lt;key&gt;CFBundlePackageType&lt;/key&gt;
+&lt;string&gt;APPL&lt;/string&gt;
+</string>
+		<key>Info.plist:IconFiles</key>
+		<string>&lt;key&gt;CFBundleIconFiles&lt;/key&gt;
+&lt;array&gt;
+&lt;string&gt;___PACKAGENAME___/icon.png&lt;/string&gt;
+&lt;/array&gt;</string>
+		<key>TargetApp/put ipa or app here</key>
+		<dict>
+			<key>TargetIndices</key>
+			<array/>
+			<key>Group</key>
+			<array>
+				<string>TargetApp</string>
+			</array>
+		</dict>
+	</dict>
 	<key>Targets</key>
 	<array>
 		<dict>
-			<key>TargetIdentifier</key>
-			<string>com.apple.dt.cocoaLibraryOrFrameworkTarget</string>
+			<key>ProductType</key>
+			<string>com.apple.product-type.application</string>
 			<key>SharedSettings</key>
 			<dict>
-				<key>INSTALL_PATH</key>
-				<string>@executable_path/lib___PACKAGENAME___.dylib</string>
-				<key>EXECUTABLE_PREFIX</key>
-				<string>lib</string>
-				<key>EasyDevTheosPath</key>
-				<string>/opt/theos</string>
-				<key>EasyDevPath</key>
-				<string>/opt/EasyDev</string>
-				<key>HEADER_SEARCH_PATHS</key>
-				<string>$(inherited) $(EasyDevTheosPath)/vendor/include</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<key>EASYDEV_TARGET_BUNDLEID</key>
+				<string>NO</string>
+				<key>EASYDEV_ADD_SUBSTRATE</key>
+				<string>NO</string>
+				<key>EASYDEV_INSERT_DYLIB</key>
 				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>___PACKAGENAME___/___PACKAGENAME___-Prefix.pch</string>
+				<key>GENERATE_INFOPLIST_FILE</key>
+				<string>NO</string>
+				<key>INFOPLIST_FILE</key>
+				<string>${TARGET_NAME}/Info.plist</string>
 			</dict>
 			<key>BuildPhases</key>
 			<array>
@@ -50,174 +95,123 @@
 					<string>Frameworks</string>
 				</dict>
 				<dict>
-					<key>Class</key>
-					<string>Headers</string>
-				</dict>
-				<dict>
-					<key>ShellScript</key>
-					<string>/opt/EasyDev/tools/pack-osx.sh</string>
-					<key>ShellPath</key>
-					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
 					<false/>
 					<key>Class</key>
 					<string>ShellScript</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/tools/pack-osx.sh</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Resources</string>
+				</dict>
+				<dict>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>DstSubfolderSpec</key>
+					<integer>10</integer>
+					<key>DstPath</key>
+					<string></string>
+					<key>Class</key>
+					<string>CopyFiles</string>
+				</dict>
+				<dict>
+					<key>RunOnlyForDeploymentPostprocessing</key>
+					<false/>
+					<key>Class</key>
+					<string>ShellScript</string>
+					<key>ShellPath</key>
+					<string>/bin/sh</string>
+					<key>ShellScript</key>
+					<string>/opt/EasyDev/tools/pack-osx.sh codesign</string>
 				</dict>
 			</array>
+			<key>TargetIdentifier</key>
+			<string>net.ymlab.easyDev.TargetApp</string>
 		</dict>
 	</array>
 	<key>Options</key>
 	<array>
 		<dict>
 			<key>Identifier</key>
-			<string>libraryFramework</string>
+			<string>tweakTypeChoice</string>
+			<key>Required</key>
+			<true/>
 			<key>Name</key>
-			<string>Framework:</string>
+			<string>Tweak Type:</string>
 			<key>Description</key>
-			<string>What system framework the library will be based on</string>
+			<string>Your primary implementation language for tweak.</string>
+			<key>SortOrder</key>
+			<integer>100</integer>
 			<key>Type</key>
 			<string>popup</string>
+			<key>Default</key>
+			<string>CaptainHook</string>
+			<key>Variables</key>
+			<dict>
+				<key>CaptainHook</key>
+				<dict>
+					<key>ibCustomModuleProvider</key>
+					<string>target</string>
+					<key>moduleNamePrefixForClasses</key>
+					<string>$(PRODUCT_MODULE_NAME).</string>
+				</dict>
+				<key>Logos</key>
+				<dict>
+					<key>ibCustomModuleProvider</key>
+					<string></string>
+					<key>moduleNamePrefixForClasses</key>
+					<string></string>
+				</dict>
+			</dict>
 			<key>Values</key>
 			<array>
-				<string>Cocoa</string>
-				<string>STL (C++ Library)</string>
-				<string>None (Plain C/C++ Library)</string>
+				<string>CaptainHook</string>
+				<string>Logos</string>
 			</array>
-			<key>Default</key>
-			<string>Cocoa</string>
 			<key>Units</key>
 			<dict>
-				<key>Cocoa</key>
-				<array>
-					<dict>
-						<key>Nodes</key>
-						<array>
-							<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-							<string>___PACKAGENAMEASIDENTIFIER___.m</string>
-						</array>
-						<key>Definitions</key>
+				<key>CaptainHook</key>
+				<dict>
+					<key>Components</key>
+					<array>
 						<dict>
-							<key>___PACKAGENAMEASIDENTIFIER___.h</key>
-							<dict>
-								<key>Path</key>
-								<string>Cocoa___PACKAGENAMEASIDENTIFIER___.h</string>
-							</dict>
-							<key>___PACKAGENAMEASIDENTIFIER___.m</key>
-							<dict>
-								<key>Path</key>
-								<string>Cocoa___PACKAGENAMEASIDENTIFIER___.m</string>
-							</dict>
-						</dict>
-					</dict>
-				</array>
-				<key>STL (C++ Library)</key>
-				<array>
-					<dict>
-						<key>Targets</key>
-						<array>
-							<dict>
-								<key>SharedSettings</key>
+							<key>ProductBuildPhaseInjections</key>
+							<array>
 								<dict>
-									<key>GCC_ENABLE_CPP_EXCEPTIONS</key>
-									<string>YES</string>
-									<key>GCC_ENABLE_CPP_RTTI</key>
-									<string>YES</string>
+									<key>TargetIdentifier</key>
+									<string>net.ymlab.easyDev.TargetApp</string>
 								</dict>
-							</dict>
-						</array>
-						<key>Nodes</key>
-						<array>
-							<string>___PACKAGENAMEASIDENTIFIER___.hpp</string>
-							<string>___PACKAGENAMEASIDENTIFIER___Priv.hpp</string>
-							<string>___PACKAGENAMEASIDENTIFIER___.cpp</string>
-						</array>
-						<key>Definitions</key>
+							</array>
+							<key>Identifier</key>
+							<string>net.ymlab.easyDev.cocoaCaptainHookTweak</string>
+							<key>Name</key>
+							<string>lib___PACKAGENAME___</string>
+						</dict>
+					</array>
+				</dict>
+				<key>Logos</key>
+				<dict>
+					<key>Components</key>
+					<array>
 						<dict>
-							<key>___PACKAGENAMEASIDENTIFIER___.hpp</key>
-							<dict>
-								<key>Path</key>
-								<string>STL___PACKAGENAMEASIDENTIFIER___.hpp</string>
-							</dict>
-							<key>___PACKAGENAMEASIDENTIFIER___.cpp</key>
-							<dict>
-								<key>Path</key>
-								<string>STL___PACKAGENAMEASIDENTIFIER___.cpp</string>
-							</dict>
-							<key>___PACKAGENAMEASIDENTIFIER___Priv.hpp</key>
-							<dict>
-								<key>Path</key>
-								<string>STL___PACKAGENAMEASIDENTIFIER___Priv.hpp</string>
-							</dict>
-						</dict>
-					</dict>
-					<dict>
-						<key>RequiredOptions</key>
-						<dict>
-							<key>libraryType</key>
-							<string>Dynamic</string>
-						</dict>
-						<key>Targets</key>
-						<array>
-							<dict>
-								<key>SharedSettings</key>
+							<key>ProductBuildPhaseInjections</key>
+							<array>
 								<dict>
-									<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-									<string>YES</string>
+									<key>TargetIdentifier</key>
+									<string>net.ymlab.easyDev.TargetApp</string>
 								</dict>
-							</dict>
-						</array>
-					</dict>
-				</array>
-				<key>None (Plain C/C++ Library)</key>
-				<array>
-					<dict/>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>Identifier</key>
-			<string>libraryType</string>
-			<key>Name</key>
-			<string>Type:</string>
-			<key>Description</key>
-			<string>Which type of library to create</string>
-			<key>Type</key>
-			<string>popup</string>
-			<key>Default</key>
-			<string>Dynamic</string>
-			<key>Units</key>
-			<dict>
-				<key>Dynamic</key>
-				<array>
-					<dict>
-						<key>Targets</key>
-						<array>
-							<dict>
-								<key>ProductType</key>
-								<string>com.apple.product-type.library.dynamic</string>
-								<key>SharedSettings</key>
-								<dict>
-									<key>DYLIB_COMPATIBILITY_VERSION</key>
-									<string>1</string>
-									<key>DYLIB_CURRENT_VERSION</key>
-									<string>1</string>
-								</dict>
-							</dict>
-						</array>
-					</dict>
-				</array>
-				<key>Static</key>
-				<array>
-					<dict>
-						<key>Targets</key>
-						<array>
-							<dict>
-								<key>ProductType</key>
-								<string>com.apple.product-type.library.static</string>
-							</dict>
-						</array>
-					</dict>
-				</array>
+							</array>
+							<key>Identifier</key>
+							<string>net.ymlab.easyDev.cocoaLogosTweak</string>
+							<key>Name</key>
+							<string>lib___PACKAGENAME___</string>
+						</dict>
+					</array>
+				</dict>
 			</dict>
 		</dict>
 	</array>
@@ -225,58 +219,17 @@
 	<dict>
 		<key>SharedSettings</key>
 		<dict>
-			<key>EasyDevPath</key>
-			<string>/opt/EasyDev</string>
+			<key>EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES</key>
+			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
+			<key>ENABLE_BITCODE</key>
+			<string>NO</string>
+			<key>CODE_SIGN_IDENTITY</key>
+			<string>Mac Developer</string>
+			<key>MACOSX_DEPLOYMENT_TARGET</key>
+			<string>10.9</string>
 		</dict>
 	</dict>
-	<key>Definitions</key>
-	<dict>
-		<key>*:*:importFoundation</key>
-		<string>#import &lt;Foundation/Foundation.h&gt;
-</string>
-		<key>___PACKAGENAME___-Prefix.pch:objC</key>
-		<dict>
-			<key>Beginning</key>
-			<string>#ifdef __OBJC__</string>
-			<key>End</key>
-			<string>#endif</string>
-			<key>Indent</key>
-			<integer>1</integer>
-		</dict>
-		<key>Supporting Files/___PACKAGENAME___-Prefix.pch</key>
-		<dict>
-			<key>Beginning</key>
-			<string>//
-// Prefix header for all source files of the &apos;___PACKAGENAME___&apos; target in the &apos;___PACKAGENAME___&apos; project
-//
-</string>
-			<key>TargetIndices</key>
-			<array/>
-		</dict>
-		<key>___PACKAGENAMEASIDENTIFIER___.h</key>
-		<dict>
-			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-		</dict>
-		<key>___PACKAGENAMEASIDENTIFIER___.mm</key>
-		<dict>
-			<key>Path</key>
-			<string>___PACKAGENAMEASIDENTIFIER___.mm</string>
-		</dict>
-		<key>TargetApp/put mac app here</key>
-		<dict>
-			<key>Group</key>
-			<array>
-				<string>TargetApp</string>
-			</array>
-		</dict>
-	</dict>
-	<key>Nodes</key>
-	<array>
-		<string>___PACKAGENAMEASIDENTIFIER___.h</string>
-		<string>___PACKAGENAMEASIDENTIFIER___.m</string>
-		<string>TargetApp/put mac app here</string>
-		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
-	</array>
+	<key>Components</key>
+	<array/>
 </dict>
 </plist>
