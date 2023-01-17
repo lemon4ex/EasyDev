@@ -177,7 +177,7 @@ if [[ "$1" == "codesign" ]]; then
     if [[ ${EASYDEV_INSERT_DYLIB} == "NO" ]];then
         rm -rf "${BUILD_APP_PATH}/Contents/Frameworks/lib${TARGET_NAME}.dylib"
     fi
-    /usr/bin/codesign -fs "${EXPANDED_CODE_SIGN_IDENTITY}" --deep "${BUILD_APP_PATH}"
+    # /usr/bin/codesign -fs "${EXPANDED_CODE_SIGN_IDENTITY}" --deep "${BUILD_APP_PATH}"
 else
     pack
 fi
