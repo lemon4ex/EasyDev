@@ -95,6 +95,7 @@ function pack(){
 	TARGET_INFO_PLIST=${SRCROOT}/${TARGET_NAME}/Info.plist
 	# environment
 	CURRENT_EXECUTABLE=$(/usr/libexec/PlistBuddy -c "Print CFBundleExecutable" "${TARGET_INFO_PLIST}" 2>/dev/null)
+	CURRENT_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "${TARGET_INFO_PLIST}" 2>/dev/null)
 
 	# create tmp dir
 	rm -rf "${TEMP_PATH}" || true
@@ -156,8 +157,10 @@ function pack(){
 	# get target info
 	ORIGIN_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print CFBundleIdentifier"  "${COPY_APP_PATH}/Info.plist" 2>/dev/null)
 	TARGET_EXECUTABLE=$(/usr/libexec/PlistBuddy -c "Print CFBundleExecutable"  "${COPY_APP_PATH}/Info.plist" 2>/dev/null)
+	TARGET_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString"  "${COPY_APP_PATH}/Info.plist" 2>/dev/null)
 
-	if [[ ${CURRENT_EXECUTABLE} != ${TARGET_EXECUTABLE} ]]; then
+	# update info.plist
+	if [[ ${CURRENT_EXECUTABLE} != ${TARGET_EXECUTABLE} ]] || [[ ${CURRENT_VERSION} != ${TARGET_VERSION} ]]; then
 		cp -rf "${COPY_APP_PATH}/Info.plist" "${TARGET_INFO_PLIST}"
 	fi
 
