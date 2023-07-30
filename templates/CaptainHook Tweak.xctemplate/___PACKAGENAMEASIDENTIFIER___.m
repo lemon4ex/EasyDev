@@ -9,7 +9,7 @@
 #import "___FILEBASENAMEASIDENTIFIER___.h"
 #import <CaptainHook/CaptainHook.h>
 
-CHConstructor // code block that runs immediately upon load
-{
+CHConstructor {
+    // code block that runs immediately upon load
     NSLog(@"++++++++ ___FILEBASENAMEASIDENTIFIER___ loaded ++++++++");
 }
