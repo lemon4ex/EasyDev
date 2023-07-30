@@ -223,8 +223,8 @@
 			<string>*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj</string>
 			<key>ENABLE_BITCODE</key>
 			<string>NO</string>
-			<key>CODE_SIGN_IDENTITY</key>
-			<string>Mac Developer</string>
+			<key>MACOSX_DEPLOYMENT_TARGET</key>
+			<string>10.9</string>
 		</dict>
 	</dict>
 	<key>Components</key>
