@@ -19,3 +19,6 @@
 [submodule "tools/LLDB"]
 	path = tools/LLDB
 	url = git@github.com:lemon4ex/LLDB.git
+[submodule "tools/bagbak"]
+	path = tools/bagbak
+	url = git@github.com:ChiChou/bagbak.git
