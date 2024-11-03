@@ -2,7 +2,7 @@
 
 基于[MonkeyDev](https://github.com/AloneMonkey/MonkeyDev)开发的简化和增强版本。
 
-支持 `Xcode 10 ~ Xcode 14`。
+支持 `Xcode 10 ~ Xcode 15`。
 
 本版本修改点：
 
