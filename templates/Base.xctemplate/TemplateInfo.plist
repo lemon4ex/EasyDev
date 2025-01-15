@@ -61,7 +61,7 @@
 			<key>ENABLE_BITCODE</key>
 			<string>NO</string>
 			<key>EasyDevTheosPath</key>
-			<string>/opt/theos</string>
+			<string>${THEOS}</string>
 			<key>TARGETED_DEVICE_FAMILY</key>
 			<string>1,2</string>
 			<key>GCC_WARN_UNDECLARED_SELECTOR</key>
@@ -81,7 +81,7 @@
 			<key>LIBRARY_SEARCH_PATHS</key>
 			<string>$(inherited) $(EasyDevPath)/lib $(EasyDevTheosPath)/lib $(EasyDevTheosPath)/vendor/lib</string>
 			<key>EasyDevPath</key>
-			<string>/opt/EasyDev</string>
+			<string>${EasyDevPath}</string>
 			<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 			<string>8.0</string>
 			<key>FRAMEWORK_SEARCH_PATHS</key>
@@ -173,7 +173,7 @@
 	<key>Definitions</key>
 	<dict>
 		<key>*:*:importTheosPrefix</key>
-		<string>#import &quot;/opt/theos/Prefix.pch&quot;  //path/to/theos/Prefix.pch</string>
+		<string>#import &quot;${THEOS}/Prefix.pch&quot;  //path/to/theos/Prefix.pch</string>
 		<key>*:comments</key>
 		<string>//
 //  ___FILENAME___

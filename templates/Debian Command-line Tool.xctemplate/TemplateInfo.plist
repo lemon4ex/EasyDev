@@ -52,7 +52,7 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/ed --xcbp</string>
+					<string>${EasyDevPath}/bin/ed --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>

@@ -5,21 +5,21 @@
 export setCmd="set -eo pipefail"
 $setCmd
 
+#获取用户名、用户组、用户目录、和profile文件
+export userName="${SUDO_USER-$USER}"
+export userGroup=$(id -g $userName)
+export userHome=$(eval echo ~$userName)
+
 #导出环境变量
-export PATH=/opt/EasyDev/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+export PATH=$userHome/EasyDev/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 #脚本名称和版本
 export scriptName="${0##*/}"
 export scriptVer="2.0"
 
 #本地存储文件的目录
-export EasyDevPath="/opt/EasyDev"
+export EasyDevPath="$userHome/EasyDev"
 export backupFileExt=".EasyDev"
-
-#获取用户名、用户组、用户目录、和profile文件
-export userName="${SUDO_USER-$USER}"
-export userGroup=$(id -g $userName)
-export userHome=$(eval echo ~$userName)
 
 #用户可能存在的profile文件
 export bashProfileFiles=("$userHome/.zshrc" "$userHome/.bash_profile" "$userHome/.bashrc" "$userHome/.bash_login" "$userHome/.profile")
@@ -286,13 +286,21 @@ function versionGe() {
 }
 
 # start it
-# 创建/opt/EasyDev
+# 创建~/EasyDev
 mkdir -p "$EasyDevPath" ||
 	panic $? "Failed to make directory: $EasyDevPath"
 
 #下载一些基础文件和模板文件
 # downloadGithubTarball "https://codeload.github.com/AloneMonkey/EasyDev/tar.gz/master" "$EasyDevPath" "EasyDev base"
 # downloadGithubTarball "https://codeload.github.com/AloneMonkey/EasyDev-Xcode-Templates/tar.gz/master" "$EasyDevPath/templates" "Xcode templates"
+
+#替换模板环境变量
+echo "Replace template environment variables..."
+
+find $EasyDevPath/templates -name "TemplateInfo.plist" | while read -r file; do
+    sed -i '' -e "s|\${EasyDevPath}|${EasyDevPath}|g" "$file"
+    sed -i '' -e "s|\${THEOS}|${THEOS}|g" "$file"
+done
 
 #创建符号链接
 echo "Creating symlink to Xcode templates..."

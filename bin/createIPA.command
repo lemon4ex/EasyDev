@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ ${DIR} = "/opt/EasyDev/bin" ]]; then 
+if [[ ${DIR} = "~/EasyDev/bin" ]]; then 
 	DIR="$PWD"
 fi
 

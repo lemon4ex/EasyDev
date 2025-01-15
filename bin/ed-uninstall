@@ -3,17 +3,18 @@
 export setCmd="set -eo pipefail"
 $setCmd
 
-export PATH=/opt/EasyDev/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+export userName="${SUDO_USER-$USER}"
+export userGroup=`id -g $userName`
+export userHome=`eval echo ~$userName`
+
+export PATH=$userHome/EasyDev/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 export scriptName="${0##*/}"
 export scriptVer="2.0"
 
-export EasyDevPath="/opt/EasyDev"
+export EasyDevPath="$userHome/EasyDev"
 export backupFileExt=".EasyDev"
 
-export userName="${SUDO_USER-$USER}"
-export userGroup=`id -g $userName`
-export userHome=`eval echo ~$userName`
 export bashProfileFiles=("$userHome/.zshrc" "$userHome/.bash_profile" "$userHome/.bashrc" "$userHome/.bash_login" "$userHome/.profile")
 
 export tempDirsFile="`mktemp -d -t $scriptName`/tempdirs"

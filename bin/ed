@@ -3,14 +3,18 @@
 export setCmd="set -eo pipefail"
 $setCmd
 
-export PATH=/opt/EasyDev/bin:$EasyDevTheosPath/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+export userName="${SUDO_USER-$USER}"
+export userGroup=`id -g $userName`
+export userHome=`eval echo ~$userName`
+
+export PATH=$userHome/EasyDev/bin:$EasyDevTheosPath/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 export scriptName="${0##*/}"
 export scriptVer="2.0"
 export originalArguments=("$@")
 export activeActionArg
 
-export EasyDevPath="/opt/EasyDev"
+export EasyDevPath="$userHome/EasyDev"
 #默认设备ip
 export DefaultDeviceIP="localhost"
 #默认端口号
@@ -18,9 +22,6 @@ export DefaultDevicePort="2222"
 
 export DefaultDeviceBuildsDir="/var/root/EasyDevBuilds"
 
-export userName="${SUDO_USER-$USER}"
-export userGroup=`id -g $userName`
-export userHome=`eval echo ~$userName`
 export bashProfileFiles=("$userHome/.zshrc" "$userHome/.bash_profile" "$userHome/.bashrc" "$userHome/.bash_login" "$userHome/.profile")
 
 export tempDirsFile="`mktemp -d -t $scriptName`/tempdirs"

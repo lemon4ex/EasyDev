@@ -1,4 +1,4 @@
-EASYDEV_PATH="/opt/EasyDev"
+EASYDEV_PATH="~/EasyDev"
 
 # temp path
 TEMP_PATH="${SRCROOT}/${TARGET_NAME}/tmp"

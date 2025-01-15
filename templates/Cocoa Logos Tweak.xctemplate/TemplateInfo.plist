@@ -37,7 +37,7 @@
 				<key>ENABLE_BITCODE</key>
 				<string>NO</string>
 				<key>EasyDevTheosPath</key>
-				<string>/opt/theos</string>
+				<string>${THEOS}</string>
 				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
 				<string>NO</string>
 				<key>GCC_WARN_ABOUT_MISSING_PROTOTYPES</key>
@@ -55,7 +55,7 @@
 				<key>LIBRARY_SEARCH_PATHS</key>
 				<string>$(inherited) $(EasyDevPath)/lib $(EasyDevTheosPath)/lib $(EasyDevTheosPath)/vendor/lib</string>
 				<key>EasyDevPath</key>
-				<string>/opt/EasyDev</string>
+				<string>${EasyDevPath}</string>
 				<key>MACOSX_DEPLOYMENT_TARGET</key>
 				<string>10.9</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
@@ -65,7 +65,7 @@
 			<array>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/ed --xcbp-logos</string>
+					<string>${EasyDevPath}/bin/ed --xcbp-logos</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
@@ -87,7 +87,7 @@
 				</dict>
 				<dict>
 					<key>ShellScript</key>
-					<string>/opt/EasyDev/bin/ed --xcbp</string>
+					<string>${EasyDevPath}/bin/ed --xcbp</string>
 					<key>ShellPath</key>
 					<string>/bin/sh</string>
 					<key>RunOnlyForDeploymentPostprocessing</key>
